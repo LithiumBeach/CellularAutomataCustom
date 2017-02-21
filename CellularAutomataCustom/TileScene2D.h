@@ -6,6 +6,7 @@
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Window\Mouse.hpp>
+#include <SFML\Window\Keyboard.hpp>
 
 extern sf::RenderWindow* g_WINDOW;
 
@@ -43,8 +44,17 @@ private:
 	bool m_WasMousePressed;
 
 public:
-	float TilePixelSize = 5;
-	int BoardTileSize = 100;
+	float TilePixelSize = 10;
+	int BoardTileSize = 50;
 
+public:
+	sf::Rect<float> window_bounds = sf::Rect<float>((float)(g_WINDOW->getPosition().x), (float)(g_WINDOW->getPosition().y),
+		(float)(g_WINDOW->getSize().x), (float)(g_WINDOW->getSize().y));
+
+
+
+private:
+	bool m_IsSimulating = false;
+	bool m_WasSpacePressed;
 };
 

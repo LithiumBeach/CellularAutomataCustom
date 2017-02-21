@@ -18,7 +18,7 @@ TileScene2D::TileScene2D()
 			m_Cells[x][y] = Cell(false, sf::Vector2f((float)x, (float)y), sf::Vector2f(TilePixelSize, TilePixelSize));
 			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
 		}
-		printf("\n");
+		//printf("\n");
 	}
 
 	//line
@@ -27,11 +27,19 @@ TileScene2D::TileScene2D()
 	//m_Cells[5][5].SetAliveImmediate(true);//works :)
 
 	//r-pentomino
+	//m_Cells[11][10].SetAliveImmediate(true);//works :)
+	//m_Cells[12][11].SetAliveImmediate(true);//works :)
+	//m_Cells[10][12].SetAliveImmediate(true);//works :)
+	//m_Cells[11][12].SetAliveImmediate(true);//works :)
+	//m_Cells[12][12].SetAliveImmediate(true);//works :)
+
+
+	//reverse r-pentomino
 	m_Cells[11][10].SetAliveImmediate(true);//works :)
-	m_Cells[12][11].SetAliveImmediate(true);//works :)
-	m_Cells[10][12].SetAliveImmediate(true);//works :)
-	m_Cells[11][12].SetAliveImmediate(true);//works :)
+	m_Cells[10][11].SetAliveImmediate(true);//works :)
 	m_Cells[12][12].SetAliveImmediate(true);//works :)
+	m_Cells[11][12].SetAliveImmediate(true);//works :)
+	m_Cells[10][12].SetAliveImmediate(true);//works :)
 
 	//works :)
 	//for (int y = 0; y < BoardTileSize; y++)
@@ -49,11 +57,12 @@ TileScene2D::~TileScene2D()
 }
 
 
-static const float FramesPerSecond = 0.01f;
+static const float FramesPerSecond = 1.0f/20.0f;
 float fpsCount = 0.0f;
 void TileScene2D::PreUpdate(float a_DeltaTime)
 {
 	fpsCount += a_DeltaTime;
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_WasSpacePressed)
 	if (fpsCount > FramesPerSecond)
 	{
 		for (int y = 0; y < BoardTileSize; y++)
@@ -62,6 +71,8 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 			{
 				int liveNeighborCount = GetLiveNeighborsAroundIndex(x, y);
 				bool shouldBeAlive = false;
+
+				//RULES:
 				if (m_Cells[x][y].IsAlive())
 				{
 					shouldBeAlive = liveNeighborCount >= 2 && liveNeighborCount <= 3;
@@ -70,6 +81,8 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 				{
 					shouldBeAlive = liveNeighborCount == 3;
 				}
+
+
 				m_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
 			}
 		}
@@ -78,6 +91,7 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 
 void TileScene2D::Update(float a_DeltaTime)
 {
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_WasSpacePressed)
 	if (fpsCount > FramesPerSecond)
 	{
 		for (int y = 0; y < BoardTileSize; y++)
@@ -88,95 +102,38 @@ void TileScene2D::Update(float a_DeltaTime)
 
 			}
 		}
+		fpsCount = 0;
 	}
-	sf::Rect<float> window_bounds = sf::Rect<float>(g_WINDOW->getPosition().x, g_WINDOW->getPosition().y, g_WINDOW->getSize().x, g_WINDOW->getSize().y);
+
 	//quick mouse input -- @TODO: check bounds of mouse.
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasMousePressed)
 	{
-		m_Cells[sf::Mouse::getPosition(*g_WINDOW).x / TilePixelSize][sf::Mouse::getPosition(*g_WINDOW).y / TilePixelSize].SetAliveImmediate(true);
+		float x = (int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize);
+		float y = (int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize);
+		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
+		{
+			m_Cells[(unsigned int)x][(unsigned int)y].ToggleAliveImmediate();
+		}
 	}
+
+	//input mgr...
 	m_WasMousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	m_WasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
 }
 
 int TileScene2D::GetLiveNeighborsAroundIndex(int x, int y)
 {
 	int nCount = 0;
+	for (int i = -1; i <= 1; i++)
+	{
+		for (int j = -1; j <= 1; j++)
+		{
+			if (j == 0 && i == 0){ continue; }
 
-	if (x > 1)
-	{
-		nCount += m_Cells[x - 1][y].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[BoardTileSize - 1][y].IsAlive();
-	}
+			nCount += m_Cells[Math::mod((x + i), BoardTileSize)][Math::mod((y + j), BoardTileSize)].IsAlive();
+		}
 
-	if (x < BoardTileSize - 1)
-	{
-		nCount += m_Cells[x + 1][y].IsAlive();
 	}
-	else
-	{
-		nCount += m_Cells[0][y].IsAlive();
-	}
-
-	if (y > 1)
-	{
-		nCount += m_Cells[x][y - 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[x][BoardTileSize - 1].IsAlive();
-	}
-
-	if (y < BoardTileSize - 1)
-	{
-		nCount += m_Cells[x][y + 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[x][0].IsAlive();
-	}
-
-	if (x > 1 && y > 1)
-	{
-		nCount += m_Cells[x - 1][y - 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[BoardTileSize - 1][BoardTileSize - 1].IsAlive();
-	}
-
-	if (x > 1 && y < BoardTileSize - 1)
-	{
-		nCount += m_Cells[x - 1][y + 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[BoardTileSize - 1][0].IsAlive();
-	}
-
-
-	if (x < BoardTileSize - 1 && y > 1)
-	{
-		nCount += m_Cells[x + 1][y - 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[0][BoardTileSize - 1].IsAlive();
-	}
-
-
-	if (x < BoardTileSize - 1 && y < BoardTileSize - 1)
-	{
-		nCount += m_Cells[x + 1][y + 1].IsAlive();
-	}
-	else
-	{
-		nCount += m_Cells[0][0].IsAlive();
-	}
-
-
 	return nCount;
 }
 
@@ -187,7 +144,7 @@ void TileScene2D::Draw()
 		for (int x = 0; x < BoardTileSize; x++)
 		{
 			m_Cells[x][y].Draw();
-			
+
 		}
 	}
 

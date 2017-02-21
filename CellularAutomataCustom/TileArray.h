@@ -4,20 +4,20 @@
 class TileArray
 {
 public:
-    TileArray();
+	TileArray();
 	TileArray(unsigned int sizeX, unsigned int sizeY);
 	TileArray(unsigned int size){ TileArray(size, size); }
 	~TileArray();
 
 public:
-	 void PrintContents();
+	void PrintContents();
 
-	 //get at cartesian coordinates
-	 unsigned int At(int x, int y);
-	 void Set(int x, int y, int value);
+	//get at cartesian coordinates
+	unsigned int At(int x, int y);
+	void Set(int x, int y, int value);
 
-	 int GetWidth(){ return m_TileInts[0].size(); }
-	 int GetHeight(){ return m_TileInts.size(); }
+	int GetWidth(){ return m_TileInts[0].size(); }
+	int GetHeight(){ return m_TileInts.size(); }
 
 private:
 	//this class is only concerned with managing an array of integers. nothing about drawing, or any other crap in here.
