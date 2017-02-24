@@ -14,6 +14,8 @@ include_directories(${SFML_INCLUDE_DIR})
 add_executable(Walk_The_Dinosaur
 Cell.h
 Cell.cpp
+Input.h
+Input.cpp
 Main.h
 Main.cpp
 Math.h
