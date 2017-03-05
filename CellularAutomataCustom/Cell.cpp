@@ -1,5 +1,7 @@
 #include "Cell.h"
 
+extern sf::RenderWindow* g_WINDOW;
+
 Cell::Cell(bool a_IsAlive, sf::Vector2f a_TilePos, sf::Vector2f a_PixelSize)
 	: m_IsAlive(a_IsAlive), m_TilePos(a_TilePos), m_RectangleShape(sf::RectangleShape(a_PixelSize))
 {

@@ -1,6 +1,11 @@
 /*TileScene2D.h generated on Thu 02/16/2017 at 19:38:13.76*/
+#ifndef TILESCENE2D_H
+#define TILESCENE2D_H
+
 #include "TileArray.h"
 #include "Cell.h"
+//#include "Button.h"
+//#include "Global.h"
 
 #include <vector>
 #include <SFML\Graphics\RectangleShape.hpp>
@@ -8,10 +13,10 @@
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
 
-extern sf::RenderWindow* g_WINDOW;
-
 class TileScene2D
 {
+public:
+	typedef sf::Vector2f Vector2f;
 public:
 	TileScene2D();
 	~TileScene2D();
@@ -47,14 +52,14 @@ public:
 	float TilePixelSize = 10;
 	int BoardTileSize = 50;
 
-public:
-	sf::Rect<float> window_bounds = sf::Rect<float>((float)(g_WINDOW->getPosition().x), (float)(g_WINDOW->getPosition().y),
-		(float)(g_WINDOW->getSize().x), (float)(g_WINDOW->getSize().y));
-
-
-
 private:
 	bool m_IsSimulating = false;
 	bool m_WasSpacePressed;
+
+
+private:
+	void InitializeUI();
+	//Button m_SimulateButton;
 };
 
+#endif

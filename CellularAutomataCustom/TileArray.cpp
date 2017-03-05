@@ -13,9 +13,9 @@ TileArray::TileArray(unsigned int sizeX, unsigned int sizeY)
 	//initialize array with all zeros
 	m_TileInts = std::vector<std::vector<int>>(sizeY, std::vector<int>(sizeX, 0));
 
-	for (int y = 0; y < m_TileInts.size(); y++)
+	for (unsigned int y = 0; y < m_TileInts.size(); y++)
 	{
-		for (int x = 0; x < m_TileInts[y].size(); x++)
+		for (unsigned int x = 0; x < m_TileInts[y].size(); x++)
 		{
 			m_TileInts[x][y] = 0;
 		}

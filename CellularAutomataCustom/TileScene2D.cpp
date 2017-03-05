@@ -1,5 +1,7 @@
 #include "TileScene2D.h"
 
+extern sf::RenderWindow* g_WINDOW;
+
 TileScene2D::TileScene2D()
 {
 	m_Cells = std::vector<std::vector<Cell>>();
@@ -15,7 +17,7 @@ TileScene2D::TileScene2D()
 	{
 		for (int x = 0; x < BoardTileSize; x++)
 		{
-			m_Cells[x][y] = Cell(false, sf::Vector2f((float)x, (float)y), sf::Vector2f(TilePixelSize, TilePixelSize));
+			m_Cells[x][y] = Cell(false, Vector2f((float)x, (float)y), Vector2f(TilePixelSize, TilePixelSize));
 			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
 		}
 		//printf("\n");
@@ -54,6 +56,11 @@ TileScene2D::TileScene2D()
 
 TileScene2D::~TileScene2D()
 {
+}
+
+void TileScene2D::InitializeUI()
+{
+	//m_SimulateButton = Button(Vector2f(50, 10), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 100), sf::Color(10, 10, 10));
 }
 
 
@@ -148,4 +155,5 @@ void TileScene2D::Draw()
 		}
 	}
 
+	//m_SimulateButton.Draw();
 }

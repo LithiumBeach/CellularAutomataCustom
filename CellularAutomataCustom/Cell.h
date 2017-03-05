@@ -5,8 +5,6 @@
 
 #include "Math.h"
 
-extern sf::RenderWindow* g_WINDOW;
-
 class Cell
 {
 public:

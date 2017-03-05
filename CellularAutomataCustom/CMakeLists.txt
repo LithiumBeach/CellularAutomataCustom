@@ -11,22 +11,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/3rdParty/SFML-2.3.2/cmake/Modules" ${
 
 include_directories(${SFML_INCLUDE_DIR})
 
-add_executable(Walk_The_Dinosaur
-Cell.h
-Cell.cpp
-Input.h
-Input.cpp
-Main.h
-Main.cpp
-Math.h
-Math.cpp
-SceneManager.h
-SceneManager.cpp
-TileArray.h
-TileArray.cpp
-TileScene2D.h
-TileScene2D.cpp
-TreatYourself.bat
+file(GLOB src
+"*.h"
+"*.cpp"
+)
+
+add_executable(Walk_The_Dinosaur ${src}
 ${SFML_DEPENDENCIES} ${SFML_LIBRARIES})
 
 #search the SFML cmake file and include these libraries

@@ -1,5 +1,8 @@
 #include "Main.h"
 
+
+//extern sf::RenderWindow* g_WINDOW;
+
 void main()
 {
 	//create our rendering window
@@ -17,32 +20,32 @@ void main()
 
 	SceneManager* MasterP = new SceneManager();
 
+
 	//main game loop
 	while (g_WINDOW->isOpen())
 	{
-		sf::Event event;
-		while (g_WINDOW->pollEvent(event))
+		sf::Event e;
+
+		//poll sf::Window for all events e
+		while (g_WINDOW->pollEvent(e))
 		{
-			switch (event.type)
+			//hard-coded key press events
+			switch (e.type)
 			{
-				//key press events
 			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::Escape)
+				if (e.key.code == sf::Keyboard::Escape)
 				{
 					g_WINDOW->close();
 				}
 				break;
 			}
+
 		}
 
 		//find time delta -- in seconds
 		deltaTime = clock.restart().asSeconds();
 
 		//update code here:
-		//_GM->PreUpdate(deltaTime);
-		//_GM->Update(deltaTime);
-		//_GM->PostUpdate(deltaTime);
-
 		MasterP->PreUpdate(deltaTime);
 		MasterP->Update(deltaTime);
 

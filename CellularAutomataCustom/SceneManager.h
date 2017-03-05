@@ -1,4 +1,7 @@
 /*SceneManager.h generated on Thu 02/16/2017 at 19:38:46.26*/
+#ifndef SCENEMANAGER_H
+#define SCENEMANAGER_H
+
 #include "TileScene2D.h"
 
 class SceneManager
@@ -16,3 +19,5 @@ private:
 	TileScene2D* m_TileScene2d;
 
 };
+
+#endif
