@@ -1,8 +1,17 @@
 @echo off
 set /p fn="Filename: "
 
+::save another variable with the input text in all upper case.
+::http://stackoverflow.com/questions/34713621/batch-converting-variable-to-uppercase
+set fnUPPER=
+for /f "skip=2 delims=" %%I in ('tree "\%fn%"') do if not defined fnUPPER set "fnUPPER=%%~I"
+set "fnUPPER=%fnUPPER:~3%"
+echo %fnUPPER%
+
 ::write stuff into .h
 echo /*%fn%.h generated on %date% at %time%*/>> %fn%.h
+echo #ifndef %fnUPPER%_H>> %fn%.h
+echo #define %fnUPPER%_H>> %fn%.h
 echo.>> %fn%.h
 echo #include ^<SFML\Graphics\RenderWindow.hpp^>>> %fn%.h
 echo.>> %fn%.h
@@ -11,8 +20,8 @@ echo.>> %fn%.h
 echo class %fn%>> %fn%.h
 echo {>> %fn%.h
 echo public:>> %fn%.h
-echo   %fn%(){};>> %fn%.h
-echo   ~%fn%(){};>> %fn%.h
+echo   %fn%();>> %fn%.h
+echo   ~%fn%();>> %fn%.h
 echo.>> %fn%.h
 echo public:>> %fn%.h
 echo   void Update(float a_DeltaTime);>> %fn%.h
@@ -44,3 +53,5 @@ echo {>> %fn%.cpp
 echo.   >> %fn%.cpp
 echo }>> %fn%.cpp
 echo.>> %fn%.cpp
+echo.>> %fn%.cpp
+echo #endif>> %fn%.h
