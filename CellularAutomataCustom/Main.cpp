@@ -1,8 +1,5 @@
 #include "Main.h"
 
-
-//extern sf::RenderWindow* g_WINDOW;
-
 void main()
 {
 	//create our rendering window

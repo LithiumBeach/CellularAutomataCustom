@@ -15,4 +15,14 @@ public:
 		T t = a % a_mod;
 		return t >= 0 ? t : t + a_mod;
 	}
+	
+	template<typename T, typename T1, typename T2>
+	static bool AABB(sf::Vector2<T> a_TopLeft, sf::Vector2<T1> a_BottomRight, sf::Vector2<T2> a_Point)
+	{//assume y axis is 0 at top, increasing downwards
+		return	a_Point.x > a_TopLeft.x &&
+				a_Point.y > a_TopLeft.y &&
+				a_Point.x < a_BottomRight.x &&
+				a_Point.y < a_BottomRight.y;
+				
+	}
 };

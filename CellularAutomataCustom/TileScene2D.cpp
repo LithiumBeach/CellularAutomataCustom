@@ -1,6 +1,8 @@
 #include "TileScene2D.h"
 
 extern sf::RenderWindow* g_WINDOW;
+extern const int WINDOW_SIZE_X = 500;
+extern const int WINDOW_SIZE_Y = 650;
 
 TileScene2D::TileScene2D()
 {
@@ -52,6 +54,8 @@ TileScene2D::TileScene2D()
 	//	}
 	//	printf("\n");
 	//}
+
+	InitializeUI();
 }
 
 TileScene2D::~TileScene2D()
@@ -60,7 +64,7 @@ TileScene2D::~TileScene2D()
 
 void TileScene2D::InitializeUI()
 {
-	//m_SimulateButton = Button(Vector2f(50, 10), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 100), sf::Color(10, 10, 10));
+	m_SimulateButton = Button(Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
 }
 
 
@@ -94,6 +98,9 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 			}
 		}
 	}
+
+	//BUTTON UPDATE
+	m_SimulateButton.Update(a_DeltaTime);
 }
 
 void TileScene2D::Update(float a_DeltaTime)
@@ -155,5 +162,5 @@ void TileScene2D::Draw()
 		}
 	}
 
-	//m_SimulateButton.Draw();
+	m_SimulateButton.Draw();
 }

@@ -20,12 +20,12 @@ echo.>> %fn%.h
 echo class %fn%>> %fn%.h
 echo {>> %fn%.h
 echo public:>> %fn%.h
-echo   %fn%();>> %fn%.h
-echo   ~%fn%();>> %fn%.h
+echo    %fn%();>> %fn%.h
+echo    ~%fn%();>> %fn%.h
 echo.>> %fn%.h
 echo public:>> %fn%.h
-echo   void Update(float a_DeltaTime);>> %fn%.h
-echo   void Draw();>> %fn%.h
+echo    void Update(float a_DeltaTime);>> %fn%.h
+echo    void Draw();>> %fn%.h
 echo.>> %fn%.h
 echo };>> %fn%.h
 
@@ -45,12 +45,12 @@ echo }>> %fn%.cpp
 echo.>> %fn%.cpp
 echo void %fn%::Update(float a_DeltaTime)>> %fn%.cpp
 echo {>> %fn%.cpp
-echo.   >> %fn%.cpp
+echo.    >> %fn%.cpp
 echo }>> %fn%.cpp
 echo.>> %fn%.cpp
 echo void %fn%::Draw()>> %fn%.cpp
 echo {>> %fn%.cpp
-echo.   >> %fn%.cpp
+echo.    >> %fn%.cpp
 echo }>> %fn%.cpp
 echo.>> %fn%.cpp
 echo.>> %fn%.cpp

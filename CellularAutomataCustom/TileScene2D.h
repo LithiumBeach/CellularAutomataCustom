@@ -4,12 +4,10 @@
 
 #include "TileArray.h"
 #include "Cell.h"
-//#include "Button.h"
-//#include "Global.h"
+#include "Button.h"
 
 #include <vector>
 #include <SFML\Graphics\RectangleShape.hpp>
-#include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
 
@@ -59,7 +57,7 @@ private:
 
 private:
 	void InitializeUI();
-	//Button m_SimulateButton;
+	Button m_SimulateButton;
 };
 
 #endif
