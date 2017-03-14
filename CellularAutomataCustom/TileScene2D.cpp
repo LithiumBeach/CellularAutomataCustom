@@ -64,9 +64,15 @@ TileScene2D::~TileScene2D()
 
 void TileScene2D::InitializeUI()
 {
-	m_SimulateButton = Button(Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
+	//HandleSimulateButtonPressEvent_ptr;
+	HandleSimulateButtonPressEvent_ptr = HandleSimulateButtonPressEvent;
+	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
 }
 
+void TileScene2D::HandleSimulateButtonPressEvent()
+{
+	printf("hey now heyhey!");
+}
 
 static const float FramesPerSecond = 1.0f/20.0f;
 float fpsCount = 0.0f;

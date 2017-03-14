@@ -5,6 +5,7 @@
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Window\Mouse.hpp>
+#include <stdio.h>
 
 extern sf::RenderWindow* g_WINDOW;
 
@@ -15,13 +16,14 @@ public:
 	typedef sf::Color Color;
 public:
 	Button();
-	Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness=2.0f);
+	Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness = 2.0f);
    ~Button();
 
 public:
    void Update(float a_DeltaTime);
    void Draw();
 
+private:
    //true on the frame the mouse is pressed down
    bool OnMouseDown = false;
    //true on the frame the mouse is released
@@ -30,6 +32,17 @@ public:
    bool IsDown = false;
    //is the mouse position within the shape's region?
    bool IsMouseHovering = false;
+
+   //if the mouse press was within the bounds of the button, we will wait for it to be released to fire the event.
+   //as god intended.
+   bool WaitingForRelease = false;
+
+public:
+	//ButtonPressEvent = yourfunctiondotcom()
+	void (*ButtonPressEvent)();
+
+private:
+	bool m_WasMouseDown = false;
 
 private:
 	sf::RectangleShape m_RS;

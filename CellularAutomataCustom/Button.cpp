@@ -9,7 +9,7 @@ Button::~Button()
 {
 }
 
-Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness)
+Button::Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness)
 {
 	m_RS = sf::RectangleShape(a_Size);
 	m_RS.setOrigin(Vector2f(a_Size.x / 2, a_Size.y / 2));
@@ -17,11 +17,33 @@ Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_
 	m_RS.setFillColor(a_FillColor);
 	m_RS.setOutlineColor(a_FillColor);
 	m_RS.setOutlineThickness(a_OutlineThickness);
+	ButtonPressEvent = a_ButtonPressEvent;
 }
 
 void Button::Update(float a_DeltaTime)
 {
+	bool isMouseDown = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 
+	IsMouseHovering = IsMouseInRect();
+
+	//mouse is hovering over the rect, this is the first frame of mouse left click.
+	OnMouseDown = isMouseDown && !m_WasMouseDown;
+
+	if (OnMouseDown && IsMouseInRect())
+	{
+		WaitingForRelease = true;
+	}
+
+	OnMouseRelease = !isMouseDown && m_WasMouseDown && WaitingForRelease;
+
+	if (OnMouseRelease)
+	{
+		//activate()
+		(*ButtonPressEvent)();
+		WaitingForRelease = false;
+	}
+
+	m_WasMouseDown = isMouseDown;
 }
 
 bool Button::IsMouseInRect()

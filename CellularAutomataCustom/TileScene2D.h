@@ -58,6 +58,8 @@ private:
 private:
 	void InitializeUI();
 	Button m_SimulateButton;
+	static void HandleSimulateButtonPressEvent();
+	void (*HandleSimulateButtonPressEvent_ptr)();
 };
 
 #endif
