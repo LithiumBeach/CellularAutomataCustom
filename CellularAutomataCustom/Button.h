@@ -4,6 +4,7 @@
 
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
+#include <SFML\Graphics\Text.hpp>
 #include <SFML\Window\Mouse.hpp>
 #include <stdio.h>
 
@@ -16,7 +17,7 @@ public:
 	typedef sf::Color Color;
 public:
 	Button();
-	Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness = 2.0f);
+	Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness = 2.0f, std::string a_Text = "");
    ~Button();
 
 public:
@@ -48,6 +49,11 @@ private:
 	sf::RectangleShape m_RS;
 
 	bool IsMouseInRect();
+
+private:
+	sf::Text m_Text;
+public:
+	void SetText(std::string a_TextString);
 };
  
 #endif

@@ -9,11 +9,12 @@ void main()
 	sf::Clock clock;
 
 	//delta time between frames -- to be passed into all update functions from here.
-	float deltaTime = clock.restart().asSeconds();
+	float deltaTime = clock.restart().asMilliseconds();
+	sf::Clock deltaClock;
 
 	//enable vsync
 	g_WINDOW->setVerticalSyncEnabled(true);
-	g_WINDOW->setFramerateLimit(60);
+	g_WINDOW->setFramerateLimit(256);
 
 	SceneManager* MasterP = new SceneManager();
 
@@ -21,6 +22,7 @@ void main()
 	//main game loop
 	while (g_WINDOW->isOpen())
 	{
+		sf::Time dt = deltaClock.restart();
 		sf::Event e;
 
 		//poll sf::Window for all events e
@@ -39,12 +41,9 @@ void main()
 
 		}
 
-		//find time delta -- in seconds
-		deltaTime = clock.restart().asSeconds();
-
 		//update code here:
-		MasterP->PreUpdate(deltaTime);
-		MasterP->Update(deltaTime);
+		MasterP->PreUpdate(dt.asSeconds());
+		MasterP->Update(dt.asSeconds());
 
 
 		//clear displayed window

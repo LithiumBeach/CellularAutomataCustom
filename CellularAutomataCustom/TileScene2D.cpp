@@ -4,6 +4,14 @@ extern sf::RenderWindow* g_WINDOW;
 extern const int WINDOW_SIZE_X = 500;
 extern const int WINDOW_SIZE_Y = 650;
 
+bool TileScene2D::s_IsSimulating = false;
+Button TileScene2D::m_IncreasePlaybackSpeedButton = Button();
+Button TileScene2D::m_DecreasePlaybackSpeedButton = Button();
+
+int playbackSpeedsIndex = 5;
+const int s_PlaybackSpeedsLen = 12;
+float s_PlaybackSpeeds[s_PlaybackSpeedsLen] = { 1.0f, 2.0f, 4.0f, 8.0f, 10.0f, 12.0f, 16.0f, 24.0f, 32.0f, 64.0f, 96.0f, 128.0f };
+
 TileScene2D::TileScene2D()
 {
 	m_Cells = std::vector<std::vector<Cell>>();
@@ -64,23 +72,45 @@ TileScene2D::~TileScene2D()
 
 void TileScene2D::InitializeUI()
 {
-	//HandleSimulateButtonPressEvent_ptr;
 	HandleSimulateButtonPressEvent_ptr = HandleSimulateButtonPressEvent;
-	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
+	HandlePlaybackSpeedIncButtonPressEvent_ptr = HandlePlaybackSpeedIncButtonPressEvent;
+	HandlePlaybackSpeedDecButtonPressEvent_ptr = HandlePlaybackSpeedDecButtonPressEvent;
+
+	m_SimulateButton =	Button(HandleSimulateButtonPressEvent_ptr, Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
+	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(32, 32), Vector2f(50, WINDOW_SIZE_Y - 64), sf::Color(0, 255, 0), sf::Color(10, 10, 10), 2.0f, "+");
+	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(32, 32), Vector2f(50, WINDOW_SIZE_Y - 32), sf::Color(255, 0, 0), sf::Color(10, 10, 10), 2.0f, "-");
 }
 
 void TileScene2D::HandleSimulateButtonPressEvent()
 {
-	printf("hey now heyhey!");
+	s_IsSimulating = !(s_IsSimulating);
+	printf("\nsimulating?: %d", s_IsSimulating);
 }
 
-static const float FramesPerSecond = 1.0f/20.0f;
-float fpsCount = 0.0f;
+static float FramesPerSecond = 1.0f / 16.0f;
+
+void TileScene2D::HandlePlaybackSpeedIncButtonPressEvent()
+{
+	playbackSpeedsIndex++;
+	playbackSpeedsIndex = Math::Min(playbackSpeedsIndex, s_PlaybackSpeedsLen - 1);
+	FramesPerSecond = 1.0f / s_PlaybackSpeeds[playbackSpeedsIndex];
+	printf("\nFPS: %f", FramesPerSecond);
+}
+void TileScene2D::HandlePlaybackSpeedDecButtonPressEvent()
+{
+	playbackSpeedsIndex--;
+	playbackSpeedsIndex = Math::Max(playbackSpeedsIndex, 0);
+	FramesPerSecond = 1.0f / s_PlaybackSpeeds[playbackSpeedsIndex];
+	printf("\nFPS: %f", FramesPerSecond);
+}
+
+float fpsCountPre = 0.0f;
+int numWaitFramesPre = 0;
 void TileScene2D::PreUpdate(float a_DeltaTime)
 {
-	fpsCount += a_DeltaTime;
+	fpsCountPre += a_DeltaTime;
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_WasSpacePressed)
-	if (fpsCount > FramesPerSecond)
+	if (fpsCountPre > FramesPerSecond)
 	{
 		for (int y = 0; y < BoardTileSize; y++)
 		{
@@ -103,27 +133,56 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 				m_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
 			}
 		}
+		while (fpsCountPre > FramesPerSecond)
+		{
+			fpsCountPre -= FramesPerSecond;
+		}
+		numWaitFramesPre = 0;
+	}
+	else
+	{
+		numWaitFramesPre++;
 	}
 
 	//BUTTON UPDATE
 	m_SimulateButton.Update(a_DeltaTime);
+	m_IncreasePlaybackSpeedButton.Update(a_DeltaTime);
+	m_DecreasePlaybackSpeedButton.Update(a_DeltaTime);
 }
 
+float fpsCountPost = 0.0f;
+int numWaitFramesPost = 0;
 void TileScene2D::Update(float a_DeltaTime)
 {
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_WasSpacePressed)
-	if (fpsCount > FramesPerSecond)
+	//MAIN UPDATE LOOP
+	if (s_IsSimulating)
 	{
-		for (int y = 0; y < BoardTileSize; y++)
+		fpsCountPost += a_DeltaTime;
+		if (fpsCountPost > FramesPerSecond)
 		{
-			for (int x = 0; x < BoardTileSize; x++)
+			for (int y = 0; y < BoardTileSize; y++)
 			{
-				m_Cells[x][y].Update(a_DeltaTime);
+				for (int x = 0; x < BoardTileSize; x++)
+				{
+					m_Cells[x][y].Update(a_DeltaTime);
 
+				}
 			}
+
+			while (fpsCountPost > FramesPerSecond)
+			{
+				fpsCountPost -= FramesPerSecond;
+			}
+			numWaitFramesPost = 0;
 		}
-		fpsCount = 0;
 	}
+	else
+	{
+		numWaitFramesPost++;
+	}
+
+
+
 
 	//quick mouse input -- @TODO: check bounds of mouse.
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasMousePressed)
@@ -169,4 +228,6 @@ void TileScene2D::Draw()
 	}
 
 	m_SimulateButton.Draw();
+	m_IncreasePlaybackSpeedButton.Draw();
+	m_DecreasePlaybackSpeedButton.Draw();
 }

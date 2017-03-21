@@ -25,4 +25,15 @@ public:
 				a_Point.y < a_BottomRight.y;
 				
 	}
+
+	template<typename T>
+	static T Max(T a, T b)
+	{
+		return a >= b ? a : b;
+	}
+	template<typename T>
+	static T Min(T a, T b)
+	{
+		return a <= b ? a : b;
+	}
 };

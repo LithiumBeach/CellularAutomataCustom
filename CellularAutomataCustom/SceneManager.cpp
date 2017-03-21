@@ -11,12 +11,12 @@ SceneManager::~SceneManager()
 	m_TileScene2d = nullptr;
 }
 
-void SceneManager::PreUpdate(float a_DeltaTime)
+void SceneManager::PreUpdate(double a_DeltaTime)
 {
 	m_TileScene2d->PreUpdate(a_DeltaTime);
 }
 
-void SceneManager::Update(float a_DeltaTime)
+void SceneManager::Update(double a_DeltaTime)
 {
 	m_TileScene2d->Update(a_DeltaTime);
 }

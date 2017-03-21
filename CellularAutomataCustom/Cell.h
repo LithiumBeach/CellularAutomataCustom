@@ -14,7 +14,7 @@ public:
 	~Cell();
 
 public:
-	void Update(float a_DeltaTime);
+	void Update(double a_DeltaTime);
 	void Draw();
 
 private:

@@ -11,8 +11,8 @@ public:
 	~SceneManager();
 
 public:
-	void PreUpdate(float a_DeltaTime);
-	void Update(float a_DeltaTime);
+	void PreUpdate(double a_DeltaTime);
+	void Update(double a_DeltaTime);
 	void Draw();
 
 private:

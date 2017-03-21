@@ -50,16 +50,26 @@ public:
 	float TilePixelSize = 10;
 	int BoardTileSize = 50;
 
+public:
+	static bool s_IsSimulating;
 private:
-	bool m_IsSimulating = false;
 	bool m_WasSpacePressed;
 
-
 private:
+	//Interface elements
 	void InitializeUI();
 	Button m_SimulateButton;
+	static Button m_IncreasePlaybackSpeedButton;
+	static Button m_DecreasePlaybackSpeedButton;
+public:
 	static void HandleSimulateButtonPressEvent();
 	void (*HandleSimulateButtonPressEvent_ptr)();
+
+	static void HandlePlaybackSpeedIncButtonPressEvent();
+	void(*HandlePlaybackSpeedIncButtonPressEvent_ptr)();
+
+	static void HandlePlaybackSpeedDecButtonPressEvent();
+	void(*HandlePlaybackSpeedDecButtonPressEvent_ptr)();
 };
 
 #endif

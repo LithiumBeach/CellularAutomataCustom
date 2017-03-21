@@ -15,7 +15,7 @@ Cell::~Cell()
 {
 }
 
-void Cell::Update(float a_DeltaTime)
+void Cell::Update(double a_DeltaTime)
 {
 	//first
 	m_IsAlive = m_WillBeAliveOnUpdate;
