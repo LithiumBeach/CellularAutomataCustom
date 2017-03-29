@@ -10,6 +10,7 @@
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
+#include <SFML\Graphics\Font.hpp>
 
 class TileScene2D
 {
@@ -61,15 +62,21 @@ private:
 	Button m_SimulateButton;
 	static Button m_IncreasePlaybackSpeedButton;
 	static Button m_DecreasePlaybackSpeedButton;
+	static Button m_FPSButton;
 public:
 	static void HandleSimulateButtonPressEvent();
 	void (*HandleSimulateButtonPressEvent_ptr)();
 
+	//Playback Speed + / -
 	static void HandlePlaybackSpeedIncButtonPressEvent();
 	void(*HandlePlaybackSpeedIncButtonPressEvent_ptr)();
-
 	static void HandlePlaybackSpeedDecButtonPressEvent();
 	void(*HandlePlaybackSpeedDecButtonPressEvent_ptr)();
+private:
+	static void UpdateFPSCounter();
+public:
+	static float FramesPerSecond;
+	sf::Font* m_DefaultFont;
 };
 
 #endif

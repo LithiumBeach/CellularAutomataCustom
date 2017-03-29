@@ -14,6 +14,7 @@ include_directories(${SFML_INCLUDE_DIR})
 file(GLOB src
 "*.h"
 "*.cpp"
+"*.ttf"
 )
 
 add_executable(Walk_The_Dinosaur ${src}

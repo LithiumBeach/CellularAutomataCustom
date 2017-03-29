@@ -17,7 +17,8 @@ public:
 	typedef sf::Color Color;
 public:
 	Button();
-	Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness = 2.0f, std::string a_Text = "");
+	Button(void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+				sf::Font& a_Font, float a_OutlineThickness = 2.0f, std::string a_TextString = "", int a_CharacterSize = 12);
    ~Button();
 
 public:

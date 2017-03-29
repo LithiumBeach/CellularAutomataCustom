@@ -9,7 +9,7 @@ void main()
 	sf::Clock clock;
 
 	//delta time between frames -- to be passed into all update functions from here.
-	float deltaTime = clock.restart().asMilliseconds();
+	float deltaTime = (float)clock.restart().asMilliseconds();
 	sf::Clock deltaClock;
 
 	//enable vsync

@@ -9,17 +9,22 @@ Button::~Button()
 {
 }
 
-Button::Button(void (*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor, float a_OutlineThickness, std::string a_TextString)
+Button::Button(	void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+				sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize)
 {
 	m_RS = sf::RectangleShape(a_Size);
-	m_RS.setOrigin(Vector2f(a_Size.x / 2, a_Size.y / 2));
 	m_RS.setPosition(a_Position);
 	m_RS.setFillColor(a_FillColor);
 	m_RS.setOutlineColor(a_FillColor);
 	m_RS.setOutlineThickness(a_OutlineThickness);
+	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
 	ButtonPressEvent = a_ButtonPressEvent;
 
 	//text
+	m_Text.setFont(a_Font);
+	m_Text.setCharacterSize(a_CharacterSize);
+	m_Text.setColor(sf::Color::White);
+	m_Text.setStyle(sf::Text::Bold);
 	SetText(a_TextString);
 }
 
@@ -42,6 +47,7 @@ void Button::Update(float a_DeltaTime)
 	if (OnMouseRelease)
 	{
 		//activate()
+		if (ButtonPressEvent != NULL)
 		(*ButtonPressEvent)();
 		WaitingForRelease = false;
 	}
@@ -52,7 +58,7 @@ void Button::Update(float a_DeltaTime)
 bool Button::IsMouseInRect()
 {
 	Vector2f rs_pos = m_RS.getPosition();
-	sf::Vector2i rs_half_size = sf::Vector2i((m_RS.getSize().x / 2), (m_RS.getSize().y / 2));
+	sf::Vector2i rs_half_size = sf::Vector2i((int)(m_RS.getSize().x * 0.5f), (int)(m_RS.getSize().y * 0.5f));
 	return (Math::AABB(	Vector2f(rs_pos.x - rs_half_size.x, rs_pos.y - rs_half_size.y),
 						Vector2f(rs_pos.x + rs_half_size.x, rs_pos.y + rs_half_size.y),
 						sf::Mouse::getPosition(*g_WINDOW)));
@@ -62,7 +68,7 @@ bool Button::IsMouseInRect()
 void Button::SetText(std::string a_TextString)
 {
 	m_Text.setString(a_TextString);
-	m_Text.setOrigin(sf::Vector2f(m_Text.getGlobalBounds().width / 2.0f, m_Text.getGlobalBounds().height / 2.0f));
+	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width / 2.0f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height / 2.0f));
 	m_Text.setPosition(m_RS.getPosition());
 }
 

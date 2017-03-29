@@ -1,6 +1,9 @@
 /*Math.h generated on Sat 02/18/2017 at 20:42:59.39*/
 #include <SFML\System.hpp>
 
+#include <sstream>
+#include <iomanip>
+
 class Math
 {
 public:
@@ -35,5 +38,13 @@ public:
 	static T Min(T a, T b)
 	{
 		return a <= b ? a : b;
+	}
+
+	template <typename T>
+	static std::string to_string_with_precision(const T a_value, const int n = 0)
+	{
+		std::ostringstream out;
+		out << std::setprecision(n) << a_value;
+		return out.str();
 	}
 };

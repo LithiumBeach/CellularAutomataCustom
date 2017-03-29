@@ -7,6 +7,8 @@ extern const int WINDOW_SIZE_Y = 650;
 bool TileScene2D::s_IsSimulating = false;
 Button TileScene2D::m_IncreasePlaybackSpeedButton = Button();
 Button TileScene2D::m_DecreasePlaybackSpeedButton = Button();
+Button TileScene2D::m_FPSButton = Button();
+float TileScene2D::FramesPerSecond = 1.0f / 16.0f;
 
 int playbackSpeedsIndex = 5;
 const int s_PlaybackSpeedsLen = 12;
@@ -14,6 +16,12 @@ float s_PlaybackSpeeds[s_PlaybackSpeedsLen] = { 1.0f, 2.0f, 4.0f, 8.0f, 10.0f, 1
 
 TileScene2D::TileScene2D()
 {
+	m_DefaultFont = new sf::Font();
+	if (!m_DefaultFont->loadFromFile("../assets/arial.ttf"))
+	{
+		printf("\n\n!nerror loading font!\n\n");
+	}
+
 	m_Cells = std::vector<std::vector<Cell>>();
 	m_Cells.resize(BoardTileSize);
 
@@ -76,9 +84,10 @@ void TileScene2D::InitializeUI()
 	HandlePlaybackSpeedIncButtonPressEvent_ptr = HandlePlaybackSpeedIncButtonPressEvent;
 	HandlePlaybackSpeedDecButtonPressEvent_ptr = HandlePlaybackSpeedDecButtonPressEvent;
 
-	m_SimulateButton =	Button(HandleSimulateButtonPressEvent_ptr, Vector2f(100, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10));
-	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(32, 32), Vector2f(50, WINDOW_SIZE_Y - 64), sf::Color(0, 255, 0), sf::Color(10, 10, 10), 2.0f, "+");
-	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(32, 32), Vector2f(50, WINDOW_SIZE_Y - 32), sf::Color(255, 0, 0), sf::Color(10, 10, 10), 2.0f, "-");
+	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(160, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "SIMULATE");
+	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(32, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 125), sf::Color(0, 255, 0), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "FPS+");
+	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(32, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 75), sf::Color(255, 0, 0), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "FPS-");
+	m_FPSButton = Button(NULL, Vector2f(0, 0), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 100), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *m_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
 }
 
 void TileScene2D::HandleSimulateButtonPressEvent()
@@ -87,21 +96,23 @@ void TileScene2D::HandleSimulateButtonPressEvent()
 	printf("\nsimulating?: %d", s_IsSimulating);
 }
 
-static float FramesPerSecond = 1.0f / 16.0f;
-
 void TileScene2D::HandlePlaybackSpeedIncButtonPressEvent()
 {
 	playbackSpeedsIndex++;
 	playbackSpeedsIndex = Math::Min(playbackSpeedsIndex, s_PlaybackSpeedsLen - 1);
 	FramesPerSecond = 1.0f / s_PlaybackSpeeds[playbackSpeedsIndex];
-	printf("\nFPS: %f", FramesPerSecond);
+	UpdateFPSCounter();
 }
 void TileScene2D::HandlePlaybackSpeedDecButtonPressEvent()
 {
 	playbackSpeedsIndex--;
 	playbackSpeedsIndex = Math::Max(playbackSpeedsIndex, 0);
 	FramesPerSecond = 1.0f / s_PlaybackSpeeds[playbackSpeedsIndex];
-	printf("\nFPS: %f", FramesPerSecond);
+	UpdateFPSCounter();
+}
+void TileScene2D::UpdateFPSCounter()
+{
+	m_FPSButton.SetText(Math::to_string_with_precision(1.0f / FramesPerSecond));
 }
 
 float fpsCountPre = 0.0f;
@@ -148,6 +159,7 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_SimulateButton.Update(a_DeltaTime);
 	m_IncreasePlaybackSpeedButton.Update(a_DeltaTime);
 	m_DecreasePlaybackSpeedButton.Update(a_DeltaTime);
+	m_FPSButton.Update(a_DeltaTime);
 }
 
 float fpsCountPost = 0.0f;
@@ -187,8 +199,8 @@ void TileScene2D::Update(float a_DeltaTime)
 	//quick mouse input -- @TODO: check bounds of mouse.
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasMousePressed)
 	{
-		float x = (int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize);
-		float y = (int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize);
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
 		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
 		{
 			m_Cells[(unsigned int)x][(unsigned int)y].ToggleAliveImmediate();
@@ -230,4 +242,5 @@ void TileScene2D::Draw()
 	m_SimulateButton.Draw();
 	m_IncreasePlaybackSpeedButton.Draw();
 	m_DecreasePlaybackSpeedButton.Draw();
+	m_FPSButton.Draw();
 }
