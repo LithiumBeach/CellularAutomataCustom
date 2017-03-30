@@ -10,12 +10,12 @@ Button::~Button()
 }
 
 Button::Button(	void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
-				sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize)
+				sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
 {
 	m_RS = sf::RectangleShape(a_Size);
 	m_RS.setPosition(a_Position);
 	m_RS.setFillColor(a_FillColor);
-	m_RS.setOutlineColor(a_FillColor);
+	m_RS.setOutlineColor(a_OutlineColor);
 	m_RS.setOutlineThickness(a_OutlineThickness);
 	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
 	ButtonPressEvent = a_ButtonPressEvent;
@@ -23,7 +23,7 @@ Button::Button(	void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Positio
 	//text
 	m_Text.setFont(a_Font);
 	m_Text.setCharacterSize(a_CharacterSize);
-	m_Text.setColor(sf::Color::White);
+	m_Text.setColor(a_TextColor);
 	m_Text.setStyle(sf::Text::Bold);
 	SetText(a_TextString);
 }

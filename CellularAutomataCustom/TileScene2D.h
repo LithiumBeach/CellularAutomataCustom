@@ -42,7 +42,7 @@ private:// min/max are INCLUSIVE -- return TRUE when conditions are met
 	}
 
 private:
-	std::vector<std::vector<Cell>> m_Cells;
+	static std::vector<std::vector<Cell>> s_Cells;
 
 private:
 	bool m_WasMousePressed;
@@ -53,6 +53,7 @@ public:
 
 public:
 	static bool s_IsSimulating;
+	static bool s_IsPaused;
 private:
 	bool m_WasSpacePressed;
 
@@ -62,7 +63,11 @@ private:
 	Button m_SimulateButton;
 	static Button m_IncreasePlaybackSpeedButton;
 	static Button m_DecreasePlaybackSpeedButton;
+
+	//really just text
 	static Button m_FPSButton;
+
+	static Button m_NextFrameButton;
 public:
 	static void HandleSimulateButtonPressEvent();
 	void (*HandleSimulateButtonPressEvent_ptr)();
@@ -72,6 +77,11 @@ public:
 	void(*HandlePlaybackSpeedIncButtonPressEvent_ptr)();
 	static void HandlePlaybackSpeedDecButtonPressEvent();
 	void(*HandlePlaybackSpeedDecButtonPressEvent_ptr)();
+	
+	//Next/Previous Frame
+	static void HandleNextFrameButtonPressEvent();
+	void(*HandleNextFrameButtonPressEvent_ptr)();
+
 private:
 	static void UpdateFPSCounter();
 public:

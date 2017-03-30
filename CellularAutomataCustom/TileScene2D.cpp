@@ -7,8 +7,12 @@ extern const int WINDOW_SIZE_Y = 650;
 bool TileScene2D::s_IsSimulating = false;
 Button TileScene2D::m_IncreasePlaybackSpeedButton = Button();
 Button TileScene2D::m_DecreasePlaybackSpeedButton = Button();
+
 Button TileScene2D::m_FPSButton = Button();
 float TileScene2D::FramesPerSecond = 1.0f / 16.0f;
+
+Button TileScene2D::m_NextFrameButton = Button();
+std::vector<std::vector<Cell>> TileScene2D::s_Cells;
 
 int playbackSpeedsIndex = 5;
 const int s_PlaybackSpeedsLen = 12;
@@ -21,52 +25,50 @@ TileScene2D::TileScene2D()
 	{
 		printf("\n\n!nerror loading font!\n\n");
 	}
-
-	m_Cells = std::vector<std::vector<Cell>>();
-	m_Cells.resize(BoardTileSize);
-
+	s_Cells = std::vector<std::vector<Cell>>();
+	s_Cells.resize(BoardTileSize);
 
 	for (int i = 0; i < BoardTileSize; i++)
 	{
-		m_Cells[i].resize(BoardTileSize);
+		s_Cells[i].resize(BoardTileSize);
 	}
 
 	for (int y = 0; y < BoardTileSize; y++)
 	{
 		for (int x = 0; x < BoardTileSize; x++)
 		{
-			m_Cells[x][y] = Cell(false, Vector2f((float)x, (float)y), Vector2f(TilePixelSize, TilePixelSize));
-			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
+			s_Cells[x][y] = Cell(false, Vector2f((float)x, (float)y), Vector2f(TilePixelSize, TilePixelSize));
+			//printf("%d,%d|", (int)s_Cells[x][y].GetTilePos().x, (int)s_Cells[x][y].GetTilePos().y);//works :)
 		}
 		//printf("\n");
 	}
 
 	//line
-	//m_Cells[3][5].SetAliveImmediate(true);//works :)
-	//m_Cells[4][5].SetAliveImmediate(true);//works :)
-	//m_Cells[5][5].SetAliveImmediate(true);//works :)
+	//s_Cells[3][5].SetAliveImmediate(true);//works :)
+	//s_Cells[4][5].SetAliveImmediate(true);//works :)
+	//s_Cells[5][5].SetAliveImmediate(true);//works :)
 
 	//r-pentomino
-	//m_Cells[11][10].SetAliveImmediate(true);//works :)
-	//m_Cells[12][11].SetAliveImmediate(true);//works :)
-	//m_Cells[10][12].SetAliveImmediate(true);//works :)
-	//m_Cells[11][12].SetAliveImmediate(true);//works :)
-	//m_Cells[12][12].SetAliveImmediate(true);//works :)
+	//s_Cells[11][10].SetAliveImmediate(true);//works :)
+	//s_Cells[12][11].SetAliveImmediate(true);//works :)
+	//s_Cells[10][12].SetAliveImmediate(true);//works :)
+	//s_Cells[11][12].SetAliveImmediate(true);//works :)
+	//s_Cells[12][12].SetAliveImmediate(true);//works :)
 
 
 	//reverse r-pentomino
-	m_Cells[11][10].SetAliveImmediate(true);//works :)
-	m_Cells[10][11].SetAliveImmediate(true);//works :)
-	m_Cells[12][12].SetAliveImmediate(true);//works :)
-	m_Cells[11][12].SetAliveImmediate(true);//works :)
-	m_Cells[10][12].SetAliveImmediate(true);//works :)
+	s_Cells[11][10].SetAliveImmediate(true);//works :)
+	s_Cells[10][11].SetAliveImmediate(true);//works :)
+	s_Cells[12][12].SetAliveImmediate(true);//works :)
+	s_Cells[11][12].SetAliveImmediate(true);//works :)
+	s_Cells[10][12].SetAliveImmediate(true);//works :)
 
 	//works :)
 	//for (int y = 0; y < BoardTileSize; y++)
 	//{
 	//	for (int x = 0; x < BoardTileSize; x++)
 	//	{
-	//		printf("%d|", (int)m_Cells[x][y].IsAlive());
+	//		printf("%d|", (int)s_Cells[x][y].IsAlive());
 	//	}
 	//	printf("\n");
 	//}
@@ -78,22 +80,24 @@ TileScene2D::~TileScene2D()
 {
 }
 
+const sf::Color gray = sf::Color(30, 30, 30);
+const sf::Color border_gray = sf::Color(200, 200, 200);
 void TileScene2D::InitializeUI()
 {
 	HandleSimulateButtonPressEvent_ptr = HandleSimulateButtonPressEvent;
 	HandlePlaybackSpeedIncButtonPressEvent_ptr = HandlePlaybackSpeedIncButtonPressEvent;
 	HandlePlaybackSpeedDecButtonPressEvent_ptr = HandlePlaybackSpeedDecButtonPressEvent;
+	HandleNextFrameButtonPressEvent_ptr = HandleNextFrameButtonPressEvent;
 
-	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(160, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), sf::Color(100, 100, 255), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "SIMULATE");
-	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(32, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 125), sf::Color(0, 255, 0), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "FPS+");
-	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(32, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 75), sf::Color(255, 0, 0), sf::Color(10, 10, 10), *m_DefaultFont, 2.0f, "FPS-");
+	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(160, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), gray, border_gray, *m_DefaultFont, 2.0f, "SIMULATE");
+	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 125), gray, border_gray, *m_DefaultFont, 2.0f, "FPS+");
+	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 75), gray, border_gray, *m_DefaultFont, 2.0f, "FPS-");
 	m_FPSButton = Button(NULL, Vector2f(0, 0), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 100), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *m_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
 }
 
 void TileScene2D::HandleSimulateButtonPressEvent()
 {
 	s_IsSimulating = !(s_IsSimulating);
-	printf("\nsimulating?: %d", s_IsSimulating);
 }
 
 void TileScene2D::HandlePlaybackSpeedIncButtonPressEvent()
@@ -110,49 +114,62 @@ void TileScene2D::HandlePlaybackSpeedDecButtonPressEvent()
 	FramesPerSecond = 1.0f / s_PlaybackSpeeds[playbackSpeedsIndex];
 	UpdateFPSCounter();
 }
+
 void TileScene2D::UpdateFPSCounter()
 {
 	m_FPSButton.SetText(Math::to_string_with_precision(1.0f / FramesPerSecond));
+}
+
+void TileScene2D::HandleNextFrameButtonPressEvent()
+{
+
 }
 
 float fpsCountPre = 0.0f;
 int numWaitFramesPre = 0;
 void TileScene2D::PreUpdate(float a_DeltaTime)
 {
-	fpsCountPre += a_DeltaTime;
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !m_WasSpacePressed)
-	if (fpsCountPre > FramesPerSecond)
+	if (s_IsSimulating)
 	{
-		for (int y = 0; y < BoardTileSize; y++)
+		fpsCountPre += a_DeltaTime;
+
+		if (fpsCountPre > FramesPerSecond)
 		{
-			for (int x = 0; x < BoardTileSize; x++)
+			for (int y = 0; y < BoardTileSize; y++)
 			{
-				int liveNeighborCount = GetLiveNeighborsAroundIndex(x, y);
-				bool shouldBeAlive = false;
-
-				//RULES:
-				if (m_Cells[x][y].IsAlive())
+				for (int x = 0; x < BoardTileSize; x++)
 				{
-					shouldBeAlive = liveNeighborCount >= 2 && liveNeighborCount <= 3;
-				}
-				else
-				{
-					shouldBeAlive = liveNeighborCount == 3;
-				}
+					int liveNeighborCount = GetLiveNeighborsAroundIndex(x, y);
+					bool shouldBeAlive = false;
+
+					//RULES  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					if (s_Cells[x][y].IsAlive())
+					{
+						shouldBeAlive = liveNeighborCount >= 2 && liveNeighborCount <= 3;
+					}
+					else
+					{
+						shouldBeAlive = liveNeighborCount == 3;
+					}
 
 
-				m_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
+					s_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
+				}
 			}
+
+			while (fpsCountPre > FramesPerSecond)
+			{
+				fpsCountPre -= FramesPerSecond;
+			}
+			numWaitFramesPre = 0;
+
+			//call Update from here...
+			Update(a_DeltaTime);
 		}
-		while (fpsCountPre > FramesPerSecond)
+		else
 		{
-			fpsCountPre -= FramesPerSecond;
+			numWaitFramesPre++;
 		}
-		numWaitFramesPre = 0;
-	}
-	else
-	{
-		numWaitFramesPre++;
 	}
 
 	//BUTTON UPDATE
@@ -160,6 +177,7 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_IncreasePlaybackSpeedButton.Update(a_DeltaTime);
 	m_DecreasePlaybackSpeedButton.Update(a_DeltaTime);
 	m_FPSButton.Update(a_DeltaTime);
+	m_NextFrameButton.Update(a_DeltaTime);
 }
 
 float fpsCountPost = 0.0f;
@@ -176,7 +194,7 @@ void TileScene2D::Update(float a_DeltaTime)
 			{
 				for (int x = 0; x < BoardTileSize; x++)
 				{
-					m_Cells[x][y].Update(a_DeltaTime);
+					s_Cells[x][y].Update(a_DeltaTime);
 
 				}
 			}
@@ -203,7 +221,7 @@ void TileScene2D::Update(float a_DeltaTime)
 		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
 		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
 		{
-			m_Cells[(unsigned int)x][(unsigned int)y].ToggleAliveImmediate();
+			s_Cells[(unsigned int)x][(unsigned int)y].ToggleAliveImmediate();
 		}
 	}
 
@@ -221,7 +239,7 @@ int TileScene2D::GetLiveNeighborsAroundIndex(int x, int y)
 		{
 			if (j == 0 && i == 0){ continue; }
 
-			nCount += m_Cells[Math::mod((x + i), BoardTileSize)][Math::mod((y + j), BoardTileSize)].IsAlive();
+			nCount += s_Cells[Math::mod((x + i), BoardTileSize)][Math::mod((y + j), BoardTileSize)].IsAlive();
 		}
 
 	}
@@ -234,7 +252,7 @@ void TileScene2D::Draw()
 	{
 		for (int x = 0; x < BoardTileSize; x++)
 		{
-			m_Cells[x][y].Draw();
+			s_Cells[x][y].Draw();
 
 		}
 	}
@@ -243,4 +261,5 @@ void TileScene2D::Draw()
 	m_IncreasePlaybackSpeedButton.Draw();
 	m_DecreasePlaybackSpeedButton.Draw();
 	m_FPSButton.Draw();
+	m_NextFrameButton.Draw();
 }

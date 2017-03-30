@@ -18,7 +18,7 @@ void SceneManager::PreUpdate(double a_DeltaTime)
 
 void SceneManager::Update(double a_DeltaTime)
 {
-	m_TileScene2d->Update((float)a_DeltaTime);
+	//m_TileScene2d->Update((float)a_DeltaTime);
 }
 
 void SceneManager::Draw()
