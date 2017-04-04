@@ -9,7 +9,7 @@ Button::~Button()
 {
 }
 
-Button::Button(	void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+Button::Button(	std::function<void()> a_ButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 				sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
 {
 	m_RS = sf::RectangleShape(a_Size);
@@ -48,7 +48,7 @@ void Button::Update(float a_DeltaTime)
 	{
 		//activate()
 		if (ButtonPressEvent != NULL)
-		(*ButtonPressEvent)();
+			ButtonPressEvent();
 		WaitingForRelease = false;
 	}
 

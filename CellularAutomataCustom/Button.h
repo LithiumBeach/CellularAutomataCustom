@@ -7,6 +7,7 @@
 #include <SFML\Graphics\Text.hpp>
 #include <SFML\Window\Mouse.hpp>
 #include <stdio.h>
+#include <functional>
 
 extern sf::RenderWindow* g_WINDOW;
 
@@ -17,7 +18,7 @@ public:
 	typedef sf::Color Color;
 public:
 	Button();
-	Button(void(*a_ButtonPressEvent)(), Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+	Button(std::function<void()> a_ButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 				sf::Font& a_Font, float a_OutlineThickness = 2.0f, std::string a_TextString = "", int a_CharacterSize = 12,
 				Color a_TextColor = Color::White);
    ~Button();
@@ -42,7 +43,7 @@ private:
 
 public:
 	//ButtonPressEvent = yourfunctiondotcom()
-	void (*ButtonPressEvent)();
+	std::function<void()> ButtonPressEvent;
 
 private:
 	bool m_WasMouseDown = false;

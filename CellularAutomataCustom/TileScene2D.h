@@ -7,7 +7,7 @@
 #include "Button.h"
 
 #include <vector>
-#include <SFML\Graphics\RectangleShape.hpp>
+#include <functional>
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
 #include <SFML\Graphics\Font.hpp>
@@ -42,7 +42,7 @@ private:// min/max are INCLUSIVE -- return TRUE when conditions are met
 	}
 
 private:
-	static std::vector<std::vector<Cell>> s_Cells;
+	std::vector<std::vector<Cell>> m_Cells;
 
 private:
 	bool m_WasMousePressed;
@@ -52,8 +52,8 @@ public:
 	int BoardTileSize = 50;
 
 public:
-	static bool s_IsSimulating;
-	static bool s_IsPaused;
+	bool m_IsSimulating;
+	bool m_IsPaused;
 private:
 	bool m_WasSpacePressed;
 
@@ -61,32 +61,40 @@ private:
 	//Interface elements
 	void InitializeUI();
 	Button m_SimulateButton;
-	static Button m_IncreasePlaybackSpeedButton;
-	static Button m_DecreasePlaybackSpeedButton;
+	Button m_IncreasePlaybackSpeedButton;
+	Button m_DecreasePlaybackSpeedButton;
 
 	//really just text
-	static Button m_FPSButton;
+	Button m_FPSButton;
 
-	static Button m_NextFrameButton;
+	Button m_NextFrameButton;
 public:
-	static void HandleSimulateButtonPressEvent();
-	void (*HandleSimulateButtonPressEvent_ptr)();
+	void HandleSimulateButtonPressEvent();
+	std::function<void()> HandleSimulateButtonPressEvent_ptr;
+
+	std::function<void()> DoNothing_ptr;
+	void DoNothing();
 
 	//Playback Speed + / -
-	static void HandlePlaybackSpeedIncButtonPressEvent();
-	void(*HandlePlaybackSpeedIncButtonPressEvent_ptr)();
-	static void HandlePlaybackSpeedDecButtonPressEvent();
-	void(*HandlePlaybackSpeedDecButtonPressEvent_ptr)();
+	void HandlePlaybackSpeedIncButtonPressEvent();
+	std::function<void()> HandlePlaybackSpeedIncButtonPressEvent_ptr;
+	void HandlePlaybackSpeedDecButtonPressEvent();
+	std::function<void()> HandlePlaybackSpeedDecButtonPressEvent_ptr;
 	
 	//Next/Previous Frame
-	static void HandleNextFrameButtonPressEvent();
-	void(*HandleNextFrameButtonPressEvent_ptr)();
+	void HandleNextFrameButtonPressEvent();
+	std::function<void()> HandleNextFrameButtonPressEvent_ptr;
 
 private:
-	static void UpdateFPSCounter();
+	void UpdateFPSCounter();
 public:
-	static float FramesPerSecond;
+	float FramesPerSecond;
 	sf::Font* m_DefaultFont;
+
+public:
+	int m_PlaybackSpeedsLen;
+	int playbackSpeedsIndex;
+	float* m_PlaybackSpeeds;
 };
 
 #endif
