@@ -99,6 +99,7 @@ void TileScene2D::InitializeUI()
 	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 125), gray, border_gray, *m_DefaultFont, 2.0f, "FPS+");
 	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 75), gray, border_gray, *m_DefaultFont, 2.0f, "FPS-");
 	m_FPSButton = Button(DoNothing_ptr, Vector2f(0, 0), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 100), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *m_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
+	m_NextFrameButton = Button(HandleNextFrameButtonPressEvent_ptr, Vector2f(64, 24), Vector2f(WINDOW_SIZE_X / 1.3f, WINDOW_SIZE_Y - 125), gray, border_gray, *m_DefaultFont, 2.0f, "Frame+");
 }
 void TileScene2D::DoNothing(){}
 
@@ -129,7 +130,8 @@ void TileScene2D::UpdateFPSCounter()
 
 void TileScene2D::HandleNextFrameButtonPressEvent()
 {
-
+	PreUpdateUnmanaged();
+	UpdateUnmanaged(0.0f);
 }
 
 float fpsCountPre = 0.0f;
@@ -142,42 +144,22 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 
 		if (fpsCountPre > FramesPerSecond)
 		{
-			for (int y = 0; y < BoardTileSize; y++)
-			{
-				for (int x = 0; x < BoardTileSize; x++)
-				{
-					int liveNeighborCount = GetLiveNeighborsAroundIndex(x, y);
-					bool shouldBeAlive = false;
-
-					//RULES  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					if (m_Cells[x][y].IsAlive())
-					{
-						shouldBeAlive = liveNeighborCount >= 2 && liveNeighborCount <= 3;
-					}
-					else
-					{
-						shouldBeAlive = liveNeighborCount == 3;
-					}
-
-
-					m_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
-				}
-			}
+			PreUpdateUnmanaged();
 
 			while (fpsCountPre > FramesPerSecond)
 			{
 				fpsCountPre -= FramesPerSecond;
 			}
 			numWaitFramesPre = 0;
-
-			//call Update from here...
-			Update(a_DeltaTime);
 		}
 		else
 		{
 			numWaitFramesPre++;
 		}
 	}
+
+	//call Update from here...
+	Update(a_DeltaTime);
 
 	//BUTTON UPDATE
 	m_SimulateButton.Update(a_DeltaTime);
@@ -186,6 +168,32 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_FPSButton.Update(a_DeltaTime);
 	m_NextFrameButton.Update(a_DeltaTime);
 }
+
+void TileScene2D::PreUpdateUnmanaged()
+{
+	for (int y = 0; y < BoardTileSize; y++)
+	{
+		for (int x = 0; x < BoardTileSize; x++)
+		{
+			int liveNeighborCount = GetLiveNeighborsAroundIndex(x, y);
+			bool shouldBeAlive = false;
+
+			//RULES  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			if (m_Cells[x][y].IsAlive())
+			{
+				shouldBeAlive = liveNeighborCount >= 2 && liveNeighborCount <= 3;
+			}
+			else
+			{
+				shouldBeAlive = liveNeighborCount == 3;
+			}
+
+
+			m_Cells[x][y].SetAliveNextFrame(shouldBeAlive);
+		}
+	}
+}
+
 
 float fpsCountPost = 0.0f;
 int numWaitFramesPost = 0;
@@ -197,14 +205,7 @@ void TileScene2D::Update(float a_DeltaTime)
 		fpsCountPost += a_DeltaTime;
 		if (fpsCountPost > FramesPerSecond)
 		{
-			for (int y = 0; y < BoardTileSize; y++)
-			{
-				for (int x = 0; x < BoardTileSize; x++)
-				{
-					m_Cells[x][y].Update(a_DeltaTime);
-
-				}
-			}
+			UpdateUnmanaged(a_DeltaTime);
 
 			while (fpsCountPost > FramesPerSecond)
 			{
@@ -222,19 +223,40 @@ void TileScene2D::Update(float a_DeltaTime)
 
 
 	//quick mouse input -- @TODO: check bounds of mouse.
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasMousePressed)
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize));
 		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
 		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
 		{
-			m_Cells[(unsigned int)x][(unsigned int)y].ToggleAliveImmediate();
+			m_Cells[(unsigned int)x][(unsigned int)y].SetAliveImmediate(true);
+		}
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+	{
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
+		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
+		{
+			m_Cells[(unsigned int)x][(unsigned int)y].SetAliveImmediate(false);
 		}
 	}
 
 	//input mgr...
 	m_WasMousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
 	m_WasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+}
+
+void TileScene2D::UpdateUnmanaged(float a_DeltaTime)
+{
+	for (int y = 0; y < BoardTileSize; y++)
+	{
+		for (int x = 0; x < BoardTileSize; x++)
+		{
+			m_Cells[x][y].Update(a_DeltaTime);
+
+		}
+	}
 }
 
 int TileScene2D::GetLiveNeighborsAroundIndex(int x, int y)

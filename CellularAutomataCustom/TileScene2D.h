@@ -22,7 +22,9 @@ public:
 
 public:
 	void PreUpdate(float a_DeltaTime);
+	void PreUpdateUnmanaged();
 	void Update(float a_DeltaTime);
+	void UpdateUnmanaged(float a_DeltaTime);
 	void Draw();
 
 	//Rules of Life (subject to change)
