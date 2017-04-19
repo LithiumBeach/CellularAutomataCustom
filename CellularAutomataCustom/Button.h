@@ -1,6 +1,5 @@
 /*Button.h generated on Sat 03/04/2017 at 20:28:38.56*/
-#ifndef BUTTON_H
-#define BUTTON_H
+#pragma once
 
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
@@ -17,11 +16,23 @@ public:
 	typedef sf::Vector2f Vector2f;
 	typedef sf::Color Color;
 public:
-	Button();
-	Button(std::function<void()> a_ButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+	Button(){
+	};
+	Button(const std::function<void()> a_ButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 				sf::Font& a_Font, float a_OutlineThickness = 2.0f, std::string a_TextString = "", int a_CharacterSize = 12,
 				Color a_TextColor = Color::White);
-   ~Button();
+
+	void SetButtonPressEvent(const std::function<void()> a_ButtonPressEvent);
+	Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+		sf::Font& a_Font, float a_OutlineThickness = 2.0f, std::string a_TextString = "", int a_CharacterSize = 12,
+		Color a_TextColor = Color::White);
+
+	~Button();
+
+public:
+	//use this for initialization lol fuck you
+	//ButtonPressEvent = yourfunctiondotcom()
+	std::function<void()> ButtonPressEvent;
 
 public:
    void Update(float a_DeltaTime);
@@ -40,11 +51,6 @@ private:
    //if the mouse press was within the bounds of the button, we will wait for it to be released to fire the event.
    //as god intended.
    bool WaitingForRelease = false;
-
-public:
-	//ButtonPressEvent = yourfunctiondotcom()
-	std::function<void()> ButtonPressEvent;
-
 private:
 	bool m_WasMouseDown = false;
 
@@ -57,6 +63,8 @@ private:
 	sf::Text m_Text;
 public:
 	void SetText(std::string a_TextString);
+
+	void SetPosition(sf::Vector2f a_pos);
 };
  
-#endif
+

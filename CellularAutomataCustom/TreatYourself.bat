@@ -10,8 +10,7 @@ echo %fnUPPER%
 
 ::write stuff into .h
 echo /*%fn%.h generated on %date% at %time%*/>> %fn%.h
-echo #ifndef %fnUPPER%_H>> %fn%.h
-echo #define %fnUPPER%_H>> %fn%.h
+echo #pragma once>> %fn%.h
 echo.>> %fn%.h
 echo #include ^<SFML\Graphics\RenderWindow.hpp^>>> %fn%.h
 echo.>> %fn%.h
@@ -53,5 +52,3 @@ echo {>> %fn%.cpp
 echo.    >> %fn%.cpp
 echo }>> %fn%.cpp
 echo.>> %fn%.cpp
-echo.>> %fn%.cpp
-echo #endif>> %fn%.h

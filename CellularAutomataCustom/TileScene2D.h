@@ -1,16 +1,14 @@
 /*TileScene2D.h generated on Thu 02/16/2017 at 19:38:13.76*/
-#ifndef TILESCENE2D_H
-#define TILESCENE2D_H
+#pragma once
 
 #include "TileArray.h"
 #include "Cell.h"
-#include "Button.h"
+#include "Rule.h"
 
 #include <vector>
 #include <functional>
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
-#include <SFML\Graphics\Font.hpp>
 
 class TileScene2D
 {
@@ -62,6 +60,8 @@ private:
 private:
 	//Interface elements
 	void InitializeUI();
+	void IntializeRules();
+
 	Button m_SimulateButton;
 	Button m_IncreasePlaybackSpeedButton;
 	Button m_DecreasePlaybackSpeedButton;
@@ -91,12 +91,14 @@ private:
 	void UpdateFPSCounter();
 public:
 	float FramesPerSecond;
-	sf::Font* m_DefaultFont;
 
 public:
 	int m_PlaybackSpeedsLen;
 	int playbackSpeedsIndex;
 	float* m_PlaybackSpeeds;
+
+	//RULE INTERFACE
+public:
+	std::vector<Rule*>* m_Rules;
 };
 
-#endif

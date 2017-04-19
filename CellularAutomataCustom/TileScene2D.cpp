@@ -1,8 +1,7 @@
 #include "TileScene2D.h"
+#include "StaticNamespaces.h"
 
 extern sf::RenderWindow* g_WINDOW;
-extern const int WINDOW_SIZE_X = 500;
-extern const int WINDOW_SIZE_Y = 650;
 
 TileScene2D::TileScene2D()
 {
@@ -18,13 +17,6 @@ TileScene2D::TileScene2D()
 	FramesPerSecond = 1.0f / m_PlaybackSpeeds[playbackSpeedsIndex];
 
 	m_NextFrameButton = Button();
-
-	m_DefaultFont = new sf::Font();
-	if (!m_DefaultFont->loadFromFile("../assets/arial.ttf"))
-	{
-		printf("\n\n!nerror loading font!\n\n");
-	}
-
 
 	m_Cells = std::vector<std::vector<Cell>>();
 	m_Cells.resize(BoardTileSize);
@@ -79,14 +71,13 @@ TileScene2D::TileScene2D()
 	//}
 
 	InitializeUI();
+	IntializeRules();
 }
 
 TileScene2D::~TileScene2D()
 {
 }
 
-const sf::Color gray = sf::Color(30, 30, 30);
-const sf::Color border_gray = sf::Color(200, 200, 200);
 void TileScene2D::InitializeUI()
 {
 	HandleSimulateButtonPressEvent_ptr = std::bind(&TileScene2D::HandleSimulateButtonPressEvent, this);
@@ -95,12 +86,20 @@ void TileScene2D::InitializeUI()
 	HandleNextFrameButtonPressEvent_ptr = std::bind(&TileScene2D::HandleNextFrameButtonPressEvent, this);
 	DoNothing_ptr = std::bind(&TileScene2D::DoNothing, this);
 
-	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(160, 20), Vector2f(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y - 100), gray, border_gray, *m_DefaultFont, 2.0f, "SIMULATE");
-	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 125), gray, border_gray, *m_DefaultFont, 2.0f, "FPS+");
-	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(36, 24), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 75), gray, border_gray, *m_DefaultFont, 2.0f, "FPS-");
-	m_FPSButton = Button(DoNothing_ptr, Vector2f(0, 0), Vector2f(WINDOW_SIZE_X / 4, WINDOW_SIZE_Y - 100), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *m_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
-	m_NextFrameButton = Button(HandleNextFrameButtonPressEvent_ptr, Vector2f(64, 24), Vector2f(WINDOW_SIZE_X / 1.3f, WINDOW_SIZE_Y - 125), gray, border_gray, *m_DefaultFont, 2.0f, "Frame+");
+	m_SimulateButton = Button(HandleSimulateButtonPressEvent_ptr, Vector2f(160, 20), Vector2f((float)(caSizes::WINDOW_SIZE_X / 2), (float)(caSizes::WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
+	m_IncreasePlaybackSpeedButton = Button(HandlePlaybackSpeedIncButtonPressEvent_ptr, Vector2f(36, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS+");
+	m_DecreasePlaybackSpeedButton = Button(HandlePlaybackSpeedDecButtonPressEvent_ptr, Vector2f(36, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 75)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS-");
+	m_FPSButton = Button(DoNothing_ptr, Vector2f(0, 0), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 100)), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *caFonts::s_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
+	m_NextFrameButton = Button(HandleNextFrameButtonPressEvent_ptr, Vector2f(64, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 1.3f), (float)(caSizes::WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Frame+");
 }
+
+void TileScene2D::IntializeRules()
+{
+	m_Rules = new std::vector<Rule*>();
+	m_Rules->push_back(new Rule(2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
+
+}
+
 void TileScene2D::DoNothing(){}
 
 void TileScene2D::HandleSimulateButtonPressEvent()
@@ -167,6 +166,10 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_DecreasePlaybackSpeedButton.Update(a_DeltaTime);
 	m_FPSButton.Update(a_DeltaTime);
 	m_NextFrameButton.Update(a_DeltaTime);
+	for (size_t i = 0; i < m_Rules->size(); i++)
+	{
+		m_Rules->at(i)->Update(a_DeltaTime);
+	}
 }
 
 void TileScene2D::PreUpdateUnmanaged()
@@ -218,8 +221,6 @@ void TileScene2D::Update(float a_DeltaTime)
 	{
 		numWaitFramesPost++;
 	}
-
-
 
 
 	//quick mouse input -- @TODO: check bounds of mouse.
@@ -291,4 +292,10 @@ void TileScene2D::Draw()
 	m_DecreasePlaybackSpeedButton.Draw();
 	m_FPSButton.Draw();
 	m_NextFrameButton.Draw();
+
+
+	for (size_t i = 0; i < m_Rules->size(); i++)
+	{
+		m_Rules->at(i)->Draw();
+	}
 }

@@ -1,6 +1,5 @@
 /*SceneManager.h generated on Thu 02/16/2017 at 19:38:46.26*/
-#ifndef SCENEMANAGER_H
-#define SCENEMANAGER_H
+#pragma once
 
 #include "TileScene2D.h"
 
@@ -20,4 +19,3 @@ private:
 
 };
 
-#endif

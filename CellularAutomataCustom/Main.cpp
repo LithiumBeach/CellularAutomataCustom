@@ -1,9 +1,12 @@
 #include "Main.h"
+#include "StaticNamespaces.h"
 
 void main()
 {
 	//create our rendering window
 	g_WINDOW = new sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), DEMO_NAME);
+
+	caFonts::Load();
 
 	//update/draw timing
 	sf::Clock clock;
