@@ -45,7 +45,8 @@ private:
 	std::vector<std::vector<Cell>> m_Cells;
 
 private:
-	bool m_WasMousePressed;
+	bool m_WasLeftMousePressed;
+	bool m_WasRightMousePressed;
 
 public:
 	float TilePixelSize = 10;
@@ -100,5 +101,8 @@ public:
 	//RULE INTERFACE
 public:
 	std::vector<Rule*>* m_Rules;
+
+private:
+	void ProcessRulesAt(int x, int y);
 };
 

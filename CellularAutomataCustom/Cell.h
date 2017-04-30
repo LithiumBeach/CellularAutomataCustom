@@ -8,8 +8,13 @@
 class Cell
 {
 public:
+	typedef sf::Vector2f Vector2f;
+	typedef sf::Color Color;
+	typedef sf::RectangleShape RShape;
+
+public:
 	Cell(){};
-	Cell(bool a_IsAlive, sf::Vector2f a_TilePos, sf::Vector2f a_PixelSize);
+	Cell(int a_ColorIndex, Vector2f a_TilePos, Vector2f a_PixelSize);
 
 	~Cell();
 
@@ -18,26 +23,27 @@ public:
 	void Draw();
 
 private:
-	sf::Vector2f m_TilePos;
-	bool m_IsAlive;
-	bool m_WillBeAliveOnUpdate;
-	sf::RectangleShape m_RectangleShape;
+	RShape m_RShape;
+	Vector2f m_TilePos;
 public:
-	sf::Vector2f GetTilePos(){ return m_TilePos; }
-	bool IsAlive(){ return m_IsAlive; }
+	Vector2f GetTilePos(){ return m_TilePos; }
+
+public:
+	int m_ColorIndexOnUpdate;
 	//pre-update
-	void SetAliveNextFrame(bool a_val){ m_WillBeAliveOnUpdate = a_val; }
+	void SetColorIndexNextFrame(int a_ColorIndex);
 	//update
-	void SetAliveImmediate(bool a_val){ m_IsAlive = a_val; UpdateFillColor(); }
-	void ToggleAliveImmediate(){ m_IsAlive = !m_IsAlive; UpdateFillColor(); }
+	void SetAliveImmediate(int a_ColorIndex);
+	void AdvanceAliveImmediate();
+	void ReverseAdvanceAliveImmediate();
+
+public:
+	void SetColorIndexImmediate(int a_ColorIndex);
 
 private:
-	void UpdateFillColor(){ m_RectangleShape.setFillColor(m_IsAlive ? ALIVE_COLOR : DEAD_COLOR); }
+	int m_ColorIndex;
+	int m_NextFrameColorIndex;
 
 public:
-	void SetFillColorDirect(sf::Color a_color = sf::Color::Magenta){ m_RectangleShape.setFillColor(a_color); }
-
-public:
-	sf::Color ALIVE_COLOR = sf::Color::Black;
-	sf::Color DEAD_COLOR = sf::Color::White;
+	int GetColorIndex(){ return m_ColorIndex; }
 };

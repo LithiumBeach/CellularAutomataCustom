@@ -5,29 +5,25 @@ Button::~Button()
 {
 }
 
-Button::Button(const std::function<void()> a_ButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
-	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
-{
-	m_RS = sf::RectangleShape(a_Size);
-	m_RS.setPosition(a_Position);
-	m_RS.setFillColor(a_FillColor);
-	m_RS.setOutlineColor(a_OutlineColor);
-	m_RS.setOutlineThickness(a_OutlineThickness);
-	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
-	ButtonPressEvent = a_ButtonPressEvent;
+//Button::Button(const std::function<void()> a_LeftMouseButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+//	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
+//{
+//	m_RS = sf::RectangleShape(a_Size);
+//	m_RS.setPosition(a_Position);
+//	m_RS.setFillColor(a_FillColor);
+//	m_RS.setOutlineColor(a_OutlineColor);
+//	m_RS.setOutlineThickness(a_OutlineThickness);
+//	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
+//
+//	//text
+//	m_Text.setFont(a_Font);
+//	m_Text.setCharacterSize(a_CharacterSize);
+//	m_Text.setColor(a_TextColor);
+//	m_Text.setStyle(sf::Text::Bold);
+//	m_Text.setOrigin(Vector2f(m_Text.getLocalBounds().width * .5f, m_Text.getLocalBounds().height * .5f));
+//	SetText(a_TextString);
+//}
 
-	//text
-	m_Text.setFont(a_Font);
-	m_Text.setCharacterSize(a_CharacterSize);
-	m_Text.setColor(a_TextColor);
-	m_Text.setStyle(sf::Text::Bold);
-	SetText(a_TextString);
-}
-
-void Button::SetButtonPressEvent(const std::function<void()> a_ButtonPressEvent)
-{
-	ButtonPressEvent = a_ButtonPressEvent;
-}
 Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
 {
@@ -43,42 +39,61 @@ Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_
 	m_Text.setCharacterSize(a_CharacterSize);
 	m_Text.setColor(a_TextColor);
 	m_Text.setStyle(sf::Text::Bold);
+	m_Text.setOrigin(Vector2f(m_Text.getLocalBounds().width * .5f, m_Text.getLocalBounds().height * .5f));
 	SetText(a_TextString);
 }
 
 void Button::Update(float a_DeltaTime)
 {
-	bool isMouseDown = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	bool isLeftMouseDown = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+	bool isRightMouseDown = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
 
 	IsMouseHovering = IsMouseInRect();
 
-	//mouse is hovering over the rect, this is the first frame of mouse left click.
-	OnMouseDown = isMouseDown && !m_WasMouseDown;
+	//mouse is hovering over the rect, this is the first frame of mouse click.
+	OnLeftMouseDown = isLeftMouseDown && !m_WasLeftMouseDown;
+	OnRightMouseDown = isRightMouseDown && !m_WasRightMouseDown;
 
-	if (OnMouseDown && IsMouseInRect())
+	if (IsMouseInRect())
 	{
-		WaitingForRelease = true;
+		if (OnLeftMouseDown)
+		{
+			WaitingForLeftMouseRelease = true;
+		}
+		if (OnRightMouseDown)
+		{
+			WaitingForRightMouseRelease = true;
+		}
 	}
 
-	OnMouseRelease = !isMouseDown && m_WasMouseDown && WaitingForRelease;
+	OnLeftMouseRelease = !isLeftMouseDown && m_WasLeftMouseDown && WaitingForLeftMouseRelease;
+	OnRightMouseRelease = !isRightMouseDown && m_WasRightMouseDown && WaitingForRightMouseRelease;
 
-	if (OnMouseRelease)
+	if (OnLeftMouseRelease)
 	{
 		//activate()
-		if (ButtonPressEvent != NULL)
-			ButtonPressEvent();
-		WaitingForRelease = false;
+		if (LeftMouseButtonPressEvent != NULL/* && LeftMouseButtonPressEvent.target<void>() != NULL*/)
+			LeftMouseButtonPressEvent();
+		WaitingForLeftMouseRelease = false;
+	}
+	if (OnRightMouseRelease)
+	{
+		//activate()
+		if (RightMouseButtonPressEvent != NULL/* && RightMouseButtonPressEvent.target<void>() != NULL*/)
+			RightMouseButtonPressEvent();
+		WaitingForRightMouseRelease = false;
 	}
 
-	m_WasMouseDown = isMouseDown;
+	m_WasLeftMouseDown = isLeftMouseDown;
+	m_WasRightMouseDown = isRightMouseDown;
 }
 
 bool Button::IsMouseInRect()
 {
 	Vector2f rs_pos = m_RS.getPosition();
 	sf::Vector2i rs_half_size = sf::Vector2i((int)(m_RS.getSize().x * 0.5f), (int)(m_RS.getSize().y * 0.5f));
-	return (Math::AABB(	Vector2f(rs_pos.x - rs_half_size.x, rs_pos.y - rs_half_size.y),
-						Vector2f(rs_pos.x + rs_half_size.x, rs_pos.y + rs_half_size.y),
+	return (Math::AABB(Vector2f(rs_pos.x - rs_half_size.x - m_RS.getOutlineThickness() * 2, rs_pos.y - rs_half_size.y - m_RS.getOutlineThickness() * 2),
+		Vector2f(rs_pos.x + rs_half_size.x + m_RS.getOutlineThickness() * 2, rs_pos.y + rs_half_size.y + m_RS.getOutlineThickness() * 2),
 						sf::Mouse::getPosition(*g_WINDOW)));
 	
 }
@@ -102,4 +117,15 @@ void Button::Draw()
 	g_WINDOW->draw(m_Text);
 }
 
+
+
+
+void Button::SetLeftMouseButtonPressEvent(const std::function<void()> ev)
+{
+	LeftMouseButtonPressEvent = ev;
+}
+void Button::SetRightMouseButtonPressEvent(const std::function<void()> ev)
+{
+	RightMouseButtonPressEvent = ev;
+}
 

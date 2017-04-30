@@ -30,6 +30,7 @@ struct RuleData
 	//AND they are of color (alive/dead, emotion?)
 	//std::string IfColorLabel = "AND they are of color (alive/dead, emotion?)";
 	sf::Color IfColor;
+	int IfColorIndex;
 	//triggering bool for if we want to ignore color in our rule
 	//std::string UseIfColorLabel = "Initial Color Conditions?";
 	//bool UseIfColor;
@@ -37,7 +38,7 @@ struct RuleData
 	//then this Cell will change to color:
 	//std::string ThenColorLabel = "then this Cell will change to color";
 	sf::Color ThenColor;
-
+	int ThenColorIndex;
 };
 
 class Rule
@@ -57,10 +58,22 @@ public:
 private:
 	void InitializeInterface();
 public:
-	void HandleDecreaseNumNeighborsButton();
-	std::function<void()> ptr_HandleDecreaseNumNeighborsButton;
 	void HandleIncreaseNumNeighborsButton();
 	std::function<void()> ptr_HandleIncreaseNumNeighborsButton;
+	void HandleDecreaseNumNeighborsButton();
+	std::function<void()> ptr_HandleDecreaseNumNeighborsButton;
+
+	void HandleAdvanceIfColorButton();
+	void HandleReverseAdvanceIfColorButton();
+	std::function<void()> ptr_HandleAdvanceIfColorButton;
+	std::function<void()> ptr_HandleReverseAdvanceIfColorButton;
+	//TODO: list of buttons with colors as a static selecta -- ColorPickerButton : Button
+
+	void HandleAdvanceThenColorButton();
+	void HandleReverseAdvanceThenColorButton();
+	std::function<void()> ptr_HandleAdvanceThenColorButton;
+	std::function<void()> ptr_HandleReverseAdvanceThenColorButton;
+	//TODO: list of buttons with colors as a static selecta -- ColorPickerButton : Button
 
 public:
 	static int s_RuleCount;

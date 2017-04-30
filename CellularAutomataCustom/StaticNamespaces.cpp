@@ -15,6 +15,22 @@ namespace caColors
 	sf::Color red = sf::Color(255, 0, 0);
 	sf::Color green = sf::Color(0, 255, 0);
 	sf::Color blue = sf::Color(0, 0, 255);
+
+	
+	sf::Color caColors[caColorsLen] =
+	{
+		sf::Color(255, 255, 255),
+		sf::Color(0, 0, 0),
+
+		sf::Color(255, 0, 0),
+		sf::Color(0, 255, 0),
+		sf::Color(0, 0, 255),
+
+		sf::Color(0, 255, 255),
+		sf::Color(255, 0, 255),
+		sf::Color(255, 255, 0),
+	};
+
 }
 
 

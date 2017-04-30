@@ -44,10 +44,27 @@ public:
 	//data link
 	void SetNumNeighborsText(int a_NumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
 	void UpdateNumNeighborsText(int a_NumNeighbors);
+	//ui
 	sf::Text NumNeighborsText;
-
 	Button IncreaseNumNeighborsButton;
-
 	Button DecreaseNumNeighborsButton;
+
+
+public:
+	//label
+	void SetIfColorLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	sf::Text IfColorLabelText;
+	//data link
+	void SetChangeIfColorButtonColor(sf::Color a_Color);
+	//ui
+	Button ChangeIfColorButton;
+public:
+	//label
+	void SetThenColorLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	sf::Text ThenColorLabelText;
+	//data link
+	void SetChangeThenColorButtonColor(sf::Color a_Color);
+	//ui
+	Button ChangeThenColorButton;
 
 };

@@ -24,6 +24,16 @@ namespace caColors
 	extern sf::Color red;
 	extern sf::Color green;
 	extern sf::Color blue;
+
+	const int caColorsLen = 8;
+	extern sf::Color caColors[];
+
+
+
+
+
+
+
 }
 
 namespace caFonts

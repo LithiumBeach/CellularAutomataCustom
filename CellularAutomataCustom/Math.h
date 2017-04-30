@@ -47,4 +47,12 @@ public:
 		out << std::setprecision(n) << a_value;
 		return out.str();
 	}
+
+	template <typename T>
+	static T Clamp(T val, T min, T max)
+	{
+		if (val < min) val = min;
+		if (val > max) val = max;
+		return val;
+	}
 };
