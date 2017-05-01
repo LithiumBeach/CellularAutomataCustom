@@ -33,6 +33,8 @@ namespace caColors
 		sf::Color(255, 255, 0),
 	};
 
+	sf::Color transparent = sf::Color(0, 0, 0, 0);
+
 }
 
 

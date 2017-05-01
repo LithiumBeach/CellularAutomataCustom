@@ -49,6 +49,15 @@ public:
 	Button IncreaseNumNeighborsButton;
 	Button DecreaseNumNeighborsButton;
 
+public:
+	//label
+	void SetThisColorLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	sf::Text ThisColorLabelText;
+	//data link
+	void SetChangeThisColorButtonColor(sf::Color a_Color);
+	//ui
+	Button ChangeThisColorButton;
+
 
 public:
 	//label

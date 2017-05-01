@@ -19,7 +19,7 @@ Button::~Button()
 //	m_Text.setFont(a_Font);
 //	m_Text.setCharacterSize(a_CharacterSize);
 //	m_Text.setColor(a_TextColor);
-//	m_Text.setStyle(sf::Text::Bold);
+//	m_Text.setStyle(sf::Text::Regular);
 //	m_Text.setOrigin(Vector2f(m_Text.getLocalBounds().width * .5f, m_Text.getLocalBounds().height * .5f));
 //	SetText(a_TextString);
 //}
@@ -38,7 +38,7 @@ Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_
 	m_Text.setFont(a_Font);
 	m_Text.setCharacterSize(a_CharacterSize);
 	m_Text.setColor(a_TextColor);
-	m_Text.setStyle(sf::Text::Bold);
+	m_Text.setStyle(sf::Text::Regular);
 	m_Text.setOrigin(Vector2f(m_Text.getLocalBounds().width * .5f, m_Text.getLocalBounds().height * .5f));
 	SetText(a_TextString);
 }

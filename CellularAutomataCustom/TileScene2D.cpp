@@ -123,7 +123,7 @@ void TileScene2D::InitializeUI()
 	m_RuleScrollBar = new ScrollBar(sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y - 167)), sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y + 70)), 13, (float)(caSizes::WINDOW_SIZE_Y - 40 + 112));
 
 
-	m_ControlsBG = sf::RectangleShape(sf::Vector2f(caSizes::WINDOW_SIZE_X, 100));
+	m_ControlsBG = sf::RectangleShape(sf::Vector2f(caSizes::WINDOW_SIZE_X, 90));
 	m_ControlsBG.setFillColor(caColors::g_BackBuffer_Color);
 	m_ControlsBG.setOutlineThickness(0);
 	m_ControlsBG.setPosition(0, (float)(caSizes::WINDOW_SIZE_Y - 150));
@@ -133,13 +133,13 @@ void TileScene2D::InitializeUI()
 void TileScene2D::IntializeRules()
 {
 	m_Rules = new std::vector<Rule*>();
-	m_Rules->push_back(new Rule(2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
+	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
 
 }
 
 void TileScene2D::HandleAddRuleEvent()
 {
-	m_Rules->push_back(new Rule(2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
+	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
 	m_RuleScrollBar->UpdateTargetSize((float)(caSizes::WINDOW_SIZE_Y - 40 + (112 * (Rule::s_RuleCount-1))));
 }
 
@@ -299,19 +299,25 @@ void TileScene2D::ProcessRulesAt(int x, int y)
 	//decide.
 	for (size_t i = 0; i < m_Rules->size(); i++)
 	{
-		int ifColorIndex = m_Rules->at(i)->m_RuleData->IfColorIndex;
-		int ifColorIndexCount = 0;
-		for (int j = 0; j < 8; j++)
+		//check if self color criteria is met for this rule:
+		//if we don't care about color OR we are the right color
+		if (m_Rules->at(i)->m_RuleData->ThisColorIndex == -1 || m_Cells[x][y].GetColorIndex() == m_Rules->at(i)->m_RuleData->ThisColorIndex)
 		{
-			if (neighborColorIndices[j] == ifColorIndex)
+			int ifColorIndex = m_Rules->at(i)->m_RuleData->IfColorIndex;
+			int ifColorIndexCount = 0;
+			for (int j = 0; j < 8; j++)
 			{
-				ifColorIndexCount++;
+				if (neighborColorIndices[j] == ifColorIndex)
+				{
+					ifColorIndexCount++;
+				}
+			}
+			if (ifColorIndexCount == m_Rules->at(i)->m_RuleData->NumNeighbors)
+			{
+				m_Cells[x][y].SetColorIndexNextFrame(m_Rules->at(i)->m_RuleData->ThenColorIndex);
 			}
 		}
-		if (ifColorIndexCount == m_Rules->at(i)->m_RuleData->NumNeighbors)
-		{
-			m_Cells[x][y].SetColorIndexNextFrame(m_Rules->at(i)->m_RuleData->ThenColorIndex);
-		}
+		//if this rule isnt compatible with this cell, continue to next rule.
 	}
 
 	//m_Rules->at(0)->m_RuleData->RingLevel;

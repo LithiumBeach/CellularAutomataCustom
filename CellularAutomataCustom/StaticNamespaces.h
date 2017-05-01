@@ -31,6 +31,7 @@ namespace caColors
 	const int caColorsLen = 8;
 	extern sf::Color caColors[];
 
+	extern sf::Color transparent;
 
 
 

@@ -8,8 +8,10 @@
 struct RuleData
 {
 	RuleData(){};
-	RuleData(int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor)
+	RuleData(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor)
 	{
+		ThisColor = a_ThisColor;
+
 		NumNeighbors = a_NumNeighbors;
 
 		RingLevel[0] = a_RingLevel[0];
@@ -18,6 +20,11 @@ struct RuleData
 		IfColor = a_IfColor;
 		ThenColor = a_ThenColor;
 	}
+
+	//Concerning cells of this color:
+	//std::string ThenColorLabel = "then this Cell will change to color";
+	sf::Color ThisColor;
+	int ThisColorIndex;
 
 	//If there are (#)
 	//std::string NumNeighborsLabel = "If there are";
@@ -44,7 +51,7 @@ struct RuleData
 class Rule
 {
 public:
-	Rule(int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor);
+	Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor);
 	~Rule();
 
 public:
@@ -57,6 +64,13 @@ public:
 
 private:
 	void InitializeInterface();
+
+public:
+	void HandleAdvanceThisColorButton();
+	void HandleReverseAdvanceThisColorButton();
+	std::function<void()> ptr_HandleAdvanceThisColorButton;
+	std::function<void()> ptr_HandleReverseAdvanceThisColorButton;
+
 public:
 	void HandleIncreaseNumNeighborsButton();
 	std::function<void()> ptr_HandleIncreaseNumNeighborsButton;
@@ -67,13 +81,11 @@ public:
 	void HandleReverseAdvanceIfColorButton();
 	std::function<void()> ptr_HandleAdvanceIfColorButton;
 	std::function<void()> ptr_HandleReverseAdvanceIfColorButton;
-	//TODO: list of buttons with colors as a static selecta -- ColorPickerButton : Button
 
 	void HandleAdvanceThenColorButton();
 	void HandleReverseAdvanceThenColorButton();
 	std::function<void()> ptr_HandleAdvanceThenColorButton;
 	std::function<void()> ptr_HandleReverseAdvanceThenColorButton;
-	//TODO: list of buttons with colors as a static selecta -- ColorPickerButton : Button
 
 public:
 	static int s_RuleCount;
