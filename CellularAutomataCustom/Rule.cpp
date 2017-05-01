@@ -38,13 +38,13 @@ void Rule::InitializeInterface()
 	ptr_HandleAdvanceThenColorButton = std::bind(&Rule::HandleAdvanceThenColorButton, this);
 	ptr_HandleReverseAdvanceThenColorButton = std::bind(&Rule::HandleReverseAdvanceThenColorButton, this);
 
-	m_Interface->IncreaseNumNeighborsButton.LeftMouseButtonPressEvent = ptr_HandleIncreaseNumNeighborsButton;
-	m_Interface->DecreaseNumNeighborsButton.LeftMouseButtonPressEvent = ptr_HandleDecreaseNumNeighborsButton;
+	m_Interface->IncreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleIncreaseNumNeighborsButton;
+	m_Interface->DecreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleDecreaseNumNeighborsButton;
 
-	m_Interface->ChangeIfColorButton.LeftMouseButtonPressEvent = ptr_HandleAdvanceIfColorButton;
-	m_Interface->ChangeIfColorButton.RightMouseButtonPressEvent = ptr_HandleReverseAdvanceIfColorButton;
-	m_Interface->ChangeThenColorButton.LeftMouseButtonPressEvent = ptr_HandleAdvanceThenColorButton;
-	m_Interface->ChangeThenColorButton.RightMouseButtonPressEvent = ptr_HandleReverseAdvanceThenColorButton;
+	m_Interface->ChangeIfColorButton.LeftMouseButtonReleaseEvent = ptr_HandleAdvanceIfColorButton;
+	m_Interface->ChangeIfColorButton.RightMouseButtonReleaseEvent = ptr_HandleReverseAdvanceIfColorButton;
+	m_Interface->ChangeThenColorButton.LeftMouseButtonReleaseEvent = ptr_HandleAdvanceThenColorButton;
+	m_Interface->ChangeThenColorButton.RightMouseButtonReleaseEvent = ptr_HandleReverseAdvanceThenColorButton;
 
 
 	std::string ruleLabelString = "Rule " + std::to_string(s_RuleCount) + ":";
@@ -56,7 +56,7 @@ void Rule::InitializeInterface()
 	m_Interface->SetIfColorLabelText("neighboring\ncells are:", *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 	m_Interface->SetThenColorLabelText("then this\ncell will\nbecome:", *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 
-	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::WINDOW_SIZE_X * 0.01f), (float)(caSizes::WINDOW_SIZE_Y - 40)));
+	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::WINDOW_SIZE_X * 0.01f), (float)(caSizes::WINDOW_SIZE_Y - 40 + (112 * (s_RuleCount-1)))));
 }
 void Rule::HandleIncreaseNumNeighborsButton()
 {

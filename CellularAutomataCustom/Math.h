@@ -55,4 +55,21 @@ public:
 		if (val > max) val = max;
 		return val;
 	}
+
+	template <typename T>
+	static T Lerp(T a, T b, float t)
+	{
+		return (a + t*(b - a));
+	}
+	static sf::Vector2f Lerp(sf::Vector2f a, sf::Vector2f b, float t)
+	{
+		return sf::Vector2f(a.x + t*(b.x - a.x), a.y + t*(b.y - a.y));
+	}
+
+	template <typename T>
+	static float InverseLerp(T a, T b, T v)
+	{
+		return (v - a) / (b - a);
+		//return a + (1.0 / ((b - a) * v));
+	}
 };

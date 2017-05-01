@@ -12,4 +12,4 @@ const int WINDOW_SIZE_Y = 850;
 //extern sf::RenderWindow* g_WINDOW;
 sf::RenderWindow* g_WINDOW;
 
-sf::Color g_BackBuffer_Color = sf::Color(20, 23, 20);
+//sf::Color g_BackBuffer_Color = sf::Color(20, 23, 20);

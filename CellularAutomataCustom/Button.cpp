@@ -5,7 +5,7 @@ Button::~Button()
 {
 }
 
-//Button::Button(const std::function<void()> a_LeftMouseButtonPressEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
+//Button::Button(const std::function<void()> a_LeftMouseButtonReleaseEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 //	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
 //{
 //	m_RS = sf::RectangleShape(a_Size);
@@ -59,10 +59,18 @@ void Button::Update(float a_DeltaTime)
 		if (OnLeftMouseDown)
 		{
 			WaitingForLeftMouseRelease = true;
+			if (LeftMouseButtonPressEvent != NULL)
+			{
+				LeftMouseButtonPressEvent();
+			}
 		}
 		if (OnRightMouseDown)
 		{
 			WaitingForRightMouseRelease = true;
+			if (RightMouseButtonPressEvent != NULL)
+			{
+				RightMouseButtonPressEvent();
+			}
 		}
 	}
 
@@ -72,15 +80,15 @@ void Button::Update(float a_DeltaTime)
 	if (OnLeftMouseRelease)
 	{
 		//activate()
-		if (LeftMouseButtonPressEvent != NULL/* && LeftMouseButtonPressEvent.target<void>() != NULL*/)
-			LeftMouseButtonPressEvent();
+		if (LeftMouseButtonReleaseEvent != NULL)
+			LeftMouseButtonReleaseEvent();
 		WaitingForLeftMouseRelease = false;
 	}
 	if (OnRightMouseRelease)
 	{
 		//activate()
-		if (RightMouseButtonPressEvent != NULL/* && RightMouseButtonPressEvent.target<void>() != NULL*/)
-			RightMouseButtonPressEvent();
+		if (RightMouseButtonReleaseEvent != NULL)
+			RightMouseButtonReleaseEvent();
 		WaitingForRightMouseRelease = false;
 	}
 
@@ -108,7 +116,9 @@ void Button::SetText(std::string a_TextString)
 void Button::SetPosition(sf::Vector2f a_pos)
 {
 	m_Text.setPosition(a_pos);
+	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width / 2.0f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height / 2.0f));
 	m_RS.setPosition(a_pos);
+	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
 }
 
 void Button::Draw()
@@ -119,6 +129,15 @@ void Button::Draw()
 
 
 
+
+void Button::SetLeftMouseButtonReleaseEvent(const std::function<void()> ev)
+{
+	LeftMouseButtonReleaseEvent = ev;
+}
+void Button::SetRightMouseButtonReleaseEvent(const std::function<void()> ev)
+{
+	RightMouseButtonReleaseEvent = ev;
+}
 
 void Button::SetLeftMouseButtonPressEvent(const std::function<void()> ev)
 {

@@ -50,7 +50,7 @@ void main()
 
 
 		//clear displayed window
-		g_WINDOW->clear(g_BackBuffer_Color);
+		g_WINDOW->clear(caColors::g_BackBuffer_Color);
 
 		//draw code here:
 		MasterP->Draw();

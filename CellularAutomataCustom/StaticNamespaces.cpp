@@ -2,6 +2,8 @@
 
 namespace caColors
 {
+	sf::Color g_BackBuffer_Color = sf::Color(20, 23, 20);
+
 	sf::Color RuleLabelTextColor = sf::Color(240, 235, 255);
 	
 	sf::Color IncreaseButtonFill = sf::Color( 0, 255, 0);

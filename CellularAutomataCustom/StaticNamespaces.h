@@ -12,6 +12,9 @@ namespace caSizes
 
 namespace caColors
 {
+	extern sf::Color g_BackBuffer_Color;
+
+
 	extern sf::Color RuleLabelTextColor;
 
 	extern sf::Color IncreaseButtonFill;

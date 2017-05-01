@@ -4,6 +4,7 @@
 #include "TileArray.h"
 #include "Cell.h"
 #include "Rule.h"
+#include "ScrollBar.h"
 
 #include <vector>
 #include <functional>
@@ -71,22 +72,34 @@ private:
 	Button m_FPSButton;
 
 	Button m_NextFrameButton;
+
+	Button m_ClearButton;
+	Button m_ClearColorButton;
+	int m_ClearColorIndex;
 public:
-	void HandleSimulateButtonPressEvent();
-	std::function<void()> HandleSimulateButtonPressEvent_ptr;
+	void HandleSimulateButtonReleaseEvent();
+	std::function<void()> HandleSimulateButtonReleaseEvent_ptr;
 
 	std::function<void()> DoNothing_ptr;
 	void DoNothing();
 
 	//Playback Speed + / -
-	void HandlePlaybackSpeedIncButtonPressEvent();
-	std::function<void()> HandlePlaybackSpeedIncButtonPressEvent_ptr;
-	void HandlePlaybackSpeedDecButtonPressEvent();
-	std::function<void()> HandlePlaybackSpeedDecButtonPressEvent_ptr;
+	void HandlePlaybackSpeedIncButtonReleaseEvent();
+	std::function<void()> HandlePlaybackSpeedIncButtonReleaseEvent_ptr;
+	void HandlePlaybackSpeedDecButtonReleaseEvent();
+	std::function<void()> HandlePlaybackSpeedDecButtonReleaseEvent_ptr;
 	
 	//Next/Previous Frame
-	void HandleNextFrameButtonPressEvent();
-	std::function<void()> HandleNextFrameButtonPressEvent_ptr;
+	void HandleNextFrameButtonReleaseEvent();
+	std::function<void()> HandleNextFrameButtonReleaseEvent_ptr;
+
+	//clear to color
+	void HandleClearEvent();
+	std::function<void()> HandleClearEvent_ptr;
+	void HandleClearColorIncrementEvent();
+	std::function<void()> HandleClearColorIncrementEvent_ptr;
+	void HandleClearColorDecrementEvent();
+	std::function<void()> HandleClearColorDecrementEvent_ptr;
 
 private:
 	void UpdateFPSCounter();
@@ -101,8 +114,23 @@ public:
 	//RULE INTERFACE
 public:
 	std::vector<Rule*>* m_Rules;
+	//add later.
+	//std::vector<Button> m_RemoveRuleButtons;
+
+	Button m_AddRuleButton;
+	void HandleAddRuleEvent();
+	std::function<void()> HandleAddRuleEvent_ptr;
 
 private:
 	void ProcessRulesAt(int x, int y);
+
+	//SCROLLIN SCROLLIN SCROLLIN
+	//https://www.youtube.com/watch?v=qCRae5mRoRE
+	ScrollBar* m_RuleScrollBar;
+
+	void UpdateRuleScrolling();
+
+private:
+	sf::RectangleShape m_ControlsBG;
 };
 
