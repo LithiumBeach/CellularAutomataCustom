@@ -4,7 +4,7 @@
 
 int Rule::s_RuleCount = 0;
 
-Rule::Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RdddingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor)
+Rule::Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RdddingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor, int _containerIndex)
 {
 	++s_RuleCount;
 	bool a_RingLevel[2] = {true, false};
@@ -18,6 +18,8 @@ Rule::Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RdddingLevel[2], sf
 	std::string r0Str = "Rule 0:";
 	m_Interface->SetRuleLabelText(r0Str, *caFonts::s_DefaultFont, 16, caColors::RuleLabelTextColor);
 	InitializeInterface();
+
+	containerIndex = _containerIndex;
 }
 
 Rule::~Rule()
@@ -40,6 +42,8 @@ void Rule::InitializeInterface()
 	ptr_HandleAdvanceThenColorButton = std::bind(&Rule::HandleAdvanceThenColorButton, this);
 	ptr_HandleReverseAdvanceThenColorButton = std::bind(&Rule::HandleReverseAdvanceThenColorButton, this);
 
+	ptr_HandleDeleteButton = std::bind(&Rule::HandleDelete, this);
+
 	m_Interface->IncreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleIncreaseNumNeighborsButton;
 	m_Interface->DecreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleDecreaseNumNeighborsButton;
 
@@ -50,6 +54,8 @@ void Rule::InitializeInterface()
 	m_Interface->ChangeIfColorButton.RightMouseButtonReleaseEvent = ptr_HandleReverseAdvanceIfColorButton;
 	m_Interface->ChangeThenColorButton.LeftMouseButtonReleaseEvent = ptr_HandleAdvanceThenColorButton;
 	m_Interface->ChangeThenColorButton.RightMouseButtonReleaseEvent = ptr_HandleReverseAdvanceThenColorButton;
+
+	m_Interface->DeleteSelfButton.LeftMouseButtonReleaseEvent = ptr_HandleDeleteButton;
 
 	
 	std::string ruleLabelString = "\nRule " + std::to_string(s_RuleCount) + ":\n";
@@ -67,7 +73,7 @@ void Rule::InitializeInterface()
 	std::string thnStr = "\nthen this\ncell will\nbecome:\n";
 	m_Interface->SetThenColorLabelText(thnStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 
-	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::WINDOW_SIZE_X * 0.01f), (float)(caSizes::WINDOW_SIZE_Y - 40 + (112 * (s_RuleCount-1)))));
+	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (s_RuleCount-1)))));
 }
 void Rule::HandleIncreaseNumNeighborsButton()
 {
@@ -183,6 +189,11 @@ void Rule::HandleReverseAdvanceThenColorButton()
 	m_RuleData->ThenColor = caColors::caColors[m_RuleData->ThenColorIndex];
 }
 
+void Rule::HandleDelete()
+{//I will never apologize for this.
+	cheating::buttonIndexToRemove = containerIndex;
+}
+
 
 void Rule::Update(float dt)
 {
@@ -192,4 +203,11 @@ void Rule::Update(float dt)
 void Rule::Draw()
 {
 	m_Interface->Draw();
+}
+
+void Rule::Refresh(int _newIndex)
+{
+	containerIndex = _newIndex;
+	std::string ruleLabelString = "\nRule " + std::to_string(_newIndex+1) + ":\n";
+	m_Interface->SetRuleLabelText(ruleLabelString, *(caFonts::s_DefaultFont), 16, caColors::RuleLabelTextColor);
 }

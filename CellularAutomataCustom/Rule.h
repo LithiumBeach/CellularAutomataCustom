@@ -51,7 +51,7 @@ struct RuleData
 class Rule
 {
 public:
-	Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor);
+	Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor, int _containerIndex);
 	~Rule();
 
 public:
@@ -72,21 +72,33 @@ public:
 	std::function<void()> ptr_HandleReverseAdvanceThisColorButton;
 
 public:
+	//Num Neighbor events
 	void HandleIncreaseNumNeighborsButton();
 	std::function<void()> ptr_HandleIncreaseNumNeighborsButton;
 	void HandleDecreaseNumNeighborsButton();
 	std::function<void()> ptr_HandleDecreaseNumNeighborsButton;
 
+	//If Color events
 	void HandleAdvanceIfColorButton();
 	void HandleReverseAdvanceIfColorButton();
 	std::function<void()> ptr_HandleAdvanceIfColorButton;
 	std::function<void()> ptr_HandleReverseAdvanceIfColorButton;
 
+	//Then Color events
 	void HandleAdvanceThenColorButton();
 	void HandleReverseAdvanceThenColorButton();
 	std::function<void()> ptr_HandleAdvanceThenColorButton;
 	std::function<void()> ptr_HandleReverseAdvanceThenColorButton;
 
+	//handle delete button
+	void HandleDelete();
+	std::function<void()> ptr_HandleDeleteButton;
+
 public:
 	static int s_RuleCount;
+
+public:
+	int containerIndex;
+
+	void Refresh(int _newIndex);
 };

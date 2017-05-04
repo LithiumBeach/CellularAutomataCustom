@@ -1,28 +1,10 @@
 #include "Button.h"
 #include "Math.h"
+#include "StaticNamespaces.h"
 
 Button::~Button()
 {
 }
-
-//Button::Button(const std::function<void()> a_LeftMouseButtonReleaseEvent, Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
-//	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
-//{
-//	m_RS = sf::RectangleShape(a_Size);
-//	m_RS.setPosition(a_Position);
-//	m_RS.setFillColor(a_FillColor);
-//	m_RS.setOutlineColor(a_OutlineColor);
-//	m_RS.setOutlineThickness(a_OutlineThickness);
-//	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
-//
-//	//text
-//	m_Text.setFont(a_Font);
-//	m_Text.setCharacterSize(a_CharacterSize);
-//	m_Text.setColor(a_TextColor);
-//	m_Text.setStyle(sf::Text::Regular);
-//	m_Text.setOrigin(Vector2f(m_Text.getLocalBounds().width * .5f, m_Text.getLocalBounds().height * .5f));
-//	SetText(a_TextString);
-//}
 
 Button::Button(Vector2f a_Size, Vector2f a_Position, Color a_FillColor, Color a_OutlineColor,
 	sf::Font& a_Font, float a_OutlineThickness, std::string a_TextString, int a_CharacterSize, Color a_TextColor)
@@ -56,21 +38,23 @@ void Button::Update(float a_DeltaTime)
 
 	if (IsMouseInRect())
 	{
-		if (OnLeftMouseDown)
+		if (!input::LMB_Consumed && OnLeftMouseDown)
 		{
 			WaitingForLeftMouseRelease = true;
 			if (LeftMouseButtonPressEvent != NULL)
 			{
 				LeftMouseButtonPressEvent();
 			}
+			input::LMB_Consumed = true;
 		}
-		if (OnRightMouseDown)
+		if (!input::RMB_Consumed && OnRightMouseDown)
 		{
 			WaitingForRightMouseRelease = true;
 			if (RightMouseButtonPressEvent != NULL)
 			{
 				RightMouseButtonPressEvent();
 			}
+			input::RMB_Consumed = true;
 		}
 	}
 

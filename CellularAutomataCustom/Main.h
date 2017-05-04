@@ -5,9 +5,6 @@
 
 #define DEMO_NAME "BaNaNaS"
 
-const int WINDOW_SIZE_X = 500;
-const int WINDOW_SIZE_Y = 850;
-
 //global reference to the window (reference with extern in cpp files)
 //extern sf::RenderWindow* g_WINDOW;
 sf::RenderWindow* g_WINDOW;

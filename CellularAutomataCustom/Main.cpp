@@ -4,7 +4,7 @@
 void main()
 {
 	//create our rendering window
-	g_WINDOW = new sf::RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), DEMO_NAME);
+	g_WINDOW = new sf::RenderWindow(sf::VideoMode(caSizes::WINDOW_SIZE_X, caSizes::WINDOW_SIZE_Y), DEMO_NAME);
 
 	caFonts::Load();
 
@@ -40,6 +40,9 @@ void main()
 					g_WINDOW->close();
 				}
 				break;
+			case sf::Event::MouseWheelMoved:
+				input::MouseWheelDelta = e.mouseWheel.delta;
+				break;
 			}
 
 		}
@@ -57,5 +60,9 @@ void main()
 
 		//draw the backbuffer
 		g_WINDOW->display();
+
+		input::LMB_Consumed = false;
+		input::RMB_Consumed = false;
+		input::MouseWheelDelta = 0;
 	}
 }

@@ -120,6 +120,9 @@ public:
 	Button m_AddRuleButton;
 	void HandleAddRuleEvent();
 	std::function<void()> HandleAddRuleEvent_ptr;
+	
+	//removes a button at index
+	void HandleRemoveRuleEvent(int index);
 
 private:
 	void ProcessRulesAt(int x, int y);
@@ -131,6 +134,6 @@ private:
 	void UpdateRuleScrolling();
 
 private:
-	sf::RectangleShape m_ControlsBG;
+	Button m_ControlsBG;
 };
 

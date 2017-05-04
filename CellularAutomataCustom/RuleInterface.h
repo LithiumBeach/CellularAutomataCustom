@@ -76,4 +76,6 @@ public:
 	//ui
 	Button ChangeThenColorButton;
 
+	Button DeleteSelfButton;
+
 };

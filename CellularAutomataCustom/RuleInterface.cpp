@@ -7,6 +7,7 @@ RuleInterface::RuleInterface()
 {
 	IncreaseNumNeighborsButton = Button();
 	DecreaseNumNeighborsButton = Button();
+	DeleteSelfButton = Button();
 	InitializeButtonsNoEvents();
 }
 
@@ -15,6 +16,7 @@ void RuleInterface::InitializeButtonsNoEvents()
 	int inc_dec_button_size = 16;
 	IncreaseNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
 	DecreaseNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
+	DeleteSelfButton = Button(Vector2f(12, 48), Vector2f(0, 0), caColors::red, caColors::border_red, *caFonts::s_DefaultFont, 2.0f, "X");
 
 	//transparent = temp.
 	ChangeThisColorButton = Button(Vector2f(20, 20), Vector2f(0, 0), caColors::transparent, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "", 9);
@@ -122,6 +124,8 @@ void RuleInterface::SetPosition(sf::Vector2f a_Pos)
 	ThenColorLabelText.setPosition(a_Pos + sf::Vector2f(330, 36));
 
 	ChangeThenColorButton.SetPosition(a_Pos + sf::Vector2f(430, 50));
+
+	DeleteSelfButton.SetPosition(a_Pos + sf::Vector2f(8, 50));
 }
 
 void RuleInterface::SetNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
@@ -162,6 +166,7 @@ void RuleInterface::Update(float a_DeltaTime)
 	ChangeThisColorButton.Update(a_DeltaTime);
 	ChangeIfColorButton.Update(a_DeltaTime);
 	ChangeThenColorButton.Update(a_DeltaTime);
+	DeleteSelfButton.Update(a_DeltaTime);
 }
 
 void RuleInterface::Draw()
@@ -180,4 +185,6 @@ void RuleInterface::Draw()
 
 	g_WINDOW->draw(ThenColorLabelText);
 	ChangeThenColorButton.Draw();
+
+	DeleteSelfButton.Draw();
 }

@@ -79,8 +79,6 @@ public:
 
 	void SetPosition(sf::Vector2f a_pos);
 
-	void SetOrigin(sf::Vector2f a_pos);
-
 	void SetOutline(sf::Color a_color){ m_RS.setOutlineColor(a_color); };
 	void SetFill(sf::Color a_color){ m_RS.setFillColor(a_color); };
 	sf::Color GetFill(){ return m_RS.getFillColor(); }

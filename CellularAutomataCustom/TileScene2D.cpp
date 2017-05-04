@@ -8,6 +8,7 @@ TileScene2D::TileScene2D()
 	m_IsSimulating = false;
 	m_IncreasePlaybackSpeedButton = Button();
 	m_DecreasePlaybackSpeedButton = Button();
+	m_ControlsBG = Button();
 
 	m_PlaybackSpeedsLen = 12;
 	playbackSpeedsIndex = 5;
@@ -93,54 +94,74 @@ void TileScene2D::InitializeUI()
 
 	DoNothing_ptr = std::bind(&TileScene2D::DoNothing, this);
 
-	m_SimulateButton = Button(Vector2f(160, 20), Vector2f((float)(caSizes::WINDOW_SIZE_X / 2), (float)(caSizes::WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
+	m_SimulateButton = Button(Vector2f(160, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
 	m_SimulateButton.SetLeftMouseButtonReleaseEvent(HandleSimulateButtonReleaseEvent_ptr);
 
-	m_IncreasePlaybackSpeedButton = Button(Vector2f(36, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS+");
+	m_IncreasePlaybackSpeedButton = Button(Vector2f(36, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 4), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS+");
 	m_IncreasePlaybackSpeedButton.SetLeftMouseButtonReleaseEvent(HandlePlaybackSpeedIncButtonReleaseEvent_ptr);
 
-	m_DecreasePlaybackSpeedButton = Button(Vector2f(36, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 75)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS-");
+	m_DecreasePlaybackSpeedButton = Button(Vector2f(36, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 4), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 75)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS-");
 	m_DecreasePlaybackSpeedButton.SetLeftMouseButtonReleaseEvent(HandlePlaybackSpeedDecButtonReleaseEvent_ptr);
 
-	m_FPSButton = Button(Vector2f(0, 0), Vector2f((float)(caSizes::WINDOW_SIZE_X / 4), (float)(caSizes::WINDOW_SIZE_Y - 100)), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *caFonts::s_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
+	m_FPSButton = Button(Vector2f(0, 0), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 4), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), sf::Color(0, 0, 0, 0), sf::Color(0, 0, 0, 0), *caFonts::s_DefaultFont, 2.0f, Math::to_string_with_precision(1.0f / FramesPerSecond));
 	
-	m_ClearButton = Button(Vector2f(86, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 10), (float)(caSizes::WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Clear Board");
+	m_ClearButton = Button(Vector2f(86, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 10), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Clear Board");
 	m_ClearButton.SetLeftMouseButtonReleaseEvent(HandleClearEvent_ptr);
 	m_ClearColorIndex = 0;
-	m_ClearColorButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 10), (float)(caSizes::WINDOW_SIZE_Y - 132)), caColors::caColors[m_ClearColorIndex], caColors::border_gray, *caFonts::s_DefaultFont);
+	m_ClearColorButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 10), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 132)), caColors::caColors[m_ClearColorIndex], caColors::border_gray, *caFonts::s_DefaultFont);
 	m_ClearColorButton.SetLeftMouseButtonReleaseEvent(HandleClearColorIncrementEvent_ptr);
 	m_ClearColorButton.SetRightMouseButtonReleaseEvent(HandleClearColorDecrementEvent_ptr);
 
-	m_NextFrameButton = Button(Vector2f(64, 24), Vector2f((float)(caSizes::WINDOW_SIZE_X / 1.3f), (float)(caSizes::WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Frame+");
+	m_NextFrameButton = Button(Vector2f(64, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 1.3f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Frame+");
 	m_NextFrameButton.SetLeftMouseButtonReleaseEvent(HandleNextFrameButtonReleaseEvent_ptr);
 
-	m_AddRuleButton = Button(Vector2f(80, 20), Vector2f((float)(caSizes::WINDOW_SIZE_X / 2), (float)(caSizes::WINDOW_SIZE_Y - 126)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "ADD RULE");
+	m_AddRuleButton = Button(Vector2f(80, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 126)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "ADD RULE");
 	m_AddRuleButton.SetLeftMouseButtonReleaseEvent(HandleAddRuleEvent_ptr);
 
 
 	//scroll bar
 	float scrollbarX = (float)(caSizes::WINDOW_SIZE_X * 0.98f);
-	m_RuleScrollBar = new ScrollBar(sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y - 167)), sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y + 70)), 13, (float)(caSizes::WINDOW_SIZE_Y - 40 + 112));
+	m_RuleScrollBar = new ScrollBar(sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y * 0.05f)),
+									sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y * 0.95f)),
+									13,
+									(float)(caSizes::WINDOW_SIZE_Y * .8f)
+									);
 
-
-	m_ControlsBG = sf::RectangleShape(sf::Vector2f(caSizes::WINDOW_SIZE_X, 90));
-	m_ControlsBG.setFillColor(caColors::g_BackBuffer_Color);
-	m_ControlsBG.setOutlineThickness(0);
-	m_ControlsBG.setPosition(0, (float)(caSizes::WINDOW_SIZE_Y - 150));
+	m_ControlsBG = Button(sf::Vector2f(caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f(caSizes::LEFT_WINDOW_SIZE_X / 2, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
 
 }
 
 void TileScene2D::IntializeRules()
 {
 	m_Rules = new std::vector<Rule*>();
-	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
+	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black, 0));
 
 }
-
+//sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (_newIndex))))
 void TileScene2D::HandleAddRuleEvent()
 {
-	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black));
-	m_RuleScrollBar->UpdateTargetSize((float)(caSizes::WINDOW_SIZE_Y - 40 + (112 * (Rule::s_RuleCount-1))));
+	int index = m_Rules->size();
+	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black, index));
+	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
+	UpdateRuleScrolling();
+}
+
+void TileScene2D::HandleRemoveRuleEvent(int index)
+{
+	if (index >= 0 && index < m_Rules->size())
+	{
+		delete m_Rules->at(index);
+		m_Rules->erase(m_Rules->begin() + index);
+	}
+
+	for (size_t i = 0; i < m_Rules->size(); i++)
+	{
+		m_Rules->at(i)->Refresh(i);
+	}
+	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
+	m_RuleScrollBar->ScrollForAFrame();
+
+	UpdateRuleScrolling();
 }
 
 void TileScene2D::DoNothing(){}
@@ -210,6 +231,16 @@ float fpsCountPre = 0.0f;
 int numWaitFramesPre = 0;
 void TileScene2D::PreUpdate(float a_DeltaTime)
 {
+	//cheat event listener...
+	if (cheating::buttonIndexToRemove != -1)
+	{
+		HandleRemoveRuleEvent(cheating::buttonIndexToRemove);
+		cheating::buttonIndexToRemove = -1;
+	}
+	//...don't judge me -- it's the effect of a messaging system in a fraction of the time.
+	//(not proud its on an update but what is pride?)
+
+
 	if (m_IsSimulating)
 	{
 		fpsCountPre += a_DeltaTime;
@@ -234,6 +265,7 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	Update(a_DeltaTime);
 
 	//BUTTON UPDATE
+
 	m_SimulateButton.Update(a_DeltaTime);
 	m_AddRuleButton.Update(a_DeltaTime);
 	m_IncreasePlaybackSpeedButton.Update(a_DeltaTime);
@@ -243,7 +275,9 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_ClearColorButton.Update(a_DeltaTime);
 	m_ClearButton.Update(a_DeltaTime);
 	m_RuleScrollBar->Update(a_DeltaTime);
-	if (m_RuleScrollBar->m_IsScrolling)
+	m_ControlsBG.Update(a_DeltaTime);
+
+	if (m_RuleScrollBar->m_IsScrolling || abs(input::MouseWheelDelta) > 0)
 	{
 		UpdateRuleScrolling();
 	}
@@ -258,10 +292,11 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 void TileScene2D::UpdateRuleScrolling()
 {
 	for (size_t i = 0; i < m_Rules->size(); i++)
-	{// - m_RuleScrollBar->m_TargetOverflowSize
-		float scrollPos = ((1.0f - m_RuleScrollBar->GetRatio()) * (m_RuleScrollBar->m_TargetSize - m_RuleScrollBar->m_TargetOverflowSize));
-		m_Rules->at(i)->m_Interface->SetPosition(sf::Vector2f((float)(caSizes::WINDOW_SIZE_X * 0.01f), 
-															  (float)(caSizes::WINDOW_SIZE_Y - 40 + 112 * i) - scrollPos));
+	{
+		float scrollPos = ((m_RuleScrollBar->GetRatio()) * (m_RuleScrollBar->m_TargetSize - m_RuleScrollBar->m_TargetOverflowSize));
+
+		m_Rules->at(i)->m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8),
+															  (float)(40 + (112 * i)) - scrollPos));
 	}
 }
 
@@ -423,6 +458,8 @@ void TileScene2D::Draw()
 		m_Rules->at(i)->Draw();
 	}
 
+	m_ControlsBG.Draw();
+
 
 	for (int y = 0; y < BoardTileSize; y++)
 	{
@@ -432,8 +469,6 @@ void TileScene2D::Draw()
 
 		}
 	}
-
-	g_WINDOW->draw(m_ControlsBG);
 
 	m_SimulateButton.Draw();
 	m_AddRuleButton.Draw();

@@ -4,6 +4,7 @@
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Graphics\Color.hpp>
+#include <SFML\Window\Event.hpp>
 
 #include "StaticNamespaces.h"
 #include "Button.h"
@@ -58,6 +59,12 @@ public:
 
 public:
 	float GetRatio();
+
+private:
+	Vector2f centerpos;
+
+public:
+	void ScrollForAFrame();
 
 };
  

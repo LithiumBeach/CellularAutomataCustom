@@ -14,7 +14,8 @@ namespace caColors
 	sf::Color gray = sf::Color(30, 30, 30);
 	sf::Color border_gray = sf::Color(200, 200, 200);
 
-	sf::Color red = sf::Color(255, 0, 0);
+	sf::Color red = sf::Color(200, 0, 0);
+	sf::Color border_red = sf::Color(30, 0, 0);
 	sf::Color green = sf::Color(0, 255, 0);
 	sf::Color blue = sf::Color(0, 0, 255);
 
@@ -41,8 +42,13 @@ namespace caColors
 
 namespace caSizes
 {
-	int WINDOW_SIZE_X = 500;
-	int WINDOW_SIZE_Y = 650;
+	//leftover from portrait mode: need it for all the previous positioning
+	int LEFT_WINDOW_SIZE_X = 500;
+	int LEFT_WINDOW_SIZE_Y = 650;
+	
+	//actual window size
+	int WINDOW_SIZE_X = 1100;
+	int WINDOW_SIZE_Y = 600;
 }
 
 
@@ -62,4 +68,17 @@ namespace caFonts
 
 		return true;
 	}
+}
+
+namespace cheating
+{
+	int buttonIndexToRemove = -1;
+}
+
+namespace input
+{
+	bool LMB_Consumed = false;
+	bool RMB_Consumed = false;
+
+	float MouseWheelDelta = 0;
 }
