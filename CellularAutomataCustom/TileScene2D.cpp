@@ -14,28 +14,48 @@ TileScene2D::TileScene2D()
 	playbackSpeedsIndex = 5;
 	m_PlaybackSpeeds = new float[m_PlaybackSpeedsLen]{ 1.0f, 2.0f, 4.0f, 8.0f, 10.0f, 12.0f, 16.0f, 24.0f, 32.0f, 64.0f, 96.0f, 128.0f };
 
+	BoardSizeIndexNextFrame = BoardSizeIndex = 3;
+	BoardSizeLen = 6;
+
+	TilePixelSizes = new float[BoardSizeLen]
+	{
+		100,
+		20,
+		10,
+		5,
+		4,
+		2
+	};
+	BoardTileSizes = new int[BoardSizeLen]
+	{
+		5,
+		25,
+		50,
+		100,
+		125,
+		250
+	};
+
+
+
+
 	m_FPSButton = Button();
 	FramesPerSecond = 1.0f / m_PlaybackSpeeds[playbackSpeedsIndex];
 
 	m_NextFrameButton = Button();
 
 	m_Cells = std::vector<std::vector<Cell>>();
-	m_Cells.resize(BoardTileSize);
-	for (int i = 0; i < BoardTileSize; i++)
+	m_Cells.resize(BoardTileSizes[BoardSizeIndex]);
+	for (int i = 0; i < BoardTileSizes[BoardSizeIndex]; i++)
 	{
-		m_Cells[i].resize(BoardTileSize);
+		m_Cells[i].resize(BoardTileSizes[BoardSizeIndex]);
 	}
 
-	for (int i = 0; i < BoardTileSize; i++)
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
-		m_Cells[i].resize(BoardTileSize);
-	}
-
-	for (int y = 0; y < BoardTileSize; y++)
-	{
-		for (int x = 0; x < BoardTileSize; x++)
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
-			m_Cells[x][y] = Cell(0, Vector2f((float)x, (float)y), Vector2f(TilePixelSize, TilePixelSize));
+			m_Cells[x][y] = Cell(0, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndex], TilePixelSizes[BoardSizeIndex]));
 			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
 		}
 		//printf("\n");
@@ -62,9 +82,9 @@ TileScene2D::TileScene2D()
 	m_Cells[10][12].SetColorIndexImmediate(1);//works :)
 
 	//works :)
-	//for (int y = 0; y < BoardTileSize; y++)
+	//for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	//{
-	//	for (int x = 0; x < BoardTileSize; x++)
+	//	for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 	//	{
 	//		printf("%d|", (int)m_Cells[x][y].IsAlive());
 	//	}
@@ -79,6 +99,36 @@ TileScene2D::~TileScene2D()
 {
 }
 
+void TileScene2D::ResizeBoard()
+{
+	//ffuuuuuuuuuuuuuUUUUUUUUUUUUUUUUUck
+	m_Cells.resize(BoardTileSizes[BoardSizeIndexNextFrame]);
+	for (int i = 0; i < BoardTileSizes[BoardSizeIndexNextFrame]; i++)
+	{
+		m_Cells[i].resize(BoardTileSizes[BoardSizeIndexNextFrame]);
+	}
+
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndexNextFrame]; y++)
+	{
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndexNextFrame]; x++)
+		{
+			//if (x < BoardSizeIndex && y < BoardSizeIndex)
+			//{
+			//	m_Cells[x][y] = Cell(m_Cells[x][y].GetColorIndex(), Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			//}
+			//else
+			//{
+			//	m_Cells[x][y] = Cell(0, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			//}
+			m_Cells[x][y] = Cell(m_ClearColorIndex, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
+		}
+		//printf("\n");
+	}
+
+	BoardSizeIndex = BoardSizeIndexNextFrame;
+}
+
 void TileScene2D::InitializeUI()
 {
 	HandleSimulateButtonReleaseEvent_ptr = std::bind(&TileScene2D::HandleSimulateButtonReleaseEvent, this);
@@ -91,6 +141,9 @@ void TileScene2D::InitializeUI()
 	HandleClearColorDecrementEvent_ptr = std::bind(&TileScene2D::HandleClearColorDecrementEvent, this);
 
 	HandleAddRuleEvent_ptr = std::bind(&TileScene2D::HandleAddRuleEvent, this);
+
+	HandleIncreaseResButtonReleaseEvent_ptr = std::bind(&TileScene2D::HandleIncreaseResButtonReleaseEvent, this);
+	HandleDecreaseResButtonReleaseEvent_ptr = std::bind(&TileScene2D::HandleDecreaseResButtonReleaseEvent, this);
 
 	DoNothing_ptr = std::bind(&TileScene2D::DoNothing, this);
 
@@ -118,6 +171,14 @@ void TileScene2D::InitializeUI()
 	m_AddRuleButton = Button(Vector2f(80, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 126)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "ADD RULE");
 	m_AddRuleButton.SetLeftMouseButtonReleaseEvent(HandleAddRuleEvent_ptr);
 
+
+	//Resolution +/-
+	m_IncreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2 + 60), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+");
+	m_IncreaseResButton.SetLeftMouseButtonReleaseEvent(HandleIncreaseResButtonReleaseEvent_ptr);
+	//text goes here..
+	m_DecreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2 - 60), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-");
+	m_DecreaseResButton.SetLeftMouseButtonReleaseEvent(HandleDecreaseResButtonReleaseEvent_ptr);
+	//m_DecreaseResButton
 
 	//scroll bar
 	float scrollbarX = (float)(caSizes::WINDOW_SIZE_X * 0.98f);
@@ -199,9 +260,9 @@ void TileScene2D::UpdateFPSCounter()
 
 void TileScene2D::HandleClearEvent()
 {
-	for (int y = 0; y < BoardTileSize; y++)
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
-		for (int x = 0; x < BoardTileSize; x++)
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
 			m_Cells[x][y].SetColorIndexImmediate(m_ClearColorIndex);
 		}
@@ -233,6 +294,24 @@ void TileScene2D::HandleNextFrameButtonReleaseEvent()
 	UpdateUnmanaged(0.0f);
 }
 
+
+void TileScene2D::HandleIncreaseResButtonReleaseEvent()
+{
+	if (BoardSizeIndexNextFrame < BoardSizeLen-1)
+	{
+		BoardSizeIndexNextFrame++;
+		ResizeBoard();
+	}
+}
+void TileScene2D::HandleDecreaseResButtonReleaseEvent()
+{
+	if (BoardSizeIndexNextFrame > 0)
+	{
+		BoardSizeIndexNextFrame--;
+		ResizeBoard();
+	}
+}
+
 float fpsCountPre = 0.0f;
 int numWaitFramesPre = 0;
 void TileScene2D::PreUpdate(float a_DeltaTime)
@@ -245,7 +324,6 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	}
 	//...don't judge me -- it's the effect of a messaging system in a fraction of the time.
 	//(not proud its on an update but what is pride?)
-
 
 	if (m_IsSimulating)
 	{
@@ -273,6 +351,8 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	//BUTTON UPDATE
 
 	m_SimulateButton.Update(a_DeltaTime);
+	m_IncreaseResButton.Update(a_DeltaTime);
+	m_DecreaseResButton.Update(a_DeltaTime);
 	m_AddRuleButton.Update(a_DeltaTime);
 	m_IncreasePlaybackSpeedButton.Update(a_DeltaTime);
 	m_DecreasePlaybackSpeedButton.Update(a_DeltaTime);
@@ -308,9 +388,9 @@ void TileScene2D::UpdateRuleScrolling()
 
 void TileScene2D::PreUpdateUnmanaged()
 {
-	for (int y = 0; y < BoardTileSize; y++)
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
-		for (int x = 0; x < BoardTileSize; x++)
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
 			//RULES  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			//DO NOT PROCESS COLORS. EVER. WHO CARES. USE THE COLOR INDEX, WHICH WILL LATER CORRESPOND TO THE INDEX AT caColors::caColors[INDEX]
@@ -330,7 +410,7 @@ void TileScene2D::ProcessRulesAt(int x, int y)
 		{
 			if (j == 0 && i == 0){ continue; }
 
-			neighborColorIndices[c] = m_Cells[Math::mod((x + i), BoardTileSize)][Math::mod((y + j), BoardTileSize)].GetColorIndex();
+			neighborColorIndices[c] = m_Cells[Math::mod((x + i), BoardTileSizes[BoardSizeIndex])][Math::mod((y + j), BoardTileSizes[BoardSizeIndex])].GetColorIndex();
 			c++;
 		}
 	}
@@ -420,18 +500,18 @@ void TileScene2D::Update(float a_DeltaTime)
 	//quick mouse input -- @TODO: check bounds of mouse.
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasLeftMousePressed)
 	{
-		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize));
-		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
-		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
+		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
 		{
 			m_Cells[(unsigned int)x][(unsigned int)y].AdvanceAliveImmediate();
 		}
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) && !m_WasRightMousePressed)
 	{
-		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSize));
-		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSize));
-		if (x < BoardTileSize && x >= 0 && y < BoardTileSize && y >= 0)
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
+		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
 		{
 			m_Cells[(unsigned int)x][(unsigned int)y].ReverseAdvanceAliveImmediate();
 		}
@@ -445,9 +525,9 @@ void TileScene2D::Update(float a_DeltaTime)
 
 void TileScene2D::UpdateUnmanaged(float a_DeltaTime)
 {
-	for (int y = 0; y < BoardTileSize; y++)
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
-		for (int x = 0; x < BoardTileSize; x++)
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
 			m_Cells[x][y].Update(a_DeltaTime);
 
@@ -467,9 +547,9 @@ void TileScene2D::Draw()
 	m_ControlsBG.Draw();
 
 
-	for (int y = 0; y < BoardTileSize; y++)
+	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
-		for (int x = 0; x < BoardTileSize; x++)
+		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
 			m_Cells[x][y].Draw();
 
@@ -477,6 +557,8 @@ void TileScene2D::Draw()
 	}
 
 	m_SimulateButton.Draw();
+	m_IncreaseResButton.Draw();
+	m_DecreaseResButton.Draw();
 	m_AddRuleButton.Draw();
 	m_IncreasePlaybackSpeedButton.Draw();
 	m_DecreasePlaybackSpeedButton.Draw();

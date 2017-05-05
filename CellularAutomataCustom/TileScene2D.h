@@ -50,8 +50,11 @@ private:
 	bool m_WasRightMousePressed;
 
 public:
-	float TilePixelSize = 10;
-	int BoardTileSize = 50;
+	int BoardSizeIndex;
+	int BoardSizeIndexNextFrame;
+	int BoardSizeLen;
+	float* TilePixelSizes;
+	int* BoardTileSizes;
 
 public:
 	bool m_IsSimulating;
@@ -76,6 +79,11 @@ private:
 	Button m_ClearButton;
 	Button m_ClearColorButton;
 	int m_ClearColorIndex;
+
+	//resize 
+	Button m_IncreaseResButton;
+	Button m_DecreaseResButton;
+
 public:
 	void HandleSimulateButtonReleaseEvent();
 	std::function<void()> HandleSimulateButtonReleaseEvent_ptr;
@@ -100,6 +108,12 @@ public:
 	std::function<void()> HandleClearColorIncrementEvent_ptr;
 	void HandleClearColorDecrementEvent();
 	std::function<void()> HandleClearColorDecrementEvent_ptr;
+
+	//Resolution + / -
+	void HandleIncreaseResButtonReleaseEvent();
+	std::function<void()> HandleIncreaseResButtonReleaseEvent_ptr;
+	void HandleDecreaseResButtonReleaseEvent();
+	std::function<void()> HandleDecreaseResButtonReleaseEvent_ptr;
 
 private:
 	void UpdateFPSCounter();
@@ -135,5 +149,8 @@ private:
 
 private:
 	Button m_ControlsBG;
+
+private:
+	void ResizeBoard();
 };
 
