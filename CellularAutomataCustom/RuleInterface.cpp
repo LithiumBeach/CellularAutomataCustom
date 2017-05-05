@@ -5,8 +5,10 @@ extern sf::RenderWindow* g_WINDOW;
  
 RuleInterface::RuleInterface()
 {
-	IncreaseNumNeighborsButton = Button();
-	DecreaseNumNeighborsButton = Button();
+	IncreaseMinNumNeighborsButton = Button();
+	DecreaseMinNumNeighborsButton = Button();
+	IncreaseMaxNumNeighborsButton = Button();
+	DecreaseMaxNumNeighborsButton = Button();
 	DeleteSelfButton = Button();
 	InitializeButtonsNoEvents();
 }
@@ -14,8 +16,10 @@ RuleInterface::RuleInterface()
 void RuleInterface::InitializeButtonsNoEvents()
 {
 	int inc_dec_button_size = 16;
-	IncreaseNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
-	DecreaseNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
+	IncreaseMinNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
+	DecreaseMinNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
+	IncreaseMaxNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
+	DecreaseMaxNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
 	DeleteSelfButton = Button(Vector2f(12, 48), Vector2f(0, 0), caColors::red, caColors::border_red, *caFonts::s_DefaultFont, 2.0f, "X");
 
 	//transparent = temp.
@@ -100,60 +104,105 @@ void RuleInterface::SetPosition(sf::Vector2f a_Pos)
 
 	RuleLabelText.setOrigin(sf::Vector2f(0, RuleLabelText.getLocalBounds().height));
 	RuleLabelText.setPosition(Origin);
-	NumNeighborsLabelText.setOrigin(sf::Vector2f(0, NumNeighborsLabelText.getLocalBounds().height / 2.0f));
-	NumNeighborsLabelText.setPosition(a_Pos + sf::Vector2f(25, 44));
 
-	IncreaseNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(55, 25));
+	MinNumNeighborsLabelText.setOrigin(sf::Vector2f(0, MinNumNeighborsLabelText.getLocalBounds().height / 2.0f));
+	MinNumNeighborsLabelText.setPosition(a_Pos + sf::Vector2f(25, 44));
 
-	NumNeighborsText.setOrigin(sf::Vector2f(NumNeighborsText.getLocalBounds().width / 2.0f, NumNeighborsText.getLocalBounds().height / 2.0f));
-	NumNeighborsText.setPosition(a_Pos + sf::Vector2f(55, 44));
-
-	DecreaseNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(55, 75));
-
-	ThisColorLabelText.setOrigin(sf::Vector2f(ThisColorLabelText.getLocalBounds().width / 3.0f, ThisColorLabelText.getLocalBounds().height / 2.0f));
-	ThisColorLabelText.setPosition(a_Pos + sf::Vector2f(120, -19));
-
-	ChangeThisColorButton.SetPosition(a_Pos + sf::Vector2f(254, -9));
-
-	IfColorLabelText.setOrigin(sf::Vector2f(IfColorLabelText.getLocalBounds().width / 2.0f, IfColorLabelText.getLocalBounds().height / 2.0f));
-	IfColorLabelText.setPosition(a_Pos + sf::Vector2f(130, 22));
-
-	ChangeIfColorButton.SetPosition(a_Pos + sf::Vector2f(230, 50));
-
-	ThenColorLabelText.setOrigin(sf::Vector2f(ThenColorLabelText.getLocalBounds().width / 2.0f, ThenColorLabelText.getLocalBounds().height / 2.0f));
-	ThenColorLabelText.setPosition(a_Pos + sf::Vector2f(330, 36));
-
-	ChangeThenColorButton.SetPosition(a_Pos + sf::Vector2f(430, 50));
+	MaxNumNeighborsLabelText.setOrigin(sf::Vector2f(0, MaxNumNeighborsLabelText.getLocalBounds().height / 2.0f));
+	MaxNumNeighborsLabelText.setPosition(a_Pos + sf::Vector2f(133, 44));
 
 	DeleteSelfButton.SetPosition(a_Pos + sf::Vector2f(8, 50));
+
+	///////////////
+	//Num Neighbors
+	//MIN
+	IncreaseMinNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(120, 25));
+
+	MinNumNeighborsText.setOrigin(sf::Vector2f(MinNumNeighborsText.getLocalBounds().width / 2.0f, MinNumNeighborsText.getLocalBounds().height / 2.0f));
+	MinNumNeighborsText.setPosition(a_Pos + sf::Vector2f(120, 44));
+
+	DecreaseMinNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(120, 75));
+
+	//MAX
+	IncreaseMaxNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(180, 25));
+
+	MaxNumNeighborsText.setOrigin(sf::Vector2f(MaxNumNeighborsText.getLocalBounds().width / 2.0f, MaxNumNeighborsText.getLocalBounds().height / 2.0f));
+	MaxNumNeighborsText.setPosition(a_Pos + sf::Vector2f(180, 44));
+
+	DecreaseMaxNumNeighborsButton.SetPosition(a_Pos + sf::Vector2f(180, 75));
+	//
+	//////////////
+
+	ThisColorLabelText.setOrigin(sf::Vector2f(ThisColorLabelText.getLocalBounds().width / 3.0f, ThisColorLabelText.getLocalBounds().height / 2.0f));
+	ThisColorLabelText.setPosition(a_Pos + sf::Vector2f(110, -19));
+
+	ChangeThisColorButton.SetPosition(a_Pos + sf::Vector2f(265, -9));
+
+	IfColorLabelText.setOrigin(sf::Vector2f(IfColorLabelText.getLocalBounds().width / 2.0f, IfColorLabelText.getLocalBounds().height / 2.0f));
+	IfColorLabelText.setPosition(a_Pos + sf::Vector2f(255, 22));
+
+	ChangeIfColorButton.SetPosition(a_Pos + sf::Vector2f(350, 50));
+
+	ThenColorLabelText.setOrigin(sf::Vector2f(ThenColorLabelText.getLocalBounds().width / 2.0f, ThenColorLabelText.getLocalBounds().height / 2.0f));
+	ThenColorLabelText.setPosition(a_Pos + sf::Vector2f(440, 36));
+
+	ChangeThenColorButton.SetPosition(a_Pos + sf::Vector2f(520, 50));
 }
 
-void RuleInterface::SetNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
+void RuleInterface::SetMinNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
 {
-	NumNeighborsLabelText.setFont(a_Font);
-	NumNeighborsLabelText.setCharacterSize(a_CharacterSize);
-	NumNeighborsLabelText.setColor(a_TextColor);
-	NumNeighborsLabelText.setStyle(sf::Text::Regular);
-	NumNeighborsLabelText.setString(a_Words);
+	MinNumNeighborsLabelText.setFont(a_Font);
+	MinNumNeighborsLabelText.setCharacterSize(a_CharacterSize);
+	MinNumNeighborsLabelText.setColor(a_TextColor);
+	MinNumNeighborsLabelText.setStyle(sf::Text::Regular);
+	MinNumNeighborsLabelText.setString(a_Words);
 	//left aligned...
-	NumNeighborsLabelText.setOrigin(sf::Vector2f(0, NumNeighborsLabelText.getLocalBounds().height / 2.0f));
+	MinNumNeighborsLabelText.setOrigin(sf::Vector2f(0, MinNumNeighborsLabelText.getLocalBounds().height / 2.0f));
 }
 
-void RuleInterface::UpdateNumNeighborsText(int a_NumNeighbors)
+void RuleInterface::UpdateMinNumNeighborsText(int a_MinNumNeighbors)
 {
-	NumNeighborsText.setString(std::to_string(a_NumNeighbors));
-	//NumNeighborsText.setString("sanity check");
+	MinNumNeighborsText.setString(std::to_string(a_MinNumNeighbors));
+	//MinNumNeighborsText.setString("sanity check");
 }
 
-void RuleInterface::SetNumNeighborsText(int a_NumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
+void RuleInterface::SetMinNumNeighborsText(int a_MinNumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
 {
-	NumNeighborsText.setFont(a_Font);
-	NumNeighborsText.setCharacterSize(a_CharacterSize);
-	NumNeighborsText.setColor(a_TextColor);
-	NumNeighborsText.setStyle(sf::Text::Regular);
-	UpdateNumNeighborsText(a_NumNeighbors);
+	MinNumNeighborsText.setFont(a_Font);
+	MinNumNeighborsText.setCharacterSize(a_CharacterSize);
+	MinNumNeighborsText.setColor(a_TextColor);
+	MinNumNeighborsText.setStyle(sf::Text::Regular);
+	UpdateMinNumNeighborsText(a_MinNumNeighbors);
 	//left aligned...
-	NumNeighborsText.setOrigin(sf::Vector2f(NumNeighborsText.getLocalBounds().width / 2.0f, NumNeighborsText.getLocalBounds().height / 2.0f));
+	MinNumNeighborsText.setOrigin(sf::Vector2f(MinNumNeighborsText.getLocalBounds().width / 2.0f, MinNumNeighborsText.getLocalBounds().height / 2.0f));
+}
+
+void RuleInterface::SetMaxNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
+{
+	MaxNumNeighborsLabelText.setFont(a_Font);
+	MaxNumNeighborsLabelText.setCharacterSize(a_CharacterSize);
+	MaxNumNeighborsLabelText.setColor(a_TextColor);
+	MaxNumNeighborsLabelText.setStyle(sf::Text::Regular);
+	MaxNumNeighborsLabelText.setString(a_Words);
+	//left aligned...
+	MaxNumNeighborsLabelText.setOrigin(sf::Vector2f(0, MaxNumNeighborsLabelText.getLocalBounds().height / 2.0f));
+}
+
+void RuleInterface::UpdateMaxNumNeighborsText(int a_MaxNumNeighbors)
+{
+	MaxNumNeighborsText.setString(std::to_string(a_MaxNumNeighbors));
+	//MaxNumNeighborsText.setString("sanity check");
+}
+
+void RuleInterface::SetMaxNumNeighborsText(int a_MaxNumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor)
+{
+	MaxNumNeighborsText.setFont(a_Font);
+	MaxNumNeighborsText.setCharacterSize(a_CharacterSize);
+	MaxNumNeighborsText.setColor(a_TextColor);
+	MaxNumNeighborsText.setStyle(sf::Text::Regular);
+	UpdateMaxNumNeighborsText(a_MaxNumNeighbors);
+	//left aligned...
+	MaxNumNeighborsText.setOrigin(sf::Vector2f(MaxNumNeighborsText.getLocalBounds().width / 2.0f, MaxNumNeighborsText.getLocalBounds().height / 2.0f));
 }
 
 
@@ -161,8 +210,10 @@ void RuleInterface::SetNumNeighborsText(int a_NumNeighbors, sf::Font& a_Font, in
 
 void RuleInterface::Update(float a_DeltaTime)
 {
-	IncreaseNumNeighborsButton.Update(a_DeltaTime);
-	DecreaseNumNeighborsButton.Update(a_DeltaTime);
+	IncreaseMinNumNeighborsButton.Update(a_DeltaTime);
+	DecreaseMinNumNeighborsButton.Update(a_DeltaTime);
+	IncreaseMaxNumNeighborsButton.Update(a_DeltaTime);
+	DecreaseMaxNumNeighborsButton.Update(a_DeltaTime);
 	ChangeThisColorButton.Update(a_DeltaTime);
 	ChangeIfColorButton.Update(a_DeltaTime);
 	ChangeThenColorButton.Update(a_DeltaTime);
@@ -174,10 +225,14 @@ void RuleInterface::Draw()
 	g_WINDOW->draw(ThisColorLabelText);
 	ChangeThisColorButton.Draw();
 
-	g_WINDOW->draw(NumNeighborsLabelText);
-	g_WINDOW->draw(NumNeighborsText);
-	IncreaseNumNeighborsButton.Draw();
-	DecreaseNumNeighborsButton.Draw();
+	g_WINDOW->draw(MinNumNeighborsLabelText);
+	g_WINDOW->draw(MinNumNeighborsText);
+	IncreaseMinNumNeighborsButton.Draw();
+	DecreaseMinNumNeighborsButton.Draw();
+	g_WINDOW->draw(MaxNumNeighborsLabelText);
+	g_WINDOW->draw(MaxNumNeighborsText);
+	IncreaseMaxNumNeighborsButton.Draw();
+	DecreaseMaxNumNeighborsButton.Draw();
 	g_WINDOW->draw(RuleLabelText);
 
 	g_WINDOW->draw(IfColorLabelText);

@@ -41,7 +41,7 @@ void main()
 				}
 				break;
 			case sf::Event::MouseWheelMoved:
-				input::MouseWheelDelta = e.mouseWheel.delta;
+				input::MouseWheelDelta = (float)e.mouseWheel.delta;
 				break;
 			}
 

@@ -8,17 +8,18 @@
 struct RuleData
 {
 	RuleData(){};
-	RuleData(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor)
+	RuleData(int a_ThisColor, int a_MinNumNeighbors, int a_MaxNumNeighbors, bool a_RingLevel[2], int a_IfColor, int a_ThenColor)
 	{
-		ThisColor = a_ThisColor;
+		ThisColorIndex = a_ThisColor;
 
-		NumNeighbors = a_NumNeighbors;
+		MinNumNeighbors = a_MinNumNeighbors;
+		MaxNumNeighbors = a_MaxNumNeighbors;
 
 		RingLevel[0] = a_RingLevel[0];
 		RingLevel[1] = a_RingLevel[1];
 
-		IfColor = a_IfColor;
-		ThenColor = a_ThenColor;
+		IfColorIndex = a_IfColor;
+		ThenColorIndex = a_ThenColor;
 	}
 
 	//Concerning cells of this color:
@@ -27,8 +28,9 @@ struct RuleData
 	int ThisColorIndex;
 
 	//If there are (#)
-	//std::string NumNeighborsLabel = "If there are";
-	int NumNeighbors;
+	//std::string MinNumNeighborsLabel = "If there are";
+	int MinNumNeighbors;
+	int MaxNumNeighbors;
 
 	//in ring(s) level around this Cell
 	//std::string RingLevelLabel = "in ring(s) level around this Cell";
@@ -51,7 +53,7 @@ struct RuleData
 class Rule
 {
 public:
-	Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor, int _containerIndex);
+	Rule(int a_ThisColor, int a_MinNumNeighbors, int a_MaxNumNeighbors, bool a_RingLevel[2], int a_IfColor, int a_ThenColor, int _containerIndex);
 	~Rule();
 
 public:
@@ -73,10 +75,15 @@ public:
 
 public:
 	//Num Neighbor events
-	void HandleIncreaseNumNeighborsButton();
-	std::function<void()> ptr_HandleIncreaseNumNeighborsButton;
-	void HandleDecreaseNumNeighborsButton();
-	std::function<void()> ptr_HandleDecreaseNumNeighborsButton;
+	void HandleIncreaseMinNumNeighborsButton();
+	std::function<void()> ptr_HandleIncreaseMinNumNeighborsButton;
+	void HandleDecreaseMinNumNeighborsButton();
+	std::function<void()> ptr_HandleDecreaseMinNumNeighborsButton;
+
+	void HandleIncreaseMaxNumNeighborsButton();
+	std::function<void()> ptr_HandleIncreaseMaxNumNeighborsButton;
+	void HandleDecreaseMaxNumNeighborsButton();
+	std::function<void()> ptr_HandleDecreaseMaxNumNeighborsButton;
 
 	//If Color events
 	void HandleAdvanceIfColorButton();

@@ -37,9 +37,9 @@ private:// min/max are INCLUSIVE -- return TRUE when conditions are met
 	{
 		return GetBetweenMinMaxInclusive(a_NumLiveNeighbors, a_MinLiveNeighbors, a_MaxLiveNeighbors);
 	}
-	bool ShouldRaiseDead(int a_NumLiveNeighbors, int a_NumNeighborsNeededToRaise)
+	bool ShouldRaiseDead(int a_NumLiveNeighbors, int a_MinNumNeighborsNeededToRaise)
 	{
-		return a_NumLiveNeighbors == a_NumNeighborsNeededToRaise;
+		return a_NumLiveNeighbors == a_MinNumNeighborsNeededToRaise;
 	}
 
 private:
@@ -122,7 +122,7 @@ public:
 	std::function<void()> HandleAddRuleEvent_ptr;
 	
 	//removes a button at index
-	void HandleRemoveRuleEvent(int index);
+	void HandleRemoveRuleEvent(unsigned int index);
 
 private:
 	void ProcessRulesAt(int x, int y);

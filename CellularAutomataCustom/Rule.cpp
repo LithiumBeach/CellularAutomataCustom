@@ -4,14 +4,18 @@
 
 int Rule::s_RuleCount = 0;
 
-Rule::Rule(sf::Color a_ThisColor, int a_NumNeighbors, bool a_RdddingLevel[2], sf::Color a_IfColor, sf::Color a_ThenColor, int _containerIndex)
+Rule::Rule(int a_ThisColor, int a_MinNumNeighbors, int a_MaxNumNeighbors, bool a_RdddingLevel[2], int a_IfColor, int a_ThenColor, int _containerIndex)
 {
 	++s_RuleCount;
 	bool a_RingLevel[2] = {true, false};
-	m_RuleData = new RuleData(a_ThisColor, a_NumNeighbors, a_RingLevel, a_IfColor, a_ThenColor);
-	m_RuleData->ThisColorIndex = -1;
-	m_RuleData->IfColorIndex = 0;
-	m_RuleData->ThenColorIndex = 0;
+	m_RuleData = new RuleData(a_ThisColor, a_MinNumNeighbors, a_MaxNumNeighbors, a_RingLevel, a_IfColor, a_ThenColor);
+	m_RuleData->ThisColorIndex = a_ThisColor;
+	m_RuleData->IfColorIndex = a_IfColor;
+	m_RuleData->ThenColorIndex = a_ThenColor;
+
+	m_RuleData->ThisColor = caColors::caColors[a_ThisColor];
+	m_RuleData->IfColor = caColors::caColors[a_IfColor];
+	m_RuleData->ThenColor = caColors::caColors[a_ThenColor];
 
 	m_Interface = new RuleInterface();
 	
@@ -31,8 +35,11 @@ void Rule::InitializeInterface()
 {
 	m_Interface->InitializeButtonsNoEvents();
 
-	ptr_HandleIncreaseNumNeighborsButton = std::bind(&Rule::HandleIncreaseNumNeighborsButton, this);
-	ptr_HandleDecreaseNumNeighborsButton = std::bind(&Rule::HandleDecreaseNumNeighborsButton, this);
+	ptr_HandleIncreaseMinNumNeighborsButton = std::bind(&Rule::HandleIncreaseMinNumNeighborsButton, this);
+	ptr_HandleDecreaseMinNumNeighborsButton = std::bind(&Rule::HandleDecreaseMinNumNeighborsButton, this);
+
+	ptr_HandleIncreaseMaxNumNeighborsButton = std::bind(&Rule::HandleIncreaseMaxNumNeighborsButton, this);
+	ptr_HandleDecreaseMaxNumNeighborsButton = std::bind(&Rule::HandleDecreaseMaxNumNeighborsButton, this);
 
 	ptr_HandleAdvanceThisColorButton = std::bind(&Rule::HandleAdvanceThisColorButton, this);
 	ptr_HandleReverseAdvanceThisColorButton = std::bind(&Rule::HandleReverseAdvanceThisColorButton, this);
@@ -44,8 +51,11 @@ void Rule::InitializeInterface()
 
 	ptr_HandleDeleteButton = std::bind(&Rule::HandleDelete, this);
 
-	m_Interface->IncreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleIncreaseNumNeighborsButton;
-	m_Interface->DecreaseNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleDecreaseNumNeighborsButton;
+	m_Interface->IncreaseMinNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleIncreaseMinNumNeighborsButton;
+	m_Interface->DecreaseMinNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleDecreaseMinNumNeighborsButton;
+
+	m_Interface->IncreaseMaxNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleIncreaseMaxNumNeighborsButton;
+	m_Interface->DecreaseMaxNumNeighborsButton.LeftMouseButtonReleaseEvent = ptr_HandleDecreaseMaxNumNeighborsButton;
 
 	m_Interface->ChangeThisColorButton.LeftMouseButtonReleaseEvent = ptr_HandleAdvanceThisColorButton;
 	m_Interface->ChangeThisColorButton.RightMouseButtonReleaseEvent = ptr_HandleReverseAdvanceThisColorButton;
@@ -60,13 +70,18 @@ void Rule::InitializeInterface()
 	
 	std::string ruleLabelString = "\nRule " + std::to_string(s_RuleCount) + ":\n";
 	m_Interface->SetRuleLabelText(ruleLabelString, *(caFonts::s_DefaultFont), 16, caColors::RuleLabelTextColor);
-	std::string nnStr = "If";
-	m_Interface->SetNumNeighborsLabelText(nnStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
-	m_Interface->SetNumNeighborsText(m_RuleData->NumNeighbors, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
+
+	std::string nnStr = "If\nbetween";
+	m_Interface->SetMinNumNeighborsLabelText(nnStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
+	m_Interface->SetMinNumNeighborsText(m_RuleData->MinNumNeighbors, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
+
+	std::string nnStr2 = "and";
+	m_Interface->SetMaxNumNeighborsLabelText(nnStr2, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
+	m_Interface->SetMaxNumNeighborsText(m_RuleData->MaxNumNeighbors, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 
 	const std::string concString = "\nconcerning Cells of color:\n";
 	m_Interface->SetThisColorLabelText(concString, *(caFonts::s_DefaultFont), 16, caColors::RuleLabelTextColor);
-	m_Interface->ChangeThisColorButton.SetText("ANY");
+	m_Interface->ChangeThisColorButton.SetText(m_RuleData->ThisColorIndex == -1 ? "ANY" : "");
 
 	std::string ifStr = "\nneighboring\ncells are:";
 	m_Interface->SetIfColorLabelText(ifStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
@@ -74,23 +89,45 @@ void Rule::InitializeInterface()
 	m_Interface->SetThenColorLabelText(thnStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 
 	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (s_RuleCount-1)))));
+
+	m_Interface->ChangeThisColorButton.SetFill(m_RuleData->ThisColor);
+	m_Interface->ChangeIfColorButton.SetFill(m_RuleData->IfColor);
+	m_Interface->ChangeThenColorButton.SetFill(m_RuleData->ThenColor);
 }
-void Rule::HandleIncreaseNumNeighborsButton()
+void Rule::HandleIncreaseMinNumNeighborsButton()
 {
 	//max 8 tiles around a single tile (first layer)
-	if (m_RuleData->NumNeighbors < 8)
+	if (m_RuleData->MinNumNeighbors < 8)
 	{
-		m_RuleData->NumNeighbors++;
+		m_RuleData->MinNumNeighbors++;
 	}
-	m_Interface->UpdateNumNeighborsText(m_RuleData->NumNeighbors);
+	m_Interface->UpdateMinNumNeighborsText(m_RuleData->MinNumNeighbors);
 }
-void Rule::HandleDecreaseNumNeighborsButton()
+void Rule::HandleDecreaseMinNumNeighborsButton()
 {
-	if (m_RuleData->NumNeighbors > 0)
+	if (m_RuleData->MinNumNeighbors > 0)
 	{
-		m_RuleData->NumNeighbors--;
+		m_RuleData->MinNumNeighbors--;
 	}
-	m_Interface->UpdateNumNeighborsText(m_RuleData->NumNeighbors);
+	m_Interface->UpdateMinNumNeighborsText(m_RuleData->MinNumNeighbors);
+}
+
+void Rule::HandleIncreaseMaxNumNeighborsButton()
+{
+	//max 8 tiles around a single tile (first layer)
+	if (m_RuleData->MaxNumNeighbors < 8)
+	{
+		m_RuleData->MaxNumNeighbors++;
+	}
+	m_Interface->UpdateMaxNumNeighborsText(m_RuleData->MaxNumNeighbors);
+}
+void Rule::HandleDecreaseMaxNumNeighborsButton()
+{
+	if (m_RuleData->MaxNumNeighbors > 0)
+	{
+		m_RuleData->MaxNumNeighbors--;
+	}
+	m_Interface->UpdateMaxNumNeighborsText(m_RuleData->MaxNumNeighbors);
 }
 
 
@@ -151,8 +188,8 @@ void Rule::HandleAdvanceIfColorButton()
 		m_RuleData->IfColorIndex = 0;
 	}
 
-	m_Interface->ChangeIfColorButton.SetFill(caColors::caColors[m_RuleData->IfColorIndex]);
 	m_RuleData->IfColor = caColors::caColors[m_RuleData->IfColorIndex];
+	m_Interface->ChangeIfColorButton.SetFill(m_RuleData->IfColor);
 }
 void Rule::HandleReverseAdvanceIfColorButton()
 {
@@ -162,8 +199,8 @@ void Rule::HandleReverseAdvanceIfColorButton()
 		m_RuleData->IfColorIndex = caColors::caColorsLen-1;
 	}
 
-	m_Interface->ChangeIfColorButton.SetFill(caColors::caColors[m_RuleData->IfColorIndex]);
 	m_RuleData->IfColor = caColors::caColors[m_RuleData->IfColorIndex];
+	m_Interface->ChangeIfColorButton.SetFill(m_RuleData->IfColor);
 }
 
 void Rule::HandleAdvanceThenColorButton()
@@ -174,8 +211,8 @@ void Rule::HandleAdvanceThenColorButton()
 		m_RuleData->ThenColorIndex = 0;
 	}
 
-	m_Interface->ChangeThenColorButton.SetFill(caColors::caColors[m_RuleData->ThenColorIndex]);
 	m_RuleData->ThenColor = caColors::caColors[m_RuleData->ThenColorIndex];
+	m_Interface->ChangeThenColorButton.SetFill(m_RuleData->ThenColor);
 }
 void Rule::HandleReverseAdvanceThenColorButton()
 {
@@ -185,8 +222,8 @@ void Rule::HandleReverseAdvanceThenColorButton()
 		m_RuleData->ThenColorIndex = caColors::caColorsLen - 1;
 	}
 
-	m_Interface->ChangeThenColorButton.SetFill(caColors::caColors[m_RuleData->ThenColorIndex]);
 	m_RuleData->ThenColor = caColors::caColors[m_RuleData->ThenColorIndex];
+	m_Interface->ChangeThenColorButton.SetFill(m_RuleData->ThenColor);
 }
 
 void Rule::HandleDelete()

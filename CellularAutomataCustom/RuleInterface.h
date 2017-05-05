@@ -38,16 +38,28 @@ public:
 	sf::Text RuleLabelText;
 
 public:
+	//MIN NEIGHBORS
 	//label
-	void SetNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
-	sf::Text NumNeighborsLabelText;
+	void SetMinNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	sf::Text MinNumNeighborsLabelText;
 	//data link
-	void SetNumNeighborsText(int a_NumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
-	void UpdateNumNeighborsText(int a_NumNeighbors);
+	void SetMinNumNeighborsText(int a_MinNumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	void UpdateMinNumNeighborsText(int a_MinNumNeighbors);
 	//ui
-	sf::Text NumNeighborsText;
-	Button IncreaseNumNeighborsButton;
-	Button DecreaseNumNeighborsButton;
+	sf::Text MinNumNeighborsText;
+	Button IncreaseMinNumNeighborsButton;
+	Button DecreaseMinNumNeighborsButton;
+	//MAX NEIGHBORS
+	//label
+	void SetMaxNumNeighborsLabelText(std::string a_Words, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	sf::Text MaxNumNeighborsLabelText;
+	//data link
+	void SetMaxNumNeighborsText(int a_MaxNumNeighbors, sf::Font& a_Font, int a_CharacterSize, sf::Color a_TextColor);
+	void UpdateMaxNumNeighborsText(int a_MaxNumNeighbors);
+	//ui
+	sf::Text MaxNumNeighborsText;
+	Button IncreaseMaxNumNeighborsButton;
+	Button DecreaseMaxNumNeighborsButton;
 
 public:
 	//label

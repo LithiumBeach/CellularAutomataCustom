@@ -127,26 +127,32 @@ void TileScene2D::InitializeUI()
 									(float)(caSizes::WINDOW_SIZE_Y * .8f)
 									);
 
-	m_ControlsBG = Button(sf::Vector2f(caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f(caSizes::LEFT_WINDOW_SIZE_X / 2, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
+	m_ControlsBG = Button(sf::Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X / 2, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
 
 }
 
 void TileScene2D::IntializeRules()
 {
 	m_Rules = new std::vector<Rule*>();
-	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black, 0));
+
+
+	//initialize poppa Conway's ruleset
+	m_Rules->push_back(new Rule(1, 0, 1, new bool[2]{true, false}, 1, 0, 0));//underpopulation
+	m_Rules->push_back(new Rule(1, 3, 8, new bool[2]{true, false}, 1, 0, 1));//overpopulation
+	m_Rules->push_back(new Rule(1, 2, 3, new bool[2]{true, false}, 1, 1, 2));//unchanged
+	m_Rules->push_back(new Rule(0, 3, 3, new bool[2]{true, false}, 1, 1, 3));//resurrection
 
 }
 //sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (_newIndex))))
 void TileScene2D::HandleAddRuleEvent()
 {
 	int index = m_Rules->size();
-	m_Rules->push_back(new Rule(sf::Color::White, 2, new bool[2]{true, false}, sf::Color::White, sf::Color::Black, index));
+	m_Rules->push_back(new Rule(0, 2, 2, new bool[2]{true, false}, 0, 0, index));
 	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
 	UpdateRuleScrolling();
 }
 
-void TileScene2D::HandleRemoveRuleEvent(int index)
+void TileScene2D::HandleRemoveRuleEvent(unsigned int index)
 {
 	if (index >= 0 && index < m_Rules->size())
 	{
@@ -347,7 +353,7 @@ void TileScene2D::ProcessRulesAt(int x, int y)
 					ifColorIndexCount++;
 				}
 			}
-			if (ifColorIndexCount == m_Rules->at(i)->m_RuleData->NumNeighbors)
+			if (ifColorIndexCount >= m_Rules->at(i)->m_RuleData->MinNumNeighbors && ifColorIndexCount <= m_Rules->at(i)->m_RuleData->MaxNumNeighbors)
 			{
 				m_Cells[x][y].SetColorIndexNextFrame(m_Rules->at(i)->m_RuleData->ThenColorIndex);
 			}
