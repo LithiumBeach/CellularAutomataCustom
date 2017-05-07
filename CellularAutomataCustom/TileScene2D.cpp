@@ -97,6 +97,24 @@ TileScene2D::TileScene2D()
 
 TileScene2D::~TileScene2D()
 {
+	delete TilePixelSizes;
+	TilePixelSizes = NULL;
+	delete BoardTileSizes;
+	BoardTileSizes = NULL;
+	delete m_PlaybackSpeeds;
+	m_PlaybackSpeeds = NULL;
+	
+	for (size_t i = m_Rules->size()-1; i >= 0; i--)
+	{
+		delete m_Rules->at(i);
+		m_Rules->erase(m_Rules->begin() + i);
+	}
+	m_Rules->clear();
+	delete m_Rules;
+	m_Rules = NULL;
+
+	delete m_RuleScrollBar;
+	m_RuleScrollBar = NULL;
 }
 
 void TileScene2D::ResizeBoard()
@@ -226,7 +244,6 @@ void TileScene2D::HandleRemoveRuleEvent(unsigned int index)
 		m_Rules->at(i)->Refresh(i);
 	}
 	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
-	m_RuleScrollBar->ScrollForAFrame();
 
 	UpdateRuleScrolling();
 }
@@ -377,12 +394,16 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 
 void TileScene2D::UpdateRuleScrolling()
 {
-	for (size_t i = 0; i < m_Rules->size(); i++)
+	float r = m_RuleScrollBar->GetRatio();
+	if (r < 1.05f && r > -0.05f && (r < 0.499f || r > 0.501f))
 	{
-		float scrollPos = ((m_RuleScrollBar->GetRatio()) * (m_RuleScrollBar->m_TargetSize - m_RuleScrollBar->m_TargetOverflowSize));
+		for (size_t i = 0; i < m_Rules->size(); i++)
+		{
+			float scrollPos = ((r) * (m_RuleScrollBar->m_TargetSize - m_RuleScrollBar->m_TargetOverflowSize));
 
-		m_Rules->at(i)->m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8),
-															  (float)(40 + (112 * i)) - scrollPos));
+			m_Rules->at(i)->m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8),
+				(float)(40 + (112 * i)) - scrollPos));
+		}
 	}
 }
 

@@ -29,6 +29,10 @@ Rule::Rule(int a_ThisColor, int a_MinNumNeighbors, int a_MaxNumNeighbors, bool a
 Rule::~Rule()
 {
 	--s_RuleCount;
+	delete m_RuleData;
+	m_RuleData = NULL;
+	delete m_Interface;
+	m_Interface = NULL;
 }
 
 void Rule::InitializeInterface()

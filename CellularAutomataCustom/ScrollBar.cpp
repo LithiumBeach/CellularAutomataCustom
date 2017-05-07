@@ -53,6 +53,8 @@ ScrollBar::ScrollBar(Vector2f a_TopCenter, Vector2f a_BottomCenter, float a_Widt
 
 ScrollBar::~ScrollBar()
 {
+	delete m_Slider;
+	m_Slider = NULL;
 }
 
 void ScrollBar::OnSliderDown()
@@ -70,21 +72,18 @@ void ScrollBar::OnSliderUp()
 	m_IsScrolling = false;
 }
 
-bool isScrollingForAFrame = false;
 const float scrollSpeed = 0.05f;
 void ScrollBar::Update(float a_DeltaTime)
 {
-
-	if (m_IsScrolling || isScrollingForAFrame)
+	if (m_IsScrolling)
 	{
-		Vector2f sliderPos = m_Slider->GetPosition();
 		m_Slider->SetPosition(Vector2f(centerpos.x, Math::Clamp((float)sf::Mouse::getPosition(*g_WINDOW).y, LowerYBound, UpperYBound)));
-		isScrollingForAFrame = false;
+		
 	}
 
 	if (abs(input::MouseWheelDelta) > 0.0f && m_SliderHeight < (m_BGHeight - 2.0f * c_OutlineSize))
 	{
-		m_Slider->SetPosition(Vector2f(centerpos.x, Math::Clamp(m_Slider->GetPosition().y + (-input::MouseWheelDelta * (m_SliderHeight)) * scrollSpeed, LowerYBound, UpperYBound)));
+		m_Slider->SetPosition(Vector2f(centerpos.x, Math::Clamp((m_Slider->GetPosition().y + (-input::MouseWheelDelta * (m_SliderHeight)) * scrollSpeed), LowerYBound, UpperYBound)));
 	}
 
 	m_Slider->Update(a_DeltaTime);
@@ -93,9 +92,10 @@ void ScrollBar::Update(float a_DeltaTime)
 void ScrollBar::UpdateTargetSize(float newSize)
 {
 	m_TargetSize = newSize;
+	//float sliderSizeRatio = newSize > m_TargetOverflowSize ? (m_TargetOverflowSize / newSize) : 1;
 	float sliderSizeRatio = newSize > m_TargetOverflowSize ? (m_TargetOverflowSize / newSize) : 1;
 
-	if (sliderSizeRatio < .95f)
+	if (sliderSizeRatio < 1.0f)
 	{
 		float prevSliderHeight = m_SliderHeight;
 
@@ -108,7 +108,14 @@ void ScrollBar::UpdateTargetSize(float newSize)
 		UpperYBound = centerpos.y - c_OutlineSize + m_BGHeight * .5f - m_SliderHeight * .5f;
 		LowerYBound = centerpos.y + c_OutlineSize - m_BGHeight * .5f + m_SliderHeight * .5f;
 
-		Vector2f sliderPos = Vector2f(centerpos.x, Math::Lerp(LowerYBound, UpperYBound, GetRatio()) - diff / 2.0f);
+		//Vector2f sliderPos = Vector2f(centerpos.x, Math::Lerp(LowerYBound, UpperYBound, GetRatio()) - diff / 2.0f);
+		Vector2f sliderPos = Vector2f(centerpos.x, Math::Clamp(m_Slider->GetPosition().y, LowerYBound, UpperYBound));
+		m_Slider->SetPosition(sliderPos);
+
+		m_Slider->LeftMouseButtonPressEvent();
+		m_Slider->LeftMouseButtonReleaseEvent();
+
+		sliderPos = Vector2f(centerpos.x, Math::Clamp(m_Slider->GetPosition().y, LowerYBound, UpperYBound));
 		m_Slider->SetPosition(sliderPos);
 	}
 }
@@ -120,11 +127,6 @@ float ScrollBar::GetRatio()
 		return 0;
 	}
 	return Math::InverseLerp(LowerYBound, UpperYBound, m_Slider->GetPosition().y);
-}
-
-void ScrollBar::ScrollForAFrame()
-{
-	isScrollingForAFrame = true;
 }
 
 void ScrollBar::Draw()

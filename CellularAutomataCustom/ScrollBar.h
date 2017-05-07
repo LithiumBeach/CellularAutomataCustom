@@ -63,8 +63,5 @@ public:
 private:
 	Vector2f centerpos;
 
-public:
-	void ScrollForAFrame();
-
 };
  

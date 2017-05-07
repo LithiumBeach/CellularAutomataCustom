@@ -133,8 +133,9 @@ void RuleInterface::SetPosition(sf::Vector2f a_Pos)
 	//
 	//////////////
 
-	ThisColorLabelText.setOrigin(sf::Vector2f(ThisColorLabelText.getLocalBounds().width / 3.0f, ThisColorLabelText.getLocalBounds().height / 2.0f));
-	ThisColorLabelText.setPosition(a_Pos + sf::Vector2f(110, -19));
+	ThisColorLabelText.setOrigin(sf::Vector2f(0, ThisColorLabelText.getLocalBounds().height / 2.0f));
+
+	ThisColorLabelText.setPosition(a_Pos + sf::Vector2f(70, -19));
 
 	ChangeThisColorButton.SetPosition(a_Pos + sf::Vector2f(265, -9));
 
