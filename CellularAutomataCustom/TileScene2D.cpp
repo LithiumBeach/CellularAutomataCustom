@@ -19,6 +19,7 @@ TileScene2D::TileScene2D()
 	BoardSizeIndexNextFrame = BoardSizeIndex = 3;
 	BoardSizeLen = 6;
 
+	//Resolution arrays
 	TilePixelSizes = new float[BoardSizeLen]
 	{
 		100,
@@ -39,12 +40,7 @@ TileScene2D::TileScene2D()
 	};
 
 
-
-
-	m_FPSButton = Button();
 	FramesPerSecond = 1.0f / m_PlaybackSpeeds[playbackSpeedsIndex];
-
-	m_NextFrameButton = Button();
 
 	m_Cells = std::vector<std::vector<Cell>>();
 	m_Cells.resize(BoardTileSizes[BoardSizeIndex]);
@@ -223,8 +219,6 @@ void TileScene2D::InitializeUI()
 void TileScene2D::IntializeRules()
 {
 	m_Rules = new std::vector<Rule*>();
-
-
 	//initialize poppa Conway's ruleset
 	m_Rules->push_back(new Rule(1, 0, 1, new bool[2]{true, false}, 1, 0, 0));//underpopulation
 	m_Rules->push_back(new Rule(1, 3, 8, new bool[2]{true, false}, 1, 0, 1));//overpopulation
@@ -510,6 +504,10 @@ int TileScene2D::GetLiveNeighborsAroundIndex(int x, int y)
 
 float fpsCountPost = 0.0f;
 int numWaitFramesPost = 0;
+bool hasBegunDragging = false;
+sf::Vector2f initialMouseDownCellIndex;
+int initialMouseDownColorIndex;
+
 void TileScene2D::Update(float a_DeltaTime)
 {
 	//MAIN UPDATE LOOP
@@ -532,12 +530,43 @@ void TileScene2D::Update(float a_DeltaTime)
 		numWaitFramesPost++;
 	}
 
+	//handle dragging
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasLeftMousePressed)
+	{
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
+		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
+		{
+			initialMouseDownCellIndex = sf::Vector2f(x, y);
+			initialMouseDownColorIndex = m_Cells[x][y].GetColorIndex();
+		}
+	}
+	else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && m_WasLeftMousePressed)
+	{
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
+		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
+		{
+			Vector2f tmp = sf::Vector2f(x, y);
+			if (initialMouseDownCellIndex != tmp)
+			{
+				hasBegunDragging = true;
+			}
+		}
+	}
 
-	//printf("%f | \n", m_RuleScrollBar->GetRatio());
-
+	if (hasBegunDragging)
+	{
+		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
+		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
+		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
+		{
+			m_Cells[(unsigned int)x][(unsigned int)y].SetColorIndexImmediate(initialMouseDownColorIndex);
+		}
+	}
 
 	//quick mouse input -- @TODO: check bounds of mouse.
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !m_WasLeftMousePressed)
+	if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && m_WasLeftMousePressed && !hasBegunDragging)
 	{
 		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
 		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
@@ -546,7 +575,7 @@ void TileScene2D::Update(float a_DeltaTime)
 			m_Cells[(unsigned int)x][(unsigned int)y].AdvanceAliveImmediate();
 		}
 	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) && !m_WasRightMousePressed)
+	if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) && m_WasRightMousePressed && !hasBegunDragging)
 	{
 		float x = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).x) / TilePixelSizes[BoardSizeIndex]));
 		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
@@ -554,6 +583,11 @@ void TileScene2D::Update(float a_DeltaTime)
 		{
 			m_Cells[(unsigned int)x][(unsigned int)y].ReverseAdvanceAliveImmediate();
 		}
+	}
+
+	if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	{
+		hasBegunDragging = false;
 	}
 
 	//input mgr...

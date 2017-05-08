@@ -33,7 +33,7 @@ public:
 	//pre-update
 	void SetColorIndexNextFrame(int a_ColorIndex);
 	//update
-	void SetAliveImmediate(int a_ColorIndex);
+	//void SetAliveImmediate(int a_ColorIndex);
 	void AdvanceAliveImmediate();
 	void ReverseAdvanceAliveImmediate();
 

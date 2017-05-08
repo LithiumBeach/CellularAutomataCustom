@@ -36,7 +36,15 @@ void Cell::SetColorIndexNextFrame(int a_ColorIndex)
 void Cell::SetColorIndexImmediate(int a_index)
 {
 	m_ColorIndex = a_index;
-	m_NextFrameColorIndex = a_index;
+	if (m_ColorIndex >= caColors::caColorsLen)
+	{
+		m_ColorIndex = 0;
+	}
+	else if (m_ColorIndex < 0)
+	{
+		m_ColorIndex = caColors::caColorsLen - 1;
+	}
+	m_NextFrameColorIndex = m_ColorIndex;
 	m_RShape.setFillColor(caColors::caColors[m_ColorIndex]);
 }
 void Cell::AdvanceAliveImmediate()
