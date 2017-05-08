@@ -108,7 +108,7 @@ void ScrollBar::UpdateTargetSize(float newSize)
 		UpperYBound = centerpos.y - c_OutlineSize + m_BGHeight * .5f - m_SliderHeight * .5f;
 		LowerYBound = centerpos.y + c_OutlineSize - m_BGHeight * .5f + m_SliderHeight * .5f;
 
-		//Vector2f sliderPos = Vector2f(centerpos.x, Math::Lerp(LowerYBound, UpperYBound, GetRatio()) - diff / 2.0f);
+		//Vector2f sliderPos = Vector2f(centerpos.x, Math::Lerp(LowerYBound, UpperYBound, GetRatio()) - diff  * 0.5f);
 		Vector2f sliderPos = Vector2f(centerpos.x, Math::Clamp(m_Slider->GetPosition().y, LowerYBound, UpperYBound));
 		m_Slider->SetPosition(sliderPos);
 

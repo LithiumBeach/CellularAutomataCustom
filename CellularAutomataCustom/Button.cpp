@@ -93,14 +93,14 @@ bool Button::IsMouseInRect()
 void Button::SetText(std::string a_TextString)
 {
 	m_Text.setString(a_TextString);
-	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width / 2.0f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height / 2.0f));
+	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width  * 0.5f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height  * 0.5f));
 	m_Text.setPosition(m_RS.getPosition());
 }
 
 void Button::SetPosition(sf::Vector2f a_pos)
 {
 	m_Text.setPosition(a_pos);
-	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width / 2.0f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height / 2.0f));
+	m_Text.setOrigin(sf::Vector2f(m_Text.getLocalBounds().left + m_Text.getLocalBounds().width  * 0.5f, m_Text.getLocalBounds().top + m_Text.getLocalBounds().height  * 0.5f));
 	m_RS.setPosition(a_pos);
 	m_RS.setOrigin(Vector2f(m_RS.getSize().x * 0.5f, m_RS.getSize().y * 0.5f));
 }

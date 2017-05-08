@@ -152,5 +152,6 @@ private:
 
 private:
 	void ResizeBoard();
+	sf::Text m_ResText;
 };
 

@@ -1,6 +1,8 @@
 #include "TileScene2D.h"
 #include "StaticNamespaces.h"
 
+#include <sstream>
+
 extern sf::RenderWindow* g_WINDOW;
 
 TileScene2D::TileScene2D()
@@ -130,15 +132,15 @@ void TileScene2D::ResizeBoard()
 	{
 		for (int x = 0; x < BoardTileSizes[BoardSizeIndexNextFrame]; x++)
 		{
-			//if (x < BoardSizeIndex && y < BoardSizeIndex)
-			//{
-			//	m_Cells[x][y] = Cell(m_Cells[x][y].GetColorIndex(), Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
-			//}
-			//else
-			//{
-			//	m_Cells[x][y] = Cell(0, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
-			//}
-			m_Cells[x][y] = Cell(m_ClearColorIndex, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			if (x < BoardTileSizes[BoardSizeIndex] && y < BoardTileSizes[BoardSizeIndex])
+			{
+				m_Cells[x][y] = Cell(m_Cells[x][y].GetColorIndex(), Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			}
+			else
+			{
+				m_Cells[x][y] = Cell(0, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
+			}
+			//m_Cells[x][y] = Cell(m_ClearColorIndex, Vector2f((float)x, (float)y), Vector2f(TilePixelSizes[BoardSizeIndexNextFrame], TilePixelSizes[BoardSizeIndexNextFrame]));
 			//printf("%d,%d|", (int)m_Cells[x][y].GetTilePos().x, (int)m_Cells[x][y].GetTilePos().y);//works :)
 		}
 		//printf("\n");
@@ -165,7 +167,7 @@ void TileScene2D::InitializeUI()
 
 	DoNothing_ptr = std::bind(&TileScene2D::DoNothing, this);
 
-	m_SimulateButton = Button(Vector2f(160, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
+	m_SimulateButton = Button(Vector2f(184, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
 	m_SimulateButton.SetLeftMouseButtonReleaseEvent(HandleSimulateButtonReleaseEvent_ptr);
 
 	m_IncreasePlaybackSpeedButton = Button(Vector2f(36, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 4), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "FPS+");
@@ -186,17 +188,25 @@ void TileScene2D::InitializeUI()
 	m_NextFrameButton = Button(Vector2f(64, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 1.3f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 125)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "Frame+");
 	m_NextFrameButton.SetLeftMouseButtonReleaseEvent(HandleNextFrameButtonReleaseEvent_ptr);
 
-	m_AddRuleButton = Button(Vector2f(80, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 126)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "ADD RULE");
+	m_AddRuleButton = Button(Vector2f(80, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 130)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "ADD RULE");
 	m_AddRuleButton.SetLeftMouseButtonReleaseEvent(HandleAddRuleEvent_ptr);
 
 
 	//Resolution +/-
-	m_IncreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2 + 60), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+");
+	m_IncreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f + 80), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 25);
 	m_IncreaseResButton.SetLeftMouseButtonReleaseEvent(HandleIncreaseResButtonReleaseEvent_ptr);
-	//text goes here..
-	m_DecreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X / 2 - 60), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-");
+	m_DecreaseResButton = Button(Vector2f(24, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f - 80), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 70)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 35);
 	m_DecreaseResButton.SetLeftMouseButtonReleaseEvent(HandleDecreaseResButtonReleaseEvent_ptr);
-	//m_DecreaseResButton
+	//text
+	m_ResText = sf::Text("\nresolution: 0px\n", *caFonts::s_DefaultFont, 13);
+
+	std::stringstream ss;
+	ss << "\nresolution: " << BoardTileSizes[BoardSizeIndexNextFrame] << "px²";
+	m_ResText.setString(ss.str());
+
+	m_ResText.setOrigin(sf::Vector2f(m_ResText.getLocalBounds().width * 0.5f, m_ResText.getLocalBounds().height *0.5f));
+	m_ResText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 80));
+	
 
 	//scroll bar
 	float scrollbarX = (float)(caSizes::WINDOW_SIZE_X * 0.98f);
@@ -206,7 +216,7 @@ void TileScene2D::InitializeUI()
 									(float)(caSizes::WINDOW_SIZE_Y * .8f)
 									);
 
-	m_ControlsBG = Button(sf::Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X / 2, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
+	m_ControlsBG = Button(sf::Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X * 0.5f, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
 
 }
 
@@ -318,6 +328,10 @@ void TileScene2D::HandleIncreaseResButtonReleaseEvent()
 	{
 		BoardSizeIndexNextFrame++;
 		ResizeBoard();
+
+		std::stringstream ss;
+		ss << "\nresolution: " << BoardTileSizes[BoardSizeIndexNextFrame] << "px²";
+		m_ResText.setString(ss.str());
 	}
 }
 void TileScene2D::HandleDecreaseResButtonReleaseEvent()
@@ -326,6 +340,10 @@ void TileScene2D::HandleDecreaseResButtonReleaseEvent()
 	{
 		BoardSizeIndexNextFrame--;
 		ResizeBoard();
+
+		std::stringstream ss;
+		ss << "\nresolution: " << BoardTileSizes[BoardSizeIndexNextFrame] << "px²";
+		m_ResText.setString(ss.str());
 	}
 }
 
@@ -580,6 +598,7 @@ void TileScene2D::Draw()
 	m_SimulateButton.Draw();
 	m_IncreaseResButton.Draw();
 	m_DecreaseResButton.Draw();
+	g_WINDOW->draw(m_ResText);
 	m_AddRuleButton.Draw();
 	m_IncreasePlaybackSpeedButton.Draw();
 	m_DecreasePlaybackSpeedButton.Draw();
