@@ -4,8 +4,6 @@ project(Walk_The_Dinosaur)
 
 #find SFML's root folder
 set(SFML_ROOT ${CMAKE_SOURCE_DIR}/3rdParty/SFML-2.3.2)
-#statically link SFML
-set(SFML_STATIC_LIBRARIES TRUE)
 #set path to FindSFML.cmake
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/3rdParty/SFML-2.3.2/cmake/Modules" ${CMAKE_MODULE_PATH})
 

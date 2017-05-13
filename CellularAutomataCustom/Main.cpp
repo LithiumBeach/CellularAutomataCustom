@@ -1,7 +1,7 @@
 #include "Main.h"
 #include "StaticNamespaces.h"
 
-void main()
+int main(int argc, char* argv[])
 {
 	//create our rendering window
 	g_WINDOW = new sf::RenderWindow(sf::VideoMode(caSizes::WINDOW_SIZE_X, caSizes::WINDOW_SIZE_Y), DEMO_NAME);
@@ -65,4 +65,6 @@ void main()
 		input::RMB_Consumed = false;
 		input::MouseWheelDelta = 0;
 	}
+
+    return 0;
 }

@@ -1,5 +1,5 @@
 /*Math.h generated on Sat 02/18/2017 at 20:42:59.39*/
-#include <SFML\System.hpp>
+#include <SFML/System.hpp>
 
 #include <sstream>
 #include <iomanip>

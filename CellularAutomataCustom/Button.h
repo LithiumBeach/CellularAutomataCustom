@@ -1,10 +1,10 @@
 /*Button.h generated on Sat 03/04/2017 at 20:28:38.56*/
 #pragma once
 
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Graphics\RectangleShape.hpp>
-#include <SFML\Graphics\Text.hpp>
-#include <SFML\Window\Mouse.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <stdio.h>
 #include <functional>
 
