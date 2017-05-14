@@ -69,7 +69,6 @@ int main(int argc, char* argv[])
 		input::RMB_Consumed = false;
 		input::MouseWheelDelta = 0;
     }
-  }
 	delete MasterP;
 	MasterP = NULL;
 
