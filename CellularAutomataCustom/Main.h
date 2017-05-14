@@ -1,5 +1,5 @@
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Window\Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include "SceneManager.h"
 

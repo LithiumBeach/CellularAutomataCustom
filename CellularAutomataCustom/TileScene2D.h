@@ -8,8 +8,8 @@
 
 #include <vector>
 #include <functional>
-#include <SFML\Window\Mouse.hpp>
-#include <SFML\Window\Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 class TileScene2D
 {

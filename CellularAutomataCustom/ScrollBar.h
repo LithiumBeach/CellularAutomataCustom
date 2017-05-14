@@ -1,10 +1,10 @@
 /*ScrollBar.h generated on Sun 04/30/2017 at 16:23:49.32*/
 #pragma once
 
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Graphics\RectangleShape.hpp>
-#include <SFML\Graphics\Color.hpp>
-#include <SFML\Window\Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include "StaticNamespaces.h"
 #include "Button.h"

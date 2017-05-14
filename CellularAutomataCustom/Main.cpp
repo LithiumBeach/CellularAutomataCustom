@@ -2,7 +2,7 @@
 #include "StaticNamespaces.h"
 #include "RuleSerializer.h"
 
-void main()
+int main(int argc, char* argv[])
 {
 	//create our rendering window
 	g_WINDOW = new sf::RenderWindow(sf::VideoMode(caSizes::WINDOW_SIZE_X, caSizes::WINDOW_SIZE_Y), DEMO_NAME);
@@ -68,11 +68,13 @@ void main()
 		input::LMB_Consumed = false;
 		input::RMB_Consumed = false;
 		input::MouseWheelDelta = 0;
-	}
-
+    }
+  }
 	delete MasterP;
 	MasterP = NULL;
 
 	delete g_WINDOW;
 	g_WINDOW = NULL;
+
+return 0;
 }

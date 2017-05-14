@@ -1,4 +1,5 @@
 #include "TileArray.h"
+#include <cstdio>
  
 TileArray::TileArray()
 {
