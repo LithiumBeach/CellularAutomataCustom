@@ -13,7 +13,14 @@ Rule::Rule(int a_ThisColor, int a_MinNumNeighbors, int a_MaxNumNeighbors, bool a
 	m_RuleData->IfColorIndex = a_IfColor;
 	m_RuleData->ThenColorIndex = a_ThenColor;
 
-	m_RuleData->ThisColor = caColors::caColors[a_ThisColor];
+	if (m_RuleData->ThisColorIndex >= 0)
+	{
+		m_RuleData->ThisColor = caColors::caColors[a_ThisColor];
+	}
+	else if (m_RuleData->ThisColorIndex == -1)
+	{
+		m_RuleData->ThisColor = caColors::transparent;
+	}
 	m_RuleData->IfColor = caColors::caColors[a_IfColor];
 	m_RuleData->ThenColor = caColors::caColors[a_ThenColor];
 

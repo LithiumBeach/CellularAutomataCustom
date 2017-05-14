@@ -16,10 +16,10 @@ RuleInterface::RuleInterface()
 void RuleInterface::InitializeButtonsNoEvents()
 {
 	int inc_dec_button_size = 16;
-	IncreaseMinNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
-	DecreaseMinNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
-	IncreaseMaxNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
-	DecreaseMaxNumNeighborsButton = Button(Vector2f(inc_dec_button_size, inc_dec_button_size), Vector2f(0, 0), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
+	IncreaseMinNumNeighborsButton = Button(Vector2f((float)inc_dec_button_size, (float)inc_dec_button_size), Vector2f(0.0f, 0.0f), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
+	DecreaseMinNumNeighborsButton = Button(Vector2f((float)inc_dec_button_size, (float)inc_dec_button_size), Vector2f(0.0f, 0.0f), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
+	IncreaseMaxNumNeighborsButton = Button(Vector2f((float)inc_dec_button_size, (float)inc_dec_button_size), Vector2f(0.0f, 0.0f), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "+", 22);
+	DecreaseMaxNumNeighborsButton = Button(Vector2f((float)inc_dec_button_size, (float)inc_dec_button_size), Vector2f(0.0f, 0.0f), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "-", 22);
 	DeleteSelfButton = Button(Vector2f(12, 48), Vector2f(0, 0), caColors::red, caColors::border_red, *caFonts::s_DefaultFont, 2.0f, "X");
 
 	//transparent = temp.

@@ -1,5 +1,6 @@
 #include "Main.h"
 #include "StaticNamespaces.h"
+#include "RuleSerializer.h"
 
 int main(int argc, char* argv[])
 {
@@ -18,6 +19,9 @@ int main(int argc, char* argv[])
 	//enable vsync
 	g_WINDOW->setVerticalSyncEnabled(true);
 	g_WINDOW->setFramerateLimit(256);
+
+	//initialize rule data
+	ruleSerializer::Initialize();
 
 	SceneManager* MasterP = new SceneManager();
 
@@ -64,7 +68,13 @@ int main(int argc, char* argv[])
 		input::LMB_Consumed = false;
 		input::RMB_Consumed = false;
 		input::MouseWheelDelta = 0;
-	}
+    }
+  }
+	delete MasterP;
+	MasterP = NULL;
 
-    return 0;
+	delete g_WINDOW;
+	g_WINDOW = NULL;
+
+return 0;
 }
