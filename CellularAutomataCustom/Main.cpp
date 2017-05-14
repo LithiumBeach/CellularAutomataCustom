@@ -1,7 +1,8 @@
 #include "Main.h"
 #include "StaticNamespaces.h"
+#include "RuleSerializer.h"
 
-int main(int argc, char* argv[])
+void main()
 {
 	//create our rendering window
 	g_WINDOW = new sf::RenderWindow(sf::VideoMode(caSizes::WINDOW_SIZE_X, caSizes::WINDOW_SIZE_Y), DEMO_NAME);
@@ -18,6 +19,9 @@ int main(int argc, char* argv[])
 	//enable vsync
 	g_WINDOW->setVerticalSyncEnabled(true);
 	g_WINDOW->setFramerateLimit(256);
+
+	//initialize rule data
+	ruleSerializer::Initialize();
 
 	SceneManager* MasterP = new SceneManager();
 
@@ -66,5 +70,9 @@ int main(int argc, char* argv[])
 		input::MouseWheelDelta = 0;
 	}
 
-    return 0;
+	delete MasterP;
+	MasterP = NULL;
+
+	delete g_WINDOW;
+	g_WINDOW = NULL;
 }

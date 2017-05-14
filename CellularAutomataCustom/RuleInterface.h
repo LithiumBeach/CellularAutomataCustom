@@ -1,7 +1,7 @@
 /*RuleInterface.h generated on Tue 04/04/2017 at 20:29:19.64*/
 #pragma once
 
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML\Graphics\RenderWindow.hpp>
 
 #include "Button.h"
 

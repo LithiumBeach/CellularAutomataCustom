@@ -1,5 +1,6 @@
 #include "TileScene2D.h"
 #include "StaticNamespaces.h"
+#include "RuleSerializer.h"
 
 #include <sstream>
 
@@ -101,15 +102,26 @@ TileScene2D::~TileScene2D()
 	BoardTileSizes = NULL;
 	delete m_PlaybackSpeeds;
 	m_PlaybackSpeeds = NULL;
-	
-	for (size_t i = m_Rules->size()-1; i >= 0; i--)
+
+	if (m_Rules != NULL)
 	{
-		delete m_Rules->at(i);
-		m_Rules->erase(m_Rules->begin() + i);
+		for (size_t i = m_Rules->size() - 1; i > 0; i--)
+		{
+			//this is a random bug that makes absolutely zero sense, but sometimes it forgets what i was and like nulls it for no reason.
+			if (i < m_Rules->size() && i >= 0)
+			{
+				delete m_Rules->at(i);
+				m_Rules->erase(m_Rules->begin() + i);
+			}
+			else
+			{
+				break;
+			}
+		}
+		m_Rules->clear();
+		delete m_Rules;
+		m_Rules = NULL;
 	}
-	m_Rules->clear();
-	delete m_Rules;
-	m_Rules = NULL;
 
 	delete m_RuleScrollBar;
 	m_RuleScrollBar = NULL;
@@ -219,18 +231,25 @@ void TileScene2D::InitializeUI()
 void TileScene2D::IntializeRules()
 {
 	m_Rules = new std::vector<Rule*>();
-	//initialize poppa Conway's ruleset
-	m_Rules->push_back(new Rule(1, 0, 1, new bool[2]{true, false}, 1, 0, 0));//underpopulation
-	m_Rules->push_back(new Rule(1, 3, 8, new bool[2]{true, false}, 1, 0, 1));//overpopulation
-	m_Rules->push_back(new Rule(1, 2, 3, new bool[2]{true, false}, 1, 1, 2));//unchanged
-	m_Rules->push_back(new Rule(0, 3, 3, new bool[2]{true, false}, 1, 1, 3));//resurrection
+	//initialize poppa Conway's rulesetset
+	//m_Rules->push_back(new Rule(1, 0, 1, new bool[2]{true, false}, 1, 0, 0));//underpopulation
+	//m_Rules->push_back(new Rule(1, 3, 8, new bool[2]{true, false}, 1, 0, 1));//overpopulation
+	//m_Rules->push_back(new Rule(1, 2, 3, new bool[2]{true, false}, 1, 1, 2));//unchanged
+	//m_Rules->push_back(new Rule(0, 3, 3, new bool[2]{true, false}, 1, 1, 3));//resurrection
 
+	//at this point, the serializer has already initialized the vector of ruledatas.
+	//read this vector and create rulesets accordingly.
+	for (size_t i = 0; i < ruleSerializer::rulesets->size(); i++)
+	{
+		RuleData tmp = ruleSerializer::rulesets->at(i);
+		m_Rules->push_back(new Rule(tmp.ThisColorIndex, tmp.MinNumNeighbors, tmp.MaxNumNeighbors, new bool[2]{true, false}, tmp.IfColorIndex, tmp.ThenColorIndex, i));
+	}
 }
 //sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (_newIndex))))
 void TileScene2D::HandleAddRuleEvent()
 {
 	int index = m_Rules->size();
-	m_Rules->push_back(new Rule(0, 2, 2, new bool[2]{true, false}, 0, 0, index));
+	m_Rules->push_back(new Rule(-1, 2, 2, new bool[2]{true, false}, 0, 0, index));
 	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
 	UpdateRuleScrolling();
 }
@@ -425,7 +444,7 @@ void TileScene2D::PreUpdateUnmanaged()
 	{
 		for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
 		{
-			//RULES  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			//rulesets  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			//DO NOT PROCESS COLORS. EVER. WHO CARES. USE THE COLOR INDEX, WHICH WILL LATER CORRESPOND TO THE INDEX AT caColors::caColors[INDEX]
 			ProcessRulesAt(x, y);
 		}
@@ -537,8 +556,8 @@ void TileScene2D::Update(float a_DeltaTime)
 		float y = (float)((int)((float)(sf::Mouse::getPosition(*g_WINDOW).y) / TilePixelSizes[BoardSizeIndex]));
 		if (x < BoardTileSizes[BoardSizeIndex] && x >= 0 && y < BoardTileSizes[BoardSizeIndex] && y >= 0)
 		{
-			initialMouseDownCellIndex = sf::Vector2f(x, y);
-			initialMouseDownColorIndex = m_Cells[x][y].GetColorIndex();
+			initialMouseDownCellIndex = sf::Vector2f((float)x, (float)y);
+			initialMouseDownColorIndex = m_Cells[(unsigned int)x][(unsigned int)y].GetColorIndex();
 		}
 	}
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && m_WasLeftMousePressed)
@@ -611,7 +630,7 @@ void TileScene2D::UpdateUnmanaged(float a_DeltaTime)
 void TileScene2D::Draw()
 {
 
-	//draw rules underneath everything.
+	//draw rulesets underneath everything.
 	for (size_t i = 0; i < m_Rules->size(); i++)
 	{
 		m_Rules->at(i)->Draw();

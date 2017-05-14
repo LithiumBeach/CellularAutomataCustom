@@ -1,7 +1,7 @@
 /*Cell.h generated on Sat 02/18/2017 at 18:35:16.57*/
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
 
 #include "Math.h"
 

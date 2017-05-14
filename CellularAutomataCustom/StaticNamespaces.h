@@ -1,8 +1,8 @@
 /*StaticNamespaces.h generated on Mon 04/17/2017 at 16:29:19.26*/
 #pragma once
 
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Font.hpp>
+#include <SFML\Graphics\Color.hpp>
+#include <SFML\Graphics\Font.hpp>
 
 namespace caSizes
 {
