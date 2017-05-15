@@ -242,16 +242,16 @@ void TileScene2D::InitializeUI()
 	m_LoadPreviousRulesetButton.SetLeftMouseButtonReleaseEvent(HandleLoadPreviousRuleset_ptr);
 
 	
-	m_SaveRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 14.0f),
-										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SAVE RULESET", 12);
+	m_SaveRulesetButton = Button(Vector2f(180, 24), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 55.0f),
+										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SAVE RULESET", 16);
 	m_SaveRulesetButton.SetLeftMouseButtonReleaseEvent(HandleSaveRuleset_ptr);
 
-	m_NewRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 38.0f),
+	m_NewRulesetButton = Button(Vector2f(120, 22), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 20.0f),
 										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "NEW RULESET", 12);
 	m_NewRulesetButton.SetLeftMouseButtonReleaseEvent(HandleNewRuleset_ptr);
 
-	m_DeleteRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 62.0f),
-										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "DELETE RULESET", 12);
+	m_DeleteRulesetButton = Button(Vector2f(120, 22), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 54.0f),
+										 caColors::red, caColors::border_red, *caFonts::s_DefaultFont, 2.0f, "DELETE RULESET", 12);
 	m_DeleteRulesetButton.SetLeftMouseButtonReleaseEvent(HandleDeleteRuleset_ptr);
 	
 	//ruleset name text
@@ -259,7 +259,7 @@ void TileScene2D::InitializeUI()
 	m_RulesetNameText.setString(ruleSerializer::rulesetNames[0]);
 
 	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 18.0f);
 	
 }
 
@@ -408,7 +408,7 @@ void TileScene2D::HandleLoadPreviousRuleset()
 
 	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
 	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 18.0f);
 }
 void TileScene2D::HandleLoadNextRuleset()
 {
@@ -428,7 +428,7 @@ void TileScene2D::HandleLoadNextRuleset()
 	IntializeRules(ruleSerializer::currentLoadedRuleIndex);
 	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
 	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 18.0f);
 }
 void TileScene2D::HandleSaveRuleset()
 {
@@ -460,7 +460,7 @@ void TileScene2D::HandleNewRuleset()
 	IntializeRules(ruleSerializer::currentLoadedRuleIndex);
 	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
 	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 18.0f);
 }
 void TileScene2D::HandleDeleteRuleset()
 {
@@ -480,7 +480,7 @@ void TileScene2D::HandleDeleteRuleset()
 	
 	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
 	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 18.0f);
 }
 
 float fpsCountPre = 0.0f;

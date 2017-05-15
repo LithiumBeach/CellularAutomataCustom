@@ -14,8 +14,8 @@ namespace caColors
 	sf::Color gray = sf::Color(30, 30, 30);
 	sf::Color border_gray = sf::Color(200, 200, 200);
 
-	sf::Color red = sf::Color(200, 0, 0);
-	sf::Color border_red = sf::Color(30, 0, 0);
+	sf::Color red = sf::Color(100, 0, 0);
+	sf::Color border_red = sf::Color(200, 0, 0);
 	sf::Color green = sf::Color(0, 255, 0);
 	sf::Color blue = sf::Color(0, 0, 255);
 
