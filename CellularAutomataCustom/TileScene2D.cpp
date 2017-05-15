@@ -391,7 +391,7 @@ void TileScene2D::HandleDecreaseResButtonReleaseEvent()
 
 void TileScene2D::HandleLoadPreviousRuleset()
 {
-	if (ruleSerializer::numRulesets <= 1)
+	if (ruleSerializer::numRulesets <= 0)
 	{
 		return;
 	}
@@ -412,7 +412,7 @@ void TileScene2D::HandleLoadPreviousRuleset()
 }
 void TileScene2D::HandleLoadNextRuleset()
 {
-	if (ruleSerializer::numRulesets <= 1)
+	if (ruleSerializer::numRulesets <= 0)
 	{
 		return;
 	}
@@ -465,18 +465,22 @@ void TileScene2D::HandleNewRuleset()
 void TileScene2D::HandleDeleteRuleset()
 {
 	//simply never delete the last ruleset..
-	//if (ruleSerializer::numRulesets <= 1)
+	if (ruleSerializer::numRulesets <= 1)
+	{
+		return;
+	}
+
+	ruleSerializer::DeleteFile(ruleSerializer::currentLoadedRuleIndex);
+	
+	//if (ruleSerializer::currentLoadedRuleIndex >= ruleSerializer::numRulesets)
 	//{
-	//	return;
+	//	ruleSerializer::currentLoadedRuleIndex = ruleSerializer::numRulesets-1;
 	//}
-	//
-	//ruleSerializer::DeleteFile(ruleSerializer::currentLoadedRuleIndex);
-	//
-	//ruleSerializer::currentLoadedRuleIndex = 0;
-	//
-	//m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
-	//m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
-	//m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	HandleLoadPreviousRuleset();
+	
+	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
+	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
 }
 
 float fpsCountPre = 0.0f;

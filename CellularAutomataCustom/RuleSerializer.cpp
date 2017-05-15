@@ -180,27 +180,36 @@ namespace ruleSerializer
 		}
 
 		//hold onto the old filename
-		string _path = RulesetIndexToFilePath(_index);
+		//string _path = RulesetIndexToFilePath(_index);
+
+		//shift all array elements back one from _index + 1
+		//for (size_t i = _index+2; i < numRulesets; i++)
+		//{
+		//	//set previous to current == set current to next, offset one
+		//	rulesetNames[i - 1] = rulesetNames[i];
+		//	rulesets[i - 1] = rulesets[i];
+		//}
 
 		//decrement array count
 		numRulesets--;
 
-		//shift all array elements back one from _index + 1
-		for (size_t i = _index+1; i < numRulesets; i++)
+		for (size_t i = _index+1; i < numRulesets+1; i++)
 		{
-			//set previous to current == set current to next, offset one
-			rulesetNames[i - 1] = rulesetNames[i];
-			rulesets[i - 1] = rulesets[i];
-
 			//read this ruleset data
 			std::vector<RuleData> tmpRD = LoadFrom(RulesetIndexToFilePath(i));
 
 			//write to the previous ruleset
 			//rulesetNames[i - 1] = rulesetNames[i];
-			SaveToFile(i - 1, tmpRD);//string override******
+			SaveToFile(RulesetIndexToFilePath(i-1), tmpRD);
+		}
+
+		for (size_t i = 1; i < numRulesets; i++)
+		{
+			rulesets[i] = LoadFrom(RulesetIndexToFilePath(i));
+			rulesetNames[i] = "ruleset" + std::to_string(i+1);
 		}
 
 		//remove the LAST file (Which by now should be empty)
-		remove((RulesetIndexToFilePath(numRulesets - 1)).c_str());
+		remove((RulesetIndexToFilePath(numRulesets)).c_str());
 	}
 }
