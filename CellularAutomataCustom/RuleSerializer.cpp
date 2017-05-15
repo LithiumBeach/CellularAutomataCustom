@@ -13,7 +13,6 @@ namespace ruleSerializer
 
 	string saveFilePathPre = "../save/ruleset";
 	//after "ruleset", before ".txt", put the number (starting with 1)
-	string saveFilePathPost = ".txt";
 
 	//this character separates rules within rulesets
 	char delimiterChar = '~';
@@ -21,96 +20,111 @@ namespace ruleSerializer
 	std::vector<RuleData> rulesets[rulesetsMaxLen];
 	string rulesetNames[rulesetsMaxLen];
 
+	int currentLoadedRuleIndex = 0;
+
 
 	void Initialize()
 	{
 		//try to load files named "rulesetX".. if not found, try incrementing X counter a few times.
 		//always rename files to be ruleset<RULESETCOUNT>
 		//create RuleDatas from these files, sotre them 
-		int rulesetNum = 1;
+		numRulesets = 0;
 		fstream afile;
 		bool bExit = false;
 
 		//read all files in /save dir that match the file strings.
-		while (!bExit && rulesetNum < rulesetsMaxLen)
+		while (!bExit && (numRulesets) < rulesetsMaxLen)
 		{
-			afile.open(RulesetIndexToFilePath(rulesetNum), fstream::in);
+			afile.open(RulesetIndexToFilePath(numRulesets), fstream::in);
 			if (afile.is_open())
 			{
 				afile.close();
 
+
 				//load this file into a vector of ruledatas, save to correct index in array of rulestets
-				rulesets[rulesetNum-1] = LoadFrom(RulesetIndexToFilePath(rulesetNum));
+				rulesets[numRulesets] = LoadFrom(RulesetIndexToFilePath(numRulesets));
 
 				numRulesets++;
-				rulesetNum++;
 			}
 			else
 			{
 				bExit = true;
+				afile.close();
 			}
 		}
 	}
 	string RulesetIndexToFilePath(int i)
 	{
-		return (saveFilePathPre + std::to_string(i) + saveFilePathPost).c_str();
+		string a = saveFilePathPre;
+		a += std::to_string(i+1);
+		a += ".txt";
+		return (a).c_str();
 	}
 
-	void SaveHeaderFile()
+	int RulesetFilePathToIndex(string _fp)
 	{
-		//create output stream into file
-		std::fstream myfile((saveFilePathPre + "header.txt").c_str());
+		int startPosToErase = _fp.find(".txt");
+		_fp.erase(startPosToErase, 4);
+		_fp.erase(0, saveFilePathPre.size());
+		return atoi(_fp.c_str()) - 1;
+	}
 
-		//open the file
-		myfile.open((saveFilePathPre + "header.txt").c_str(), fstream::out | fstream::in);
-
-		//write data
-		myfile << numRulesets;
-
-		//close file
-		myfile.close();
+	void SaveToFile(int _index, std::vector<RuleData> _rd)
+	{
+		SaveToFile(RulesetIndexToFilePath(_index), _rd);
 	}
 
 	//if this file exists, it will write to it. if not, it will make it.
 	//only pass the file name size_to the _path param.
-	void SaveToFile(string _path, RuleData _rd)
+	void SaveToFile(string _path, std::vector<RuleData> _rd)
 	{
-		//youre going to need to add the if not, it will make it. part. ~~ maybe, it should do it automatically if I'm understanding this dumb shit correctly.
-
-
-
-		//full filepath
-		_path = saveFilePathPre + _path;
-
 		//delete the file
-		if (remove((_path + ".txt").c_str()) != 0)
-		{
-			//count our files
-            numRulesets++;
-			if (numRulesets > rulesetsMaxLen)
-			{
-                numRulesets = rulesetsMaxLen;
-			}
+		bool didDelete = true;
+		if (remove((_path).c_str()) != 0)
+		{//if we didn't delete the file
+			numRulesets++;//we are creating a new rule
+			didDelete = false;
 		}
 
 		//create output stream into file
-		std::fstream myfile((_path + ".txt").c_str());
-		myfile.open((_path + ".txt").c_str(), fstream::out | fstream::in);
-
-		//open the file
-		myfile.open((_path + ".txt").c_str());
-
+		std::fstream myfile;
+		myfile.open((_path).c_str(), fstream::out | fstream::in | fstream::app);
+		
+		string name;
+		if (didDelete)
+		{
+			name = rulesetNames[RulesetFilePathToIndex(_path)];//"ruleset" + (std::to_string(RulesetFilePathToIndex(_path)));
+		}
+		else
+		{
+			int index = RulesetFilePathToIndex(_path);
+			name = "ruleset" + (std::to_string(index+1));
+			rulesetNames[index] = name;
+		}
+		myfile << name << "\n";
 		//write data
-		myfile << _rd.ThisColorIndex << "\n";
-		myfile << _rd.MinNumNeighbors << "\n";
-		myfile << _rd.MaxNumNeighbors << "\n";
-		myfile << _rd.IfColorIndex << "\n";
-		myfile << _rd.ThenColorIndex;
+		for (size_t i = 0; i < _rd.size(); i++)
+		{
+			myfile << _rd.at(i).ThisColorIndex << "\n";
+			myfile << _rd.at(i).MinNumNeighbors << "\n";
+			myfile << _rd.at(i).MaxNumNeighbors << "\n";
+			myfile << _rd.at(i).IfColorIndex << "\n";
+			myfile << _rd.at(i).ThenColorIndex << "\n";
+			myfile << delimiterChar;
+			if (i < _rd.size()-1)
+			{
+				myfile << "\n";
+			}
+		}
 		
 		//close file
 		myfile.close();
 	}
 
+	std::vector<RuleData> LoadFrom(int _index)
+	{
+		return LoadFrom(RulesetIndexToFilePath(_index));
+	}
 	std::vector<RuleData> LoadFrom(string _path)
 	{
 		string line;
@@ -123,10 +137,8 @@ namespace ruleSerializer
 
 			//get display name of ruleset
 			getline(myfile, line);
-			rulesetNames[numRulesets-1] = line;
+			rulesetNames[RulesetFilePathToIndex(_path)] = line;
 			line = "";
-
-			string t = rulesetNames[numRulesets - 1];
 
 			while (getline(myfile, line))
 			{
@@ -159,45 +171,36 @@ namespace ruleSerializer
 		return std::vector<RuleData>();
 	}
 
-	/*void DeleteFile(size_t _index, bool _fromArrayOnly = false)
+	void DeleteFile(size_t _index)
 	{
-		if (_index >= numSaveFiles || _index < 0)
+		if (_index >= numRulesets || _index < 0)
 		{
 			printf("\tdanger!");
 			return;
 		}
 
-		//decrement array count
-		numSaveFiles--;
-
 		//hold onto the old filename
-		string _path = saveFilepaths[_index];
+		string _path = RulesetIndexToFilePath(_index);
+
+		//decrement array count
+		numRulesets--;
 
 		//shift all array elements back one from _index + 1
-		for (size_t i = _index + 1; i < numSaveFiles; i++)
+		for (size_t i = _index+1; i < numRulesets; i++)
 		{
 			//set previous to current == set current to next, offset one
-			saveFilepaths[i - 1] = saveFilepaths[i];
+			rulesetNames[i - 1] = rulesetNames[i];
+			rulesets[i - 1] = rulesets[i];
+
+			//read this ruleset data
+			std::vector<RuleData> tmpRD = LoadFrom(RulesetIndexToFilePath(i));
+
+			//write to the previous ruleset
+			//rulesetNames[i - 1] = rulesetNames[i];
+			SaveToFile(i - 1, tmpRD);//string override******
 		}
 
-		//if we don't need to remove the file itself, do not.
-		if (_fromArrayOnly)
-		{
-			return;
-		}
-
-		//remove the file
-		remove((_path + ".txt").c_str());
+		//remove the LAST file (Which by now should be empty)
+		remove((RulesetIndexToFilePath(numRulesets - 1)).c_str());
 	}
-
-	void DeleteFile(string _path, bool _fromArrayOnly=false)
-	{
-		for (size_t i = 0; i < numSaveFiles; i++)
-		{
-			if (_path == saveFilepaths[i])
-			{
-				DeleteFile(i, _fromArrayOnly);
-			}
-		}
-	}*/
 }

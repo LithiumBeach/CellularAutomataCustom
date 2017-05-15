@@ -28,7 +28,6 @@ public:
 
 	//Rules of Life (subject to change)
 private:// min/max are INCLUSIVE -- return TRUE when conditions are met
-	int GetLiveNeighborsAroundIndex(int x, int y);
 	bool GetBetweenMinMaxInclusive(int val, int min, int max)
 	{
 		return val <= max && val >= min;
@@ -65,7 +64,7 @@ private:
 private:
 	//Interface elements
 	void InitializeUI();
-	void IntializeRules();
+	void IntializeRules(int a_RulesetIndex=0);
 
 	Button m_SimulateButton;
 	Button m_IncreasePlaybackSpeedButton;
@@ -153,5 +152,40 @@ private:
 private:
 	void ResizeBoard();
 	sf::Text m_ResText;
+
+	//RULESET SAVING/LOADING
+private:
+	//hides scrolling rules
+	sf::RectangleShape rulesetBG;
+
+	//load previous ruleset
+	Button m_LoadPreviousRulesetButton;
+	void HandleLoadPreviousRuleset();
+	std::function<void()> HandleLoadPreviousRuleset_ptr;
+	//load next ruleset
+	Button m_LoadNextRulesetButton;
+	void HandleLoadNextRuleset();
+	std::function<void()> HandleLoadNextRuleset_ptr;
+
+	//save ruleset
+	Button m_SaveRulesetButton;
+	void HandleSaveRuleset();
+	std::function<void()> HandleSaveRuleset_ptr;
+
+	//new ruleset
+	Button m_NewRulesetButton;
+	void HandleNewRuleset();
+	std::function<void()> HandleNewRuleset_ptr;
+
+	//delete ruleset
+	Button m_DeleteRulesetButton;
+	void HandleDeleteRuleset();
+	std::function<void()> HandleDeleteRuleset_ptr;
+
+	//bool m_UnsavedChanges;
+	void DeleteRules();
+
+	sf::Text m_RulesetNameText;
+
 };
 

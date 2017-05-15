@@ -99,7 +99,7 @@ void Rule::InitializeInterface()
 	std::string thnStr = "\nthen this\ncell will\nbecome:\n";
 	m_Interface->SetThenColorLabelText(thnStr, *(caFonts::s_DefaultFont), 22, caColors::RuleLabelTextColor);
 
-	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (s_RuleCount-1)))));
+	m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(100 + (112 * (s_RuleCount-1)))));
 
 	m_Interface->ChangeThisColorButton.SetFill(m_RuleData->ThisColor);
 	m_Interface->ChangeIfColorButton.SetFill(m_RuleData->IfColor);

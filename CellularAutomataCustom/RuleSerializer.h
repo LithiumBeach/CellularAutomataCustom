@@ -12,24 +12,23 @@ namespace ruleSerializer
 	//extern std::string saveFilepaths[];
 
 	extern std::string saveFilePathPre;
-	extern std::string saveFilePathPost;
 	extern char delimiterChar;
 
 	//an array of ruledata vectors
 	extern std::vector<RuleData> rulesets[];
 	extern std::string rulesetNames[];
 
+	extern int currentLoadedRuleIndex;
+
 	extern void Initialize();
 	extern std::string RulesetIndexToFilePath(int i);
+	extern int RulesetFilePathToIndex(std::string _fp);
 
-	extern void SaveToFile(std::string _path, RuleData _rd);
+	extern void SaveToFile(int _index, std::vector<RuleData> _rd);
+	extern void SaveToFile(std::string _path, std::vector<RuleData> _rd);
 
+	extern std::vector<RuleData> LoadFrom(int _index);
 	extern std::vector<RuleData> LoadFrom(std::string _path);
-
-	//extern void DeleteFile(std::string _path, bool _fromArrayOnly);
-	//extern void DeleteFile(size_t _index, bool _fromArrayOnly);
-
-	extern void SaveHeaderFile();
-	extern void LoadHeaderFile();
+	extern void DeleteFile(size_t _index);
 };
  

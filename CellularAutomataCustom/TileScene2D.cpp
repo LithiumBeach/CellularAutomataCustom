@@ -43,6 +43,8 @@ TileScene2D::TileScene2D()
 
 	FramesPerSecond = 1.0f / m_PlaybackSpeeds[playbackSpeedsIndex];
 
+	ruleSerializer::currentLoadedRuleIndex = 0;
+
 	m_Cells = std::vector<std::vector<Cell>>();
 	m_Cells.resize(BoardTileSizes[BoardSizeIndex]);
 	for (int i = 0; i < BoardTileSizes[BoardSizeIndex]; i++)
@@ -60,11 +62,6 @@ TileScene2D::TileScene2D()
 		//printf("\n");
 	}
 
-	//line
-	//m_Cells[3][5].SetAliveImmediate(true);//works :)
-	//m_Cells[4][5].SetAliveImmediate(true);//works :)
-	//m_Cells[5][5].SetAliveImmediate(true);//works :)
-
 	//r-pentomino
 	//m_Cells[11][10].SetAliveImmediate(true);//works :)
 	//m_Cells[12][11].SetAliveImmediate(true);//works :)
@@ -80,17 +77,9 @@ TileScene2D::TileScene2D()
 	m_Cells[11][12].SetColorIndexImmediate(1);//works :)
 	m_Cells[10][12].SetColorIndexImmediate(1);//works :)
 
-	//works :)
-	//for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
-	//{
-	//	for (int x = 0; x < BoardTileSizes[BoardSizeIndex]; x++)
-	//	{
-	//		printf("%d|", (int)m_Cells[x][y].IsAlive());
-	//	}
-	//	printf("\n");
-	//}
-
 	InitializeUI();
+
+
 	IntializeRules();
 }
 
@@ -103,6 +92,13 @@ TileScene2D::~TileScene2D()
 	delete m_PlaybackSpeeds;
 	m_PlaybackSpeeds = NULL;
 
+	DeleteRules();
+
+	delete m_RuleScrollBar;
+	m_RuleScrollBar = NULL;
+}
+void TileScene2D::DeleteRules()
+{
 	if (m_Rules != NULL)
 	{
 		for (size_t i = m_Rules->size() - 1; i > 0; i--)
@@ -122,9 +118,6 @@ TileScene2D::~TileScene2D()
 		delete m_Rules;
 		m_Rules = NULL;
 	}
-
-	delete m_RuleScrollBar;
-	m_RuleScrollBar = NULL;
 }
 
 void TileScene2D::ResizeBoard()
@@ -173,6 +166,13 @@ void TileScene2D::InitializeUI()
 	HandleIncreaseResButtonReleaseEvent_ptr = std::bind(&TileScene2D::HandleIncreaseResButtonReleaseEvent, this);
 	HandleDecreaseResButtonReleaseEvent_ptr = std::bind(&TileScene2D::HandleDecreaseResButtonReleaseEvent, this);
 
+	HandleLoadPreviousRuleset_ptr = std::bind(&TileScene2D::HandleLoadPreviousRuleset, this);
+	HandleLoadNextRuleset_ptr = std::bind(&TileScene2D::HandleLoadNextRuleset, this);
+
+	HandleSaveRuleset_ptr = std::bind(&TileScene2D::HandleSaveRuleset, this);
+	HandleNewRuleset_ptr = std::bind(&TileScene2D::HandleNewRuleset, this);
+	HandleDeleteRuleset_ptr = std::bind(&TileScene2D::HandleDeleteRuleset, this);
+
 	DoNothing_ptr = std::bind(&TileScene2D::DoNothing, this);
 
 	m_SimulateButton = Button(Vector2f(184, 20), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X * 0.5f), (float)(caSizes::LEFT_WINDOW_SIZE_Y - 100)), caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SIMULATE");
@@ -218,7 +218,7 @@ void TileScene2D::InitializeUI()
 
 	//scroll bar
 	float scrollbarX = (float)(caSizes::WINDOW_SIZE_X * 0.98f);
-	m_RuleScrollBar = new ScrollBar(sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y * 0.05f)),
+	m_RuleScrollBar = new ScrollBar(sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y * 0.15f)),
 									sf::Vector2f(scrollbarX, (float)(caSizes::WINDOW_SIZE_Y * 0.95f)),
 									13,
 									(float)(caSizes::WINDOW_SIZE_Y * .8f)
@@ -226,31 +226,61 @@ void TileScene2D::InitializeUI()
 
 	m_ControlsBG = Button(sf::Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X, 196), Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X * 0.5f, (float)(caSizes::LEFT_WINDOW_SIZE_Y - 160)), caColors::g_BackBuffer_Color, caColors::g_BackBuffer_Color, *caFonts::s_DefaultFont, 0);
 
+	rulesetBG = sf::RectangleShape(sf::Vector2f((float)(caSizes::WINDOW_SIZE_X - caSizes::LEFT_WINDOW_SIZE_X), 78.0f));
+	rulesetBG.setFillColor(caColors::g_BackBuffer_Color);
+	rulesetBG.setOutlineThickness(0.0f);
+	rulesetBG.setPosition(sf::Vector2f((float)caSizes::LEFT_WINDOW_SIZE_X, 0));
+
+
+	//ruleset management buttons
+	m_LoadNextRulesetButton = Button(Vector2f(120, 22), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 80), 20.0f),
+									 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "LOAD NEXT", 14);
+	m_LoadNextRulesetButton.SetLeftMouseButtonReleaseEvent(HandleLoadNextRuleset_ptr);
+	
+	m_LoadPreviousRulesetButton = Button(Vector2f(120, 22), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 80), 54.0f),
+										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "LOAD PREVIOUS", 14);
+	m_LoadPreviousRulesetButton.SetLeftMouseButtonReleaseEvent(HandleLoadPreviousRuleset_ptr);
+
+	
+	m_SaveRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 14.0f),
+										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "SAVE RULESET", 12);
+	m_SaveRulesetButton.SetLeftMouseButtonReleaseEvent(HandleSaveRuleset_ptr);
+
+	m_NewRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 38.0f),
+										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "NEW RULESET", 12);
+	m_NewRulesetButton.SetLeftMouseButtonReleaseEvent(HandleNewRuleset_ptr);
+
+	m_DeleteRulesetButton = Button(Vector2f(120, 18), Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 520), 62.0f),
+										 caColors::gray, caColors::border_gray, *caFonts::s_DefaultFont, 2.0f, "DELETE RULESET", 12);
+	m_DeleteRulesetButton.SetLeftMouseButtonReleaseEvent(HandleDeleteRuleset_ptr);
+	
+	//ruleset name text
+	m_RulesetNameText = sf::Text("", *caFonts::s_DefaultFont, 24);
+	m_RulesetNameText.setString(ruleSerializer::rulesetNames[0]);
+
+	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+	
 }
 
-void TileScene2D::IntializeRules()
+void TileScene2D::IntializeRules(int a_RulesetIndex)
 {
 	m_Rules = new std::vector<Rule*>();
-	//initialize poppa Conway's rulesetset
-	//m_Rules->push_back(new Rule(1, 0, 1, new bool[2]{true, false}, 1, 0, 0));//underpopulation
-	//m_Rules->push_back(new Rule(1, 3, 8, new bool[2]{true, false}, 1, 0, 1));//overpopulation
-	//m_Rules->push_back(new Rule(1, 2, 3, new bool[2]{true, false}, 1, 1, 2));//unchanged
-	//m_Rules->push_back(new Rule(0, 3, 3, new bool[2]{true, false}, 1, 1, 3));//resurrection
 
 	//at this point, the serializer has already initialized the vector of ruledatas.
 	//read this vector and create rulesets accordingly.
-	for (size_t i = 0; i < ruleSerializer::rulesets->size(); i++)
+	for (size_t i = 0; i < ruleSerializer::rulesets[a_RulesetIndex].size(); i++)
 	{
-		RuleData tmp = ruleSerializer::rulesets->at(i);
+		RuleData tmp = ruleSerializer::rulesets[a_RulesetIndex].at(i);
 		m_Rules->push_back(new Rule(tmp.ThisColorIndex, tmp.MinNumNeighbors, tmp.MaxNumNeighbors, new bool[2]{true, false}, tmp.IfColorIndex, tmp.ThenColorIndex, i));
 	}
 }
-//sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(40 + (112 * (_newIndex))))
+//sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8), (float)(100 + (112 * (_newIndex))))
 void TileScene2D::HandleAddRuleEvent()
 {
 	int index = m_Rules->size();
 	m_Rules->push_back(new Rule(-1, 2, 2, new bool[2]{true, false}, 0, 0, index));
-	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
+	m_RuleScrollBar->UpdateTargetSize((float)(100 + (112 * (Rule::s_RuleCount - 1))));
 	UpdateRuleScrolling();
 }
 
@@ -266,7 +296,7 @@ void TileScene2D::HandleRemoveRuleEvent(unsigned int index)
 	{
 		m_Rules->at(i)->Refresh(i);
 	}
-	m_RuleScrollBar->UpdateTargetSize((float)(40 + (112 * (Rule::s_RuleCount - 1))));
+	m_RuleScrollBar->UpdateTargetSize((float)(100 + (112 * (Rule::s_RuleCount - 1))));
 
 	UpdateRuleScrolling();
 }
@@ -334,7 +364,6 @@ void TileScene2D::HandleNextFrameButtonReleaseEvent()
 	UpdateUnmanaged(0.0f);
 }
 
-
 void TileScene2D::HandleIncreaseResButtonReleaseEvent()
 {
 	if (BoardSizeIndexNextFrame < BoardSizeLen-1)
@@ -358,6 +387,96 @@ void TileScene2D::HandleDecreaseResButtonReleaseEvent()
 		ss << "\nresolution: " << BoardTileSizes[BoardSizeIndexNextFrame] << "px²";
 		m_ResText.setString(ss.str());
 	}
+}
+
+void TileScene2D::HandleLoadPreviousRuleset()
+{
+	if (ruleSerializer::numRulesets <= 1)
+	{
+		return;
+	}
+	DeleteRules();
+	Rule::s_RuleCount = 0;
+
+	ruleSerializer::currentLoadedRuleIndex--;
+	if (ruleSerializer::currentLoadedRuleIndex < 0)
+	{
+		ruleSerializer::currentLoadedRuleIndex = ruleSerializer::numRulesets - 1;
+	}
+
+	IntializeRules(ruleSerializer::currentLoadedRuleIndex);
+
+	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
+	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+}
+void TileScene2D::HandleLoadNextRuleset()
+{
+	if (ruleSerializer::numRulesets <= 1)
+	{
+		return;
+	}
+	DeleteRules();
+	Rule::s_RuleCount = 0;
+
+	ruleSerializer::currentLoadedRuleIndex++;
+	if (ruleSerializer::currentLoadedRuleIndex > (int)ruleSerializer::numRulesets-1)
+	{
+		ruleSerializer::currentLoadedRuleIndex = 0;
+	}
+
+	IntializeRules(ruleSerializer::currentLoadedRuleIndex);
+	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
+	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+}
+void TileScene2D::HandleSaveRuleset()
+{
+	printf("save");
+
+	std::vector<RuleData> rds;
+
+	for (size_t i = 0; i < m_Rules->size(); i++)
+	{
+		rds.push_back(*(m_Rules->at(i)->m_RuleData));
+	}
+	
+	ruleSerializer::SaveToFile(ruleSerializer::currentLoadedRuleIndex, rds);
+
+	ruleSerializer::rulesets[ruleSerializer::currentLoadedRuleIndex] = rds;
+}
+void TileScene2D::HandleNewRuleset()
+{
+	if (ruleSerializer::numRulesets >= ruleSerializer::rulesetsMaxLen-1)
+	{
+		return;
+	}
+
+	ruleSerializer::SaveToFile(ruleSerializer::numRulesets, std::vector<RuleData>());
+
+	DeleteRules();
+	Rule::s_RuleCount = 0;
+	ruleSerializer::currentLoadedRuleIndex = ruleSerializer::numRulesets - 1;
+	IntializeRules(ruleSerializer::currentLoadedRuleIndex);
+	m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
+	m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
+}
+void TileScene2D::HandleDeleteRuleset()
+{
+	//simply never delete the last ruleset..
+	//if (ruleSerializer::numRulesets <= 1)
+	//{
+	//	return;
+	//}
+	//
+	//ruleSerializer::DeleteFile(ruleSerializer::currentLoadedRuleIndex);
+	//
+	//ruleSerializer::currentLoadedRuleIndex = 0;
+	//
+	//m_RulesetNameText.setString(ruleSerializer::rulesetNames[ruleSerializer::currentLoadedRuleIndex]);
+	//m_RulesetNameText.setOrigin(sf::Vector2f(m_RulesetNameText.getLocalBounds().width * 0.5f, m_RulesetNameText.getLocalBounds().height *0.5f));
+	//m_RulesetNameText.setPosition((float)(caSizes::LEFT_WINDOW_SIZE_X + 295), 38.0f);
 }
 
 float fpsCountPre = 0.0f;
@@ -410,6 +529,11 @@ void TileScene2D::PreUpdate(float a_DeltaTime)
 	m_ClearButton.Update(a_DeltaTime);
 	m_RuleScrollBar->Update(a_DeltaTime);
 	m_ControlsBG.Update(a_DeltaTime);
+	m_LoadPreviousRulesetButton.Update(a_DeltaTime);
+	m_LoadNextRulesetButton.Update(a_DeltaTime);
+	m_SaveRulesetButton.Update(a_DeltaTime);
+	m_NewRulesetButton.Update(a_DeltaTime);
+	m_DeleteRulesetButton.Update(a_DeltaTime);
 
 	if (m_RuleScrollBar->m_IsScrolling || abs(input::MouseWheelDelta) > 0)
 	{
@@ -433,7 +557,7 @@ void TileScene2D::UpdateRuleScrolling()
 			float scrollPos = ((r) * (m_RuleScrollBar->m_TargetSize - m_RuleScrollBar->m_TargetOverflowSize));
 
 			m_Rules->at(i)->m_Interface->SetPosition(sf::Vector2f((float)(caSizes::LEFT_WINDOW_SIZE_X + 8),
-				(float)(40 + (112 * i)) - scrollPos));
+				(float)(100 + (112 * i)) - scrollPos));
 		}
 	}
 }
@@ -511,14 +635,6 @@ void TileScene2D::ProcessRulesAt(int x, int y)
 
 	//m_Cells[x][y].SetColorIndexNextFrame(-1?);
 }
-
-
-int TileScene2D::GetLiveNeighborsAroundIndex(int x, int y)
-{
-	
-	return -1;
-}
-
 
 
 float fpsCountPost = 0.0f;
@@ -637,7 +753,13 @@ void TileScene2D::Draw()
 	}
 
 	m_ControlsBG.Draw();
-
+	g_WINDOW->draw(rulesetBG);
+	m_LoadPreviousRulesetButton.Draw();
+	m_LoadNextRulesetButton.Draw();
+	m_SaveRulesetButton.Draw();
+	m_NewRulesetButton.Draw();
+	m_DeleteRulesetButton.Draw();
+	g_WINDOW->draw(m_RulesetNameText);
 
 	for (int y = 0; y < BoardTileSizes[BoardSizeIndex]; y++)
 	{
