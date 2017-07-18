@@ -395,6 +395,7 @@ void TileScene2D::HandleLoadPreviousRuleset()
 	{
 		return;
 	}
+	HandleSaveRuleset();
 	DeleteRules();
 	Rule::s_RuleCount = 0;
 
@@ -416,6 +417,7 @@ void TileScene2D::HandleLoadNextRuleset()
 	{
 		return;
 	}
+	HandleSaveRuleset();
 	DeleteRules();
 	Rule::s_RuleCount = 0;
 
@@ -451,6 +453,7 @@ void TileScene2D::HandleNewRuleset()
 	{
 		return;
 	}
+	HandleSaveRuleset();
 
 	ruleSerializer::SaveToFile(ruleSerializer::numRulesets, std::vector<RuleData>());
 

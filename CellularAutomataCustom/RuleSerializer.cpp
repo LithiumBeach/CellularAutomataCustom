@@ -8,7 +8,7 @@ namespace ruleSerializer
 	typedef std::fstream fstream;
     typedef std::string string;
 
-	size_t numRulesets = 0;
+	size_t ruleSerializer::numRulesets = 0;
 	//string saveFilepaths[rulesetsMaxLen];
 
 	string saveFilePathPre = "../save/ruleset";
@@ -210,6 +210,6 @@ namespace ruleSerializer
 		}
 
 		//remove the LAST file (Which by now should be empty)
-		remove((RulesetIndexToFilePath(numRulesets)).c_str());
+		remove((RulesetIndexToFilePath(numRulesets+1)).c_str());
 	}
 }
