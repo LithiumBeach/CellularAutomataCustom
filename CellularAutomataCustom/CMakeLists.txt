@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(Walk_The_Dinosaur)
+project(CellularAutomataCustom)
 
 #find SFML's root folder
 set(SFML_ROOT ${CMAKE_SOURCE_DIR}/3rdParty/SFML-2.3.2)
@@ -17,10 +17,14 @@ file(GLOB src
 "*.ttf"
 )
 
-add_executable(Walk_The_Dinosaur ${src}
+add_executable(CellularAutomataCustom ${src}
 ${SFML_DEPENDENCIES} ${SFML_LIBRARIES})
 
 #search the SFML cmake file and include these libraries
 find_package(SFML 2 REQUIRED graphics window system audio)
+#search the TGUI cmake file and include these libraries
+#find_package(TGUI 2 REQUIRED graphics window system audio)
 
-target_link_libraries(Walk_The_Dinosaur ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+target_link_libraries(CellularAutomataCustom ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+
+
