@@ -61,7 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\src\EditorUtils.cs" />
-    <Compile Include="Assets\src\TileBehavior.cs" />
+    <Compile Include="Assets\src\Rule.cs" />
+    <Compile Include="Assets\src\RuleBehavior.cs" />
+    <Compile Include="Assets\src\SingletonBehavior.cs" />
     <Compile Include="Assets\src\TileGridBehavior.cs" />
     <Compile Include="Assets\src\WindowManager.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
