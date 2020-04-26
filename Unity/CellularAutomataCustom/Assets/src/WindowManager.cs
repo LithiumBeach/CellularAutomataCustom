@@ -7,7 +7,7 @@ namespace ca
     public class WindowManager : patterns.SingletonBehavior<WindowManager>
     {
         [Required]
-        public TileGridBehavior m_TileGrid;
+        public CellGridBehavior m_CellGrid;
 
         //Left Mouse Button
         public Action<Vector2> OnLeftMouseDown;

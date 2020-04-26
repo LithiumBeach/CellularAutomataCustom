@@ -8,7 +8,7 @@ namespace ca
 {
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(RawImage))]
-    public class TileGridBehavior : MonoBehaviour
+    public class CellGridBehavior : MonoBehaviour
     {
         [Sirenix.OdinInspector.Required]
         public RectTransform m_RectTransform;
@@ -32,8 +32,7 @@ namespace ca
             public ZoomLevel(int size) { m_Size = size; m_Tex = null; }
         }
 
-
-        //s_Textures Index, pixel width
+        #region Zoom
         private Dictionary<int, ZoomLevel> m_ZoomLevels = new Dictionary<int, ZoomLevel>
         {
             {0, new ZoomLevel(4)},
@@ -51,35 +50,38 @@ namespace ca
         private int m_Zoom = 0;
         public ZoomLevel CurZoomLevel { get { return m_ZoomLevels[m_Zoom]; } }
 
-        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
-        private void ZoomIn()
+        private void SetZoom(int zoomLevel)
         {
-            m_Zoom = Math.Max(0, m_Zoom - 1);
+            m_Zoom = Math.Max(0, zoomLevel);
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
             UpdateCellPixelSize();
-        }
-        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom Out")]
-        private void ZoomOut()
-        {
-            m_Zoom = Math.Min(MAX_ZOOM, m_Zoom + 1);
-            GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
-            UpdateCellPixelSize();
-        }
 
-        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Refresh Grid")]
+            //TODO: m_CellGrid.Resize(m_ZoomLevels[m_Zoom].size)
+
+            //TODO: CopyCellGridToTexture()
+        }
+        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
+        private void ZoomIn() { SetZoom(m_Zoom - 1); }
+        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom Out")]
+        private void ZoomOut() { SetZoom(m_Zoom + 1); }
+        #endregion
+
+        public CellGrid m_CellGrid;
+
+        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Reset Grid")]
         private void ResetGrid()
         {
             for (int i = 0; i < MAX_ZOOM + 1; i++)
             {
                 m_ZoomLevels[i].m_Tex = null;
             }
-            InitializeTextures();
+            m_CellGrid = new CellGrid(m_ZoomLevels[m_Zoom].m_Size, m_ZoomLevels[m_Zoom].m_Size, Color.blue);
+            InitializeZoomLevels(Color.blue);
 
-            m_Zoom = 0;
-            UpdateCellPixelSize();
+            SetZoom(m_Zoom);
         }
 
-        private void InitializeTextures()
+        private void InitializeZoomLevels(Color color)
         {
             //for each zoom level, construct a unique texture and store it in a collection
             for (int i = 0; i < MAX_ZOOM + 1; i++)
@@ -92,7 +94,7 @@ namespace ca
                 {
                     for (int x = 0; x < m_ZoomLevels[i].m_Tex.width; x++)
                     {
-                        m_ZoomLevels[i].m_Tex.SetPixel(x, y, x % 2 == 1 ? Color.white : Color.black);
+                        m_ZoomLevels[i].m_Tex.SetPixel(x, y, color);
                     }
                 }
                 m_ZoomLevels[i].m_Tex.Apply();
@@ -100,6 +102,20 @@ namespace ca
             }
         }
 
+        private void SyncZoomTexture()
+        {
+            for (int y = 0; y < CurZoomLevel.m_Tex.height; y++)
+            {
+                for (int x = 0; x < CurZoomLevel.m_Tex.width; x++)
+                {
+                    //re-invert y-axis.
+                    //also subtract one, because unity's texture space apparently starts at -1
+                    CurZoomLevel.m_Tex.SetPixel(x, -y - 1, m_CellGrid.At(x, y));
+                }
+            }
+        }
+
+        #region Events
         public void Awake()
         {
             //find components
@@ -114,22 +130,35 @@ namespace ca
 
         private void HandleLeftMouseDown(Vector2 pos)
         {
-            //get mouse pos in local TileGrid pixel space
+            //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
-
-            //Floor since tiles are aligned top left
-            Vector2Int tileIndex = new Vector2Int(
+            //Floor since cells are aligned top left
+            Vector2Int cellIndex = new Vector2Int(
                 //x-space starts at 0 and goes up.
-                Mathf.FloorToInt(localMousePos.x) / m_CellPixelSize.x,
-                //for whatever miserable reason, the top-left pixel is (0, -1)
-                Mathf.FloorToInt(localMousePos.y) / m_CellPixelSize.y - 1
+                Mathf.FloorToInt(localMousePos.x / m_CellPixelSize.x),
+                //inverted y-axis
+                (Mathf.FloorToInt(-localMousePos.y / m_CellPixelSize.y))
+            );
+            //modulo (including negatives) with board size
+            //toroidal wraparound asteroids.
+            cellIndex = new Vector2Int(
+                CAMath.Mod(cellIndex.x, CurZoomLevel.m_Size),
+                CAMath.Mod(cellIndex.y, CurZoomLevel.m_Size)
             );
 
-            CurZoomLevel.m_Tex.SetPixel(tileIndex.x, tileIndex.y, Color.black);
-            CurZoomLevel.m_Tex.Apply();
-            m_RawImage.texture = m_ZoomLevels[m_Zoom].m_Tex;
-            Debug.Log(tileIndex);
-        }
+            //debug
+            //CurZoomLevel.m_Tex.SetPixel(cellIndex.x, cellIndex.y, Color.black);
 
+            m_CellGrid.SetColor(cellIndex, Color.green);
+
+            SyncZoomTexture();
+
+
+            CurZoomLevel.m_Tex.Apply();
+
+            //TODO: is this necessary? Can we tell the raw image to reference this texture with a pointer?
+            m_RawImage.texture = m_ZoomLevels[m_Zoom].m_Tex;
+        }
+        #endregion
     }
 }
