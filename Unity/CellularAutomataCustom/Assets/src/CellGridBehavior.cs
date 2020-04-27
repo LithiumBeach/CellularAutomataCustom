@@ -33,6 +33,8 @@ namespace ca
         }
 
         #region Zoom
+        [Range(0, MAX_ZOOM)]
+        public int m_Zoom;
         private Dictionary<int, ZoomLevel> m_ZoomLevels = new Dictionary<int, ZoomLevel>
         {
             {0, new ZoomLevel(4)},
@@ -46,8 +48,6 @@ namespace ca
             {8, new ZoomLevel(1024)}
         };
         private const int MAX_ZOOM = 8;
-        [Range(0, MAX_ZOOM)]
-        private int m_Zoom = 0;
         public ZoomLevel CurZoomLevel { get { return m_ZoomLevels[m_Zoom]; } }
 
         private void SetZoom(int zoomLevel)
@@ -58,7 +58,8 @@ namespace ca
 
             //TODO: m_CellGrid.Resize(m_ZoomLevels[m_Zoom].size)
 
-            //TODO: CopyCellGridToTexture()
+            //copy cell grid to texture
+            SyncZoomTexture();
         }
         [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
         private void ZoomIn() { SetZoom(m_Zoom - 1); }
@@ -75,13 +76,14 @@ namespace ca
             {
                 m_ZoomLevels[i].m_Tex = null;
             }
-            m_CellGrid = new CellGrid(m_ZoomLevels[m_Zoom].m_Size, m_ZoomLevels[m_Zoom].m_Size, Color.blue);
-            InitializeZoomLevels(Color.blue);
+            m_CellGrid = new CellGrid(m_ZoomLevels[m_Zoom].m_Size, m_ZoomLevels[m_Zoom].m_Size, 1);
+            InitializeZoomLevels(1);
 
             SetZoom(m_Zoom);
+            SyncZoomTexture();
         }
 
-        private void InitializeZoomLevels(Color color)
+        private void InitializeZoomLevels(int color)
         {
             //for each zoom level, construct a unique texture and store it in a collection
             for (int i = 0; i < MAX_ZOOM + 1; i++)
@@ -94,7 +96,7 @@ namespace ca
                 {
                     for (int x = 0; x < m_ZoomLevels[i].m_Tex.width; x++)
                     {
-                        m_ZoomLevels[i].m_Tex.SetPixel(x, y, color);
+                        m_ZoomLevels[i].m_Tex.SetPixel(x, y, CAColor.colors[color]);
                     }
                 }
                 m_ZoomLevels[i].m_Tex.Apply();
@@ -110,9 +112,11 @@ namespace ca
                 {
                     //re-invert y-axis.
                     //also subtract one, because unity's texture space apparently starts at -1
-                    CurZoomLevel.m_Tex.SetPixel(x, -y - 1, m_CellGrid.At(x, y));
+                    CurZoomLevel.m_Tex.SetPixel(x, -y - 1, CAColor.colors[m_CellGrid.At(x, y)]);
                 }
             }
+
+            CurZoomLevel.m_Tex.Apply();
         }
 
         #region Events
@@ -149,15 +153,23 @@ namespace ca
             //debug
             //CurZoomLevel.m_Tex.SetPixel(cellIndex.x, cellIndex.y, Color.black);
 
-            m_CellGrid.SetColor(cellIndex, Color.green);
+            m_CellGrid.SetColor(cellIndex, 2);
 
             SyncZoomTexture();
 
-
-            CurZoomLevel.m_Tex.Apply();
-
             //TODO: is this necessary? Can we tell the raw image to reference this texture with a pointer?
             m_RawImage.texture = m_ZoomLevels[m_Zoom].m_Tex;
+        }
+
+        public void EvaluateNextState(List<Rule> rules)
+        {
+            foreach(Rule rule in rules)
+            {
+                m_CellGrid.Evaluate(rule);
+            }
+            m_CellGrid.Apply();
+
+            SyncZoomTexture();
         }
         #endregion
     }

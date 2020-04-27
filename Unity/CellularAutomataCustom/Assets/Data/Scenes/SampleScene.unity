@@ -170,7 +170,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 1688023526}
+  m_Texture: {fileID: 1631559969}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -190,6 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RectTransform: {fileID: 266500}
+  m_Zoom: 3
 --- !u!222 &266503
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -507,7 +508,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412f69557f5f2cf4699629385d7b4f84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CellGrid: {fileID: 0}
+  m_CellGrid: {fileID: 266502}
+  m_Rulesets: []
+  m_ActiveRuleset: {fileID: 11400000, guid: 9c68b79f04329b64b8ae0c0a845600d0, type: 2}
 --- !u!1 &1457357736
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +577,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!28 &1688023526
+--- !u!28 &1631559969
 Texture2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -609,7 +612,7 @@ Texture2D:
   m_LightmapFormat: 0
   m_ColorSpace: 1
   image data: 84
-  _typelessdata: 0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff0000ffff
+  _typelessdata: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   m_StreamData:
     offset: 0
     size: 0
