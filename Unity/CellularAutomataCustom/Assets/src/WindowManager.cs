@@ -45,7 +45,6 @@ namespace ca
             //have the board evaluate the active Ruleset
             if (Input.GetKeyDown(KeyCode.Space))//TODO: temp space to simulate
             {
-                Debug.Log("evaluate state");
                 if (m_ActiveRuleset != null)
                 {
                     m_CellGrid.EvaluateNextState(m_ActiveRuleset.m_Rules);

@@ -126,6 +126,7 @@ namespace ca
                         m_CellsCache[i] = rule.m_ThenColor;
                     }
                 }
+                //if no change in color is determined, remain unchanged into the next state
             }
         }
 

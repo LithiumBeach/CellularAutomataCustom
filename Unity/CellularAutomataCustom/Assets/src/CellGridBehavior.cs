@@ -16,12 +16,12 @@ namespace ca
         private RawImage m_RawImage;
 
         //the size of one cell in px: this is cached when zoom level changes
-        private Vector2Int m_CellPixelSize;
+        private Vector2 m_CellPixelSize;
         private void UpdateCellPixelSize()
         {
-            m_CellPixelSize = new Vector2Int(
-                (int)m_RectTransform.rect.width / CurZoomLevel.m_Size,
-                (int)m_RectTransform.rect.height / CurZoomLevel.m_Size
+            m_CellPixelSize = new Vector2(
+                m_RectTransform.rect.width / (float)CurZoomLevel.m_Size,
+                m_RectTransform.rect.height / (float)CurZoomLevel.m_Size
             );
         }
 
@@ -136,13 +136,19 @@ namespace ca
         {
             //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
+
+
+            GameObject.Find("DEBUG_CIRCLE").transform.position = localMousePos;
+
+
             //Floor since cells are aligned top left
             Vector2Int cellIndex = new Vector2Int(
                 //x-space starts at 0 and goes up.
                 Mathf.FloorToInt(localMousePos.x / m_CellPixelSize.x),
                 //inverted y-axis
-                (Mathf.FloorToInt(-localMousePos.y / m_CellPixelSize.y))
+                Mathf.FloorToInt(-localMousePos.y / m_CellPixelSize.y)
             );
+
             //modulo (including negatives) with board size
             //toroidal wraparound asteroids.
             cellIndex = new Vector2Int(
@@ -153,6 +159,7 @@ namespace ca
             //debug
             //CurZoomLevel.m_Tex.SetPixel(cellIndex.x, cellIndex.y, Color.black);
 
+            //set int color id in data
             m_CellGrid.SetColor(cellIndex, 2);
 
             SyncZoomTexture();
