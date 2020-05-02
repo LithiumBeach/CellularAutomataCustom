@@ -69,6 +69,11 @@ namespace ca
 
         public CellGrid m_CellGrid;
 
+
+        #region Interface Values
+        public int m_ClearToColor = 0;
+        #endregion
+
         [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Reset Grid")]
         private void ResetGrid()
         {
@@ -91,16 +96,7 @@ namespace ca
                 //create a square texture, sizes defined in zoom levels dictionary
                 m_ZoomLevels[i].m_Tex = new Texture2D(m_ZoomLevels[i].m_Size, m_ZoomLevels[i].m_Size);
 
-                //initialize texture to white
-                for (int y = 0; y < m_ZoomLevels[i].m_Tex.height; y++)
-                {
-                    for (int x = 0; x < m_ZoomLevels[i].m_Tex.width; x++)
-                    {
-                        m_ZoomLevels[i].m_Tex.SetPixel(x, y, CAColor.colors[color]);
-                    }
-                }
-                m_ZoomLevels[i].m_Tex.Apply();
-                m_ZoomLevels[i].m_Tex.filterMode = FilterMode.Point;
+                ClearBoard(m_ClearToColor, i);
             }
         }
 
@@ -119,7 +115,19 @@ namespace ca
             CurZoomLevel.m_Tex.Apply();
         }
 
-        #region Events
+
+        public void EvaluateNextState(List<Rule> rules)
+        {
+            foreach (Rule rule in rules)
+            {
+                m_CellGrid.Evaluate(rule);
+            }
+            m_CellGrid.Apply();
+
+            SyncZoomTexture();
+        }
+
+
         public void Awake()
         {
             //find components
@@ -149,34 +157,46 @@ namespace ca
                 Mathf.FloorToInt(-localMousePos.y / m_CellPixelSize.y)
             );
 
+            if (cellIndex.x < 0 || cellIndex.x >= CurZoomLevel.m_Size ||
+                cellIndex.y < 0 || cellIndex.y >= CurZoomLevel.m_Size)
+            {
+                return;
+            }
+
             //modulo (including negatives) with board size
             //toroidal wraparound asteroids.
-            cellIndex = new Vector2Int(
-                CAMath.Mod(cellIndex.x, CurZoomLevel.m_Size),
-                CAMath.Mod(cellIndex.y, CurZoomLevel.m_Size)
-            );
-
-            //debug
-            //CurZoomLevel.m_Tex.SetPixel(cellIndex.x, cellIndex.y, Color.black);
+            //cellIndex = new Vector2Int(
+            //    CAMath.Mod(cellIndex.x, CurZoomLevel.m_Size),
+            //    CAMath.Mod(cellIndex.y, CurZoomLevel.m_Size)
+            //);
 
             //set int color id in data
             m_CellGrid.SetColor(cellIndex, 2);
 
             SyncZoomTexture();
-
-            //TODO: is this necessary? Can we tell the raw image to reference this texture with a pointer?
-            m_RawImage.texture = m_ZoomLevels[m_Zoom].m_Tex;
         }
 
-        public void EvaluateNextState(List<Rule> rules)
-        {
-            foreach(Rule rule in rules)
-            {
-                m_CellGrid.Evaluate(rule);
-            }
-            m_CellGrid.Apply();
 
-            SyncZoomTexture();
+        #region Event Trigger Callbacks
+        public void ClearBoard()
+        {
+            ClearBoard(m_ClearToColor, m_Zoom);
+        }
+        public void ClearBoard(int caColor, int zoomLevel)
+        {
+            //clear data board (and Apply)
+            m_CellGrid.ClearTo(caColor);
+
+            //clear texture
+            for (int y = 0; y < m_ZoomLevels[zoomLevel].m_Tex.height; y++)
+            {
+                for (int x = 0; x < m_ZoomLevels[zoomLevel].m_Tex.width; x++)
+                {
+                    m_ZoomLevels[zoomLevel].m_Tex.SetPixel(x, y, CAColor.colors[caColor]);
+                }
+            }
+            m_ZoomLevels[zoomLevel].m_Tex.Apply();
+            m_ZoomLevels[zoomLevel].m_Tex.filterMode = FilterMode.Point;
         }
         #endregion
     }

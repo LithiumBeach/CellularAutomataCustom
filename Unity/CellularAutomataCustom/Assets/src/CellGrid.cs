@@ -33,21 +33,13 @@ namespace ca
         }
 
 
-        public CellGrid(int w, int h)
-        {
-            m_Width = w; m_Height = h; m_Area = w * h;
-            m_Cells = new int[w * h];
-        }
+
         public CellGrid(int w, int h, int color)
         {
             m_Width = w; m_Height = h; m_Area = w * h;
             int size = w * h;
 
-            m_Cells = new int[size];
-            for (int i = 0; i < size; i++)
-            {
-                m_Cells[i] = color;
-            }
+            ClearTo(color);
         }
 
 
@@ -80,6 +72,10 @@ namespace ca
             return n;
         }
 
+        internal void SetColor(int x, int y, int color)
+        {
+            m_Cells[Get1D(x, y)] = color;
+        }
         internal void SetColor(Vector2Int cellIndex, int color)
         {
             m_Cells[Get1D(cellIndex)] = color;
@@ -138,6 +134,22 @@ namespace ca
                 m_Cells[i] = m_CellsCache[i];
             }
             m_CellsCache = null;
+        }
+
+        internal void ClearTo(int caColor)
+        {
+            if (m_Cells == null)
+            {
+                m_Cells = new int[m_Area];
+            }
+            if (m_CellsCache == null)
+            {
+                m_CellsCache = new int[m_Area];
+            }
+            for (int i = 0; i < m_Area; i++)
+            {
+                m_Cells[i] = m_CellsCache[i] = caColor;
+            }
         }
     }
 }
