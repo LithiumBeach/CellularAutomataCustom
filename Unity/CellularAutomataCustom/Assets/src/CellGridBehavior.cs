@@ -145,10 +145,6 @@ namespace ca
             //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
 
-
-            GameObject.Find("DEBUG_CIRCLE").transform.position = localMousePos;
-
-
             //Floor since cells are aligned top left
             Vector2Int cellIndex = new Vector2Int(
                 //x-space starts at 0 and goes up.

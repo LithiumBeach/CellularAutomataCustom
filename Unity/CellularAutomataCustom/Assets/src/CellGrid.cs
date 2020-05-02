@@ -142,13 +142,14 @@ namespace ca
             {
                 m_Cells = new int[m_Area];
             }
-            if (m_CellsCache == null)
-            {
-                m_CellsCache = new int[m_Area];
-            }
+            m_CellsCache = null;
+            //if (m_CellsCache = null)
+            //{
+            //    m_CellsCache = new int[m_Area];
+            //}
             for (int i = 0; i < m_Area; i++)
             {
-                m_Cells[i] = m_CellsCache[i] = caColor;
+                m_Cells[i] = caColor;
             }
         }
     }
