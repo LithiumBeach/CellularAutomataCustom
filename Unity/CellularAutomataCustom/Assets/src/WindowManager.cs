@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -100,7 +101,33 @@ namespace ca
             }
         }
 
-        #region Events
+        #region Rulesets
+
+        public void OnAddRulesetButtonPressed()
+        {
+            RulesetSO rsSO = RulesetSO.CreateInstance<RulesetSO>();
+            rsSO.m_Rules = new List<RuleData>();
+            rsSO.m_Rules.Add(new RuleData());
+            rsSO.m_Rules[0].m_IfColor = 1;
+            rsSO.m_Rules[0].m_ThenColor = 4;
+
+            //TODO: this is the save function. write this to a file at Application.dataPath
+            byte[] serialized = SerializationUtility.SerializeValue<RulesetSO>(rsSO, DataFormat.JSON);
+
+            //TODO: this is the load function. read this from a file at Application.dataPath
+            rsSO = SerializationUtility.DeserializeValue<RulesetSO>(serialized, DataFormat.JSON);
+
+            //string _json = JsonUtility.ToJson(rsSO);
+            //rsSO = JsonUtility.FromJson<RulesetSO>(_json);
+
+
+            Debug.Log(rsSO.ToString());
+            //m_Rulesets.Add(rsSO);
+        }
+
+        #endregion
+
+        #region Simulating
 
         public void SimulateStep()
         {

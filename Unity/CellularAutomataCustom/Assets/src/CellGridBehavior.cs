@@ -124,9 +124,9 @@ namespace ca
         }
 
 
-        public void EvaluateNextState(List<Rule> rules)
+        public void EvaluateNextState(List<RuleData> rules)
         {
-            foreach (Rule rule in rules)
+            foreach (RuleData rule in rules)
             {
                 m_CellGrid.Evaluate(rule);
             }

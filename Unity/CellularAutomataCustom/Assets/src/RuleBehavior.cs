@@ -5,7 +5,7 @@ namespace ca
 {
     public class RuleBehavior : MonoBehaviour
     {
-        public Rule m_Data;
+        public RuleData m_Data;
 
     }
 }

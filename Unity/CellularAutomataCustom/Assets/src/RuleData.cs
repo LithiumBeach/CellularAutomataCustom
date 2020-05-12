@@ -3,7 +3,7 @@
 namespace ca
 {
     [System.Serializable]
-    public class Rule
+    public class RuleData
     {
         //Conway's Game of Life Rules:
         /*

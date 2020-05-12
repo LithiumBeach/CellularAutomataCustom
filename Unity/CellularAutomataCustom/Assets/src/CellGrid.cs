@@ -81,7 +81,7 @@ namespace ca
             m_Cells[Get1D(cellIndex)] = color;
         }
 
-        internal void Evaluate(Rule rule)
+        internal void Evaluate(RuleData rule)
         {
             //cache m_Cells only on the first evaluation since we wrote the cache
             if (m_CellsCache == null)
