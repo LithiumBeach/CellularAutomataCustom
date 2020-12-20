@@ -8,7 +8,7 @@ namespace ca
     {
         public UnityEvent OnLeftClick;
         public UnityEvent OnRightClick;
-        public void OnPointerClick(PointerEventData e)
+        public virtual void OnPointerClick(PointerEventData e)
         {
             if (e.button == PointerEventData.InputButton.Left)
             {

@@ -152,6 +152,7 @@ namespace ca
 
             //register input callbacks
             WindowManager.Instance.OnLeftMouseDown += HandleLeftMouseDown;
+            WindowManager.Instance.OnRightMouseDown += HandleRightMouseDown;
 
             ResetGrid();
 
@@ -161,11 +162,20 @@ namespace ca
 
         private void HandleLeftMouseDown(Vector2 pos)
         {
+            HandleMouseDown(pos, CAMath.LEFT);
+        }
+        private void HandleRightMouseDown(Vector2 pos)
+        {
+            HandleMouseDown(pos, CAMath.RIGHT);
+        }
+
+        private void HandleMouseDown(Vector2 pos, int ebutton)
+        {
             //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
 
             //if mouse was not clicked inside cell grid, return
-            if(!m_RectTransform.rect.Contains(localMousePos))
+            if (!m_RectTransform.rect.Contains(localMousePos))
             {
                 return;
             }
@@ -189,13 +199,26 @@ namespace ca
             }
 
             //set int color id in data
-            m_CellGrid.SetColor(cellIndex, 2);
+            int newColor = m_CellGrid.At(cellIndex);
+
+            //add or subtract color int if left+ : right-
+            newColor += ebutton;
+            if (ebutton == CAMath.LEFT && newColor >= CAColor.colors.Length)
+            {
+                //0 is transparent.
+                newColor = 1;
+            }
+            else if (ebutton == CAMath.RIGHT && newColor <= 0)
+            {
+                newColor = CAColor.colors.Length - 1;
+            }
+            m_CellGrid.SetColor(cellIndex, newColor);
 
             SyncZoomTexture();
         }
 
 
-#region Event Trigger Callbacks
+        #region Event Trigger Callbacks
         public void ClearBoard()
         {
             ClearBoard(m_ClearToColor, m_Zoom);
@@ -218,13 +241,13 @@ namespace ca
         }
 
         //1 = increase, -1 = decrease, 0 = unchanged
-        public void ChangeClearToColor(int direction=1)
+        public void ChangeClearToColor(int direction = 1)
         {
             m_ClearToColor += direction;
 
             if (m_ClearToColor <= 0)
             {
-                m_ClearToColor = CAColor.colors.Length-1;
+                m_ClearToColor = CAColor.colors.Length - 1;
             }
             else if (m_ClearToColor >= CAColor.colors.Length)
             {
@@ -234,6 +257,6 @@ namespace ca
 
             m_ClearToColorButton.color = CAColor.colors[m_ClearToColor];
         }
-#endregion
+        #endregion
     }
 }
