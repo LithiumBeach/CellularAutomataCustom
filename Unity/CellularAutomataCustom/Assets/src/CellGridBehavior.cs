@@ -41,7 +41,9 @@ namespace ca
 
         #region Zoom
         [Range(0, MAX_ZOOM_LEVEL)]
-        public int m_Zoom;
+        private int m_Zoom;
+        public int Zoom { get { return m_Zoom; } }
+
         private Dictionary<int, ZoomLevel> m_ZoomLevels = new Dictionary<int, ZoomLevel>
         {
             {0,     new ZoomLevel(Mathf.RoundToInt(Mathf.Lerp(MIN_ZOOM, MAX_ZOOM, CAMath.EaseIn(0.0f))))},
@@ -61,7 +63,7 @@ namespace ca
         private const int MAX_ZOOM_LEVEL = 8;
         public ZoomLevel CurZoomLevel { get { return m_ZoomLevels[m_Zoom]; } }
 
-        private void SetZoom(int zoomLevel)
+        public void SetZoom(int zoomLevel)
         {
             m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL);
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
@@ -73,10 +75,6 @@ namespace ca
             //copy cell grid to texture
             SyncZoomTexture();
         }
-        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
-        public void ZoomIn() { SetZoom(m_Zoom - 1); }
-        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom Out")]
-        public void ZoomOut() { SetZoom(m_Zoom + 1); }
         #endregion
 
         public CellGrid m_CellGrid;

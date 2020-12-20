@@ -191,7 +191,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RectTransform: {fileID: 266500}
-  m_Zoom: 0
   m_ClearToColorButton: {fileID: 1935780471995504903}
   m_ClearToColor: 1
 --- !u!222 &266503
@@ -412,11 +411,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 266502}
+      objectReference: {fileID: 1347583785}
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ZoomIn
+      value: ZoomOut
       objectReference: {fileID: 0}
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
@@ -1612,11 +1611,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 266502}
+      objectReference: {fileID: 1347583785}
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ZoomOut
+      value: ZoomIn
       objectReference: {fileID: 0}
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}

@@ -57,7 +57,7 @@ namespace ca
 
         private float m_FPSCount = 0.0f;
 
-        private void Awake()
+        private void Start()
         {
             //unrestrict Unity framerate
             Application.targetFrameRate = -1;
@@ -69,7 +69,7 @@ namespace ca
 
             //initialize UI
             ChangeFPS(0);
-            //ChangeZoom(0);
+            SetZoom(0);
         }
 
         private void Update()
@@ -133,15 +133,17 @@ namespace ca
 
         #region Zoom
 
-        //public void ChangeZoom(int direction)
-        //{
-        //    //update zoom index
-        //    m_ZoomIndex += direction;
-        //    m_ZoomIndex = CAMath.Mod(m_ZoomIndex, m_ZoomOptions.Length);
-        //
-        //    //update ui
-        //    m_ZoomButtonText.text = Zoom.ToString();
-        //}
+
+        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
+        public void ZoomIn() { SetZoom(m_CellGrid.Zoom - 1); }
+        [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom Out")]
+        public void ZoomOut() { SetZoom(m_CellGrid.Zoom + 1); }
+
+        public void SetZoom(int zoomLevel)
+        {
+            m_CellGrid.SetZoom(zoomLevel);
+            m_ZoomButtonText.text = m_CellGrid.Zoom.ToString();
+        }
 
         #endregion
 
