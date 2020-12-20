@@ -162,14 +162,14 @@ namespace ca
 
         private void HandleLeftMouseDown(Vector2 pos)
         {
-            HandleMouseDown(pos, CAMath.EMouseButton.LEFT);
+            HandleMouseDown(pos, CAMath.LEFT);
         }
         private void HandleRightMouseDown(Vector2 pos)
         {
-            HandleMouseDown(pos, CAMath.EMouseButton.RIGHT);
+            HandleMouseDown(pos, CAMath.RIGHT);
         }
 
-        private void HandleMouseDown(Vector2 pos, CAMath.EMouseButton ebutton)
+        private void HandleMouseDown(Vector2 pos, int ebutton)
         {
             //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
@@ -201,23 +201,16 @@ namespace ca
             //set int color id in data
             int newColor = m_CellGrid.At(cellIndex);
 
-            //add or subtract color int if left- : right+
-            newColor += (ebutton == CAMath.EMouseButton.LEFT) ? 1 : -1;
-            switch (ebutton)
+            //add or subtract color int if left+ : right-
+            newColor += ebutton;
+            if (ebutton == CAMath.LEFT && newColor >= CAColor.colors.Length)
             {
-                case CAMath.EMouseButton.LEFT:
-                if (newColor >= CAColor.colors.Length)
-                {
-                    //0 is transparent.
-                    newColor = 1;
-                }
-                break;
-                case CAMath.EMouseButton.RIGHT:
-                if (newColor <= 0)
-                {
-                    newColor = CAColor.colors.Length - 1;
-                }
-                break;
+                //0 is transparent.
+                newColor = 1;
+            }
+            else if (ebutton == CAMath.RIGHT && newColor <= 0)
+            {
+                newColor = CAColor.colors.Length - 1;
             }
             m_CellGrid.SetColor(cellIndex, newColor);
 
