@@ -1,4 +1,4 @@
-//WindowManager.cs
+﻿//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
 
