@@ -1,4 +1,8 @@
-﻿using Sirenix.OdinInspector;
+//WindowManager.cs
+//Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
+//Buttons trigger functions here
+
+using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 using System;
 using System.Collections.Generic;
@@ -45,6 +49,10 @@ namespace ca
         public Action<Vector2> OnLeftMouseDown;
         public Action<Vector2> WhileLeftMouseDown;
         public Action<Vector2> OnLeftMouseUp;
+        //Right Mouse Button
+        public Action<Vector2> OnRightMouseDown;
+        public Action<Vector2> WhileRightMouseDown;
+        public Action<Vector2> OnRightMouseUp;
 
 
         private bool m_IsSimulating = false;
@@ -87,6 +95,18 @@ namespace ca
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 OnLeftMouseUp?.Invoke(mousePos2D);
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                OnRightMouseDown?.Invoke(mousePos2D);
+            }
+            if (Input.GetKey(KeyCode.Mouse1))
+            {
+                WhileRightMouseDown?.Invoke(mousePos2D);
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse1))
+            {
+                OnRightMouseUp?.Invoke(mousePos2D);
             }
             #endregion
 
@@ -182,6 +202,9 @@ namespace ca
             OnLeftMouseDown = null;
             WhileLeftMouseDown = null;
             OnLeftMouseUp = null;
+            OnRightMouseDown = null;
+            WhileRightMouseDown = null;
+            OnRightMouseUp = null;
         }
     }
 }
