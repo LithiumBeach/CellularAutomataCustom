@@ -15,6 +15,9 @@ namespace ca
         public TextMeshProUGUI m_FPSText;
         [Required]
         public TextMeshProUGUI m_SimulateButtonText;
+        [Required]
+        public TextMeshProUGUI m_ZoomButtonText;
+
         private readonly float[] m_FPSOptions = new float[]
         {
             1f,
@@ -45,8 +48,8 @@ namespace ca
 
 
         private bool m_IsSimulating = false;
-        private int m_FPSIndex = 0;
 
+        private int m_FPSIndex = 0;
         public float FPS
         { get { return m_FPSOptions[m_FPSIndex]; } }
         public float OneDivFPS
@@ -66,6 +69,7 @@ namespace ca
 
             //initialize UI
             ChangeFPS(0);
+            //ChangeZoom(0);
         }
 
         private void Update()
@@ -124,6 +128,20 @@ namespace ca
             Debug.Log(rsSO.ToString());
             //m_Rulesets.Add(rsSO);
         }
+
+        #endregion
+
+        #region Zoom
+
+        //public void ChangeZoom(int direction)
+        //{
+        //    //update zoom index
+        //    m_ZoomIndex += direction;
+        //    m_ZoomIndex = CAMath.Mod(m_ZoomIndex, m_ZoomOptions.Length);
+        //
+        //    //update ui
+        //    m_ZoomButtonText.text = Zoom.ToString();
+        //}
 
         #endregion
 

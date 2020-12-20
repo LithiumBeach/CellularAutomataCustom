@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ca
 {
@@ -9,6 +10,19 @@ namespace ca
         {
             //Debug.Log(a.ToString() + " % " + b.ToString() + " = " + (((a % b) + b) % b).ToString());
             return ((a % b) + b) % b;
+        }
+
+        public static float SmoothStep(float t)
+        {
+            return t * t * (3f - 2f * t);
+        }
+        public static float EaseIn(float t)
+        {
+            return 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
+        }
+        public static float EaseOut(float t)
+        {
+            return Mathf.Sin(t * Mathf.PI * 0.5f);
         }
     }
 }

@@ -4,9 +4,18 @@ using UnityEngine;
 
 namespace ca
 {
+    //CellGrid
+    //numerical properties of 2D grids of cells
+    //map containing numerical representation of cells
+    //
+    //TODO: is general enough for (numerically) managing any 2D grid of things
+    //ie: lookup integers or enums for sprite atlas
+    //TODO: remove 'color' specifications
+    //TODO: IEvaluate(object)
     public class CellGrid
     {
-        //ints represent colors indexed at CAColor.colors[int]
+        //TODO: update this comment
+        //grid of integers representing, ie: colors indexed at CAColor.colors[int]
         private int[] m_Cells;
         //all rule evaluations are saved to the cache
         //the cache is moved to m_Cells only when instructed to Apply().
@@ -19,34 +28,71 @@ namespace ca
         public int GetWidth() { return m_Width; }
         public int GetHeight() { return m_Height; }
 
-        private Vector2Int Get2D(int i)
+        private Vector2Int Get2D(int i, int rowLength)
         {
-            return new Vector2Int(i % m_Width, i / m_Width);
+            return new Vector2Int(i % rowLength, i / rowLength);
         }
-        private int Get1D(Vector2Int i)
+        private int Get1D(Vector2Int i, int rowLength)
         {
-            return m_Width * i.y + i.x;
+            return Get1D(i.x, i.y, rowLength);
         }
-        private int Get1D(int x, int y)
+        private int Get1D(int x, int y, int rowLength)
         {
-            return m_Width * y + x;
+            return rowLength * y + x;
         }
-
 
 
         public CellGrid(int w, int h, int color)
         {
             m_Width = w; m_Height = h; m_Area = w * h;
-            int size = w * h;
 
             ClearTo(color);
         }
 
+        //param: defaultValue= if the array has to expand, what value should we put for the new indices?
+        public void Resize(Vector2Int size, int defaultValue = 0) { Resize(size.x, size.y, defaultValue); }
+        public void Resize(int size, int defaultValue = 0) { Resize(size, size, defaultValue); }
+        public void Resize(int w, int h, int defaultValue = 0)
+        {
+            int prevW = m_Width; int prevH = m_Height; int prevArea = m_Area;
+            m_Width = w; m_Height = h; m_Area = w * h;
 
-        public int At(int x, int y) { return m_Cells[Get1D(x, y)]; }
-        public int At(Vector2Int i) { return m_Cells[Get1D(i)]; }
+            if (m_Cells == null || m_Cells.Length < 1)
+            {
+                m_Cells = new int[m_Area];
+            }
+            else
+            {
+                //expand or contract m_Cells, keeping values intact
+                int[] m_CellsCopy = new int[prevArea];
+                Array.ConstrainedCopy(m_Cells, 0, m_CellsCopy, 0, Math.Min(m_Cells.Length, m_CellsCopy.Length));
+                m_Cells = new int[m_Area];
 
-        public int[] GetNeighbors(int i1D, bool b_Toroidal = true) { return GetNeighbors(Get2D(i1D), b_Toroidal); }
+                for (int y = 0; y < m_Height; y++)
+                {
+                    for (int x = 0; x < m_Width; x++)
+                    {
+                        if (x < prevW && y < prevH)
+                        {
+                            m_Cells[Get1D(x, y, m_Width)] = m_CellsCopy[Get1D(x, y, prevW)];
+                        }
+                        else
+                        {
+                            m_Cells[Get1D(x, y, m_Width)] = defaultValue;
+                        }
+                    }
+                }
+
+                m_CellsCopy = null;
+            }
+            //TODO: clear cache?
+            m_CellsCache = null;
+        }
+
+        public int At(int x, int y) { return m_Cells[Get1D(x, y, m_Width)]; }
+        public int At(Vector2Int i) { return m_Cells[Get1D(i, m_Width)]; }
+
+        public int[] GetNeighbors(int i1D, bool b_Toroidal = true) { return GetNeighbors(Get2D(i1D, m_Width), b_Toroidal); }
         public int[] GetNeighbors(Vector2Int i2D, bool b_Toroidal = true)
         {
             //TODO:
@@ -63,7 +109,8 @@ namespace ca
 
                     n[c] = m_Cells[Get1D(
                         CAMath.Mod((i2D.x + i), m_Width),
-                        CAMath.Mod((i2D.y + j), m_Height))
+                        CAMath.Mod((i2D.y + j), m_Height),
+                        m_Width)
                         ];
                     c++;
                 }
@@ -74,14 +121,15 @@ namespace ca
 
         internal void SetColor(int x, int y, int color)
         {
-            m_Cells[Get1D(x, y)] = color;
+            m_Cells[Get1D(x, y, m_Width)] = color;
         }
         internal void SetColor(Vector2Int cellIndex, int color)
         {
-            m_Cells[Get1D(cellIndex)] = color;
+            m_Cells[Get1D(cellIndex, m_Width)] = color;
         }
 
-        internal void Evaluate(RuleData rule)
+        //TODO: Evaluate can be generic, object param cast to RuleData ?
+        internal virtual void Evaluate(RuleData rule)
         {
             //cache m_Cells only on the first evaluation since we wrote the cache
             if (m_CellsCache == null)
@@ -106,9 +154,9 @@ namespace ca
 
                     //find all neighbors matching ifcolor
                     int relevantNeighborCount = 0;
-                    for(int j = 0; j < neighbors.Length; j++)
+                    for (int j = 0; j < neighbors.Length; j++)
                     {
-                        if(neighbors[j] == rule.m_IfColor)
+                        if (neighbors[j] == rule.m_IfColor)
                         {
                             relevantNeighborCount++;
                         }
@@ -143,10 +191,7 @@ namespace ca
                 m_Cells = new int[m_Area];
             }
             m_CellsCache = null;
-            //if (m_CellsCache = null)
-            //{
-            //    m_CellsCache = new int[m_Area];
-            //}
+
             for (int i = 0; i < m_Area; i++)
             {
                 m_Cells[i] = caColor;

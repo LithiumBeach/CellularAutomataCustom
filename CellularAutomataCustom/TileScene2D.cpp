@@ -645,7 +645,6 @@ void TileScene2D::ProcessRulesAt(int x, int y)
 
 
 float fpsCountPost = 0.0f;
-int numWaitFramesPost = 0;
 bool hasBegunDragging = false;
 sf::Vector2f initialMouseDownCellIndex;
 int initialMouseDownColorIndex;
@@ -664,12 +663,7 @@ void TileScene2D::Update(float a_DeltaTime)
 			{
 				fpsCountPost -= FramesPerSecond;
 			}
-			numWaitFramesPost = 0;
 		}
-	}
-	else
-	{
-		numWaitFramesPost++;
 	}
 
 	//handle dragging
