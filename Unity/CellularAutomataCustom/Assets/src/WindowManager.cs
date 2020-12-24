@@ -1,6 +1,7 @@
 ﻿//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
+//Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
 
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
@@ -41,10 +42,6 @@ namespace ca
         };
         private float[] m_OneDivFPSOptions;
 
-        [HideInInspector]
-        public List<RulesetSO> m_Rulesets;
-        public RulesetSO m_ActiveRuleset;
-
         //Left Mouse Button
         public Action<Vector2> OnLeftMouseDown;
         public Action<Vector2> WhileLeftMouseDown;
@@ -64,6 +61,8 @@ namespace ca
         { get { return m_OneDivFPSOptions[m_FPSIndex]; } }
 
         private float m_FPSCount = 0.0f;
+
+        private RulesetSO m_ActiveRuleset;
 
         private void Start()
         {
@@ -115,7 +114,7 @@ namespace ca
                 m_FPSCount += Time.deltaTime;
                 if (m_FPSCount > OneDivFPS)
                 {
-                    m_CellGrid.EvaluateNextState(m_ActiveRuleset.m_Rules);
+                    SimulateStep();
 
                     while (m_FPSCount > OneDivFPS)
                     {
