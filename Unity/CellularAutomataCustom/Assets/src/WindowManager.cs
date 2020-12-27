@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace ca
 {
-    public class WindowManager : patterns.SingletonBehavior<WindowManager>
+    public class WindowManager : patterns.SingletonBehavior<WindowManager>, patterns.IStart
     {
         [Required]
         public CellGridBehavior m_CellGrid;
@@ -64,7 +64,7 @@ namespace ca
 
         private RulesetSO m_ActiveRuleset;
 
-        private void Start()
+        public void IStart()
         {
             //unrestrict Unity framerate
             Application.targetFrameRate = -1;
@@ -77,6 +77,7 @@ namespace ca
             //initialize UI
             ChangeFPS(0);
             SetZoom(0);
+            LoadCurrentRulesetUI();
         }
 
         private void Update()
@@ -126,26 +127,14 @@ namespace ca
 
         #region Rulesets
 
+        private void LoadCurrentRulesetUI()
+        {
+
+        }
+
         public void OnAddRulesetButtonPressed()
         {
-            RulesetSO rsSO = RulesetSO.CreateInstance<RulesetSO>();
-            rsSO.m_Rules = new List<RuleData>();
-            rsSO.m_Rules.Add(new RuleData());
-            rsSO.m_Rules[0].m_IfColor = 1;
-            rsSO.m_Rules[0].m_ThenColor = 4;
 
-            //TODO: this is the save function. write this to a file at Application.dataPath
-            byte[] serialized = SerializationUtility.SerializeValue<RulesetSO>(rsSO, DataFormat.JSON);
-
-            //TODO: this is the load function. read this from a file at Application.dataPath
-            rsSO = SerializationUtility.DeserializeValue<RulesetSO>(serialized, DataFormat.JSON);
-
-            //string _json = JsonUtility.ToJson(rsSO);
-            //rsSO = JsonUtility.FromJson<RulesetSO>(_json);
-
-
-            Debug.Log(rsSO.ToString());
-            //m_Rulesets.Add(rsSO);
         }
 
         #endregion

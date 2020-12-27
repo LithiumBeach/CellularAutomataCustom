@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ca
@@ -6,35 +7,71 @@ namespace ca
     //Manages PlayerPrefs dictionary for saving/loading
     //["rulesets"] = <json serialized rulesets array> 
     //["current_ruleset"] = <integer index>
-    public class SaveLoadManager : patterns.SingletonBehavior<SaveLoadManager>
+    //Accessors: getters always load, setters always save to PlayerPrefs
+    //Serialized values saved in PlayerPrefs should never be duplicated as member variables
+    public class SaveLoadManager : patterns.SingletonBehavior<SaveLoadManager>, patterns.IStart
     {
+        //PlayerPrefs accessors
+        private const string c_RulesetsKey = "rulesets";
+        private const string c_CurrentRulesetKey = "current_ruleset";
+
         //lists should be contained in a class to serialize
         private class RulesetSOList
         {
+            public RulesetSOList() { list = new List<RulesetSO>(); }
+            public RulesetSOList(List<RulesetSO> l) { list = l; }
             public List<RulesetSO> list;
         }
-        private RulesetSOList m_Rulesets = null;
 
-
-        private int m_CurrentRuleset;
-        public int CurrentRuleset { get { return m_CurrentRuleset; } }
-        //adds or subtracts one from direction
-        public void ChangeRuleset(int direction)
+        private RulesetSOList Rulesets
         {
-            m_CurrentRuleset += direction;
+            get { return JsonUtility.FromJson<RulesetSOList>(PlayerPrefs.GetString(c_RulesetsKey)); }
         }
 
-        public void Initialize(List<RulesetSO> defaultRulesets)
+        private int CurrentRulesetIndex
+        { get { return PlayerPrefs.GetInt(c_CurrentRulesetKey); } }
+
+
+        #region Public Accessors
+
+        //returns copy of current ruleset
+        public RulesetSO CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)]; } }
+        //adds or subtracts one from direction
+        public void ChangeCurrentRuleset(int direction)
         {
-            //if ["current_ruleset"] doesn't exist, 0
-            m_CurrentRuleset = PlayerPrefs.GetInt("current_ruleset", 0);
+            int newIndex = CAMath.Mod(CurrentRulesetIndex + direction, Rulesets.list.Count - 1);
+            PlayerPrefs.SetInt(c_CurrentRulesetKey, newIndex);
+            PlayerPrefs.Save();
+        }
 
-            //load list of rulesets from json string entry in PlayerPrefs
-            m_Rulesets = JsonUtility.FromJson<RulesetSOList>(PlayerPrefs.GetString("rulesets"));
-            if (m_Rulesets == null)
+        #endregion
+
+        #region public functions
+        public List<RulesetSO> m_DefaultRulesets;
+        [Sirenix.OdinInspector.Button(Name = "Reset PlayerPrefs")]
+        public void ResetPlayerPrefs()
+        {
+            PlayerPrefs.DeleteAll();
+
+            //current ruleset starts at 0
+            PlayerPrefs.SetInt(c_CurrentRulesetKey, 0);
+
+            //initialize rulesets to the default (ie: conway's ruleset)
+            PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(m_DefaultRulesets));
+
+            PlayerPrefs.Save();
+        }
+
+
+        #endregion
+
+        public void IStart()
+        {
+            //if the user has never saved data before into PlayerPrefs
+            if (Rulesets == null || Rulesets.list.Count <= m_DefaultRulesets.Count)
             {
-                //create stock ruleset (conway's game of life?)
-
+                //initialize like new
+                ResetPlayerPrefs(); 
             }
         }
     }
