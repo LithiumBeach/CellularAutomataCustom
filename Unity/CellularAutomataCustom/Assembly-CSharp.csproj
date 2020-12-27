@@ -60,11 +60,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\IStartManager.cs" />
     <Compile Include="Assets\src\CAColor.cs" />
     <Compile Include="Assets\src\CAMath.cs" />
     <Compile Include="Assets\src\CellGrid.cs" />
     <Compile Include="Assets\src\CellGridBehavior.cs" />
     <Compile Include="Assets\src\EditorUtils.cs" />
+    <Compile Include="Assets\src\IStart.cs" />
     <Compile Include="Assets\src\RuleBehavior.cs" />
     <Compile Include="Assets\src\RuleData.cs" />
     <Compile Include="Assets\src\RulesetBehavior.cs" />
