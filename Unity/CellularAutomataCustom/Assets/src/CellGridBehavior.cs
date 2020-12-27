@@ -69,8 +69,15 @@ namespace ca
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
             UpdateCellPixelSize();
 
-            //resize cellgrid, if it is expading, new cells will be the clear to color
-            m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor);
+            if (m_CellGrid != null)
+            {
+                //resize cellgrid, if it is expading, new cells will be the clear to color
+                m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor); 
+            }
+            else
+            {
+                ResetGrid();
+            }
 
             //copy cell grid to texture
             SyncZoomTexture();
@@ -98,13 +105,13 @@ namespace ca
                 m_ZoomLevels[i].m_Tex = null;
             }
             m_CellGrid = new CellGrid(m_ZoomLevels[m_Zoom].m_Size, m_ZoomLevels[m_Zoom].m_Size, 1);
-            InitializeZoomLevels(1);
+            InitializeZoomLevels();
 
             SetZoom(m_Zoom);
             SyncZoomTexture();
         }
 
-        private void InitializeZoomLevels(int color)
+        private void InitializeZoomLevels()
         {
             //for each zoom level, construct a unique texture and store it in a collection
             for (int i = 0; i < MAX_ZOOM_LEVEL + 1; i++)
