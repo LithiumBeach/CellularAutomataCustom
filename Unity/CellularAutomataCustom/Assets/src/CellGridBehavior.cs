@@ -250,18 +250,7 @@ namespace ca
         //1 = increase, -1 = decrease, 0 = unchanged
         public void ChangeClearToColor(int direction = 1)
         {
-            m_ClearToColor += direction;
-
-            if (m_ClearToColor <= 0)
-            {
-                m_ClearToColor = CAColor.colors.Length - 1;
-            }
-            else if (m_ClearToColor >= CAColor.colors.Length)
-            {
-                //0 is transparent (ALL)
-                m_ClearToColor = 1;
-            }
-
+            m_ClearToColor = CAColor.ChangeColorInt(m_ClearToColor, direction, false);
             m_ClearToColorButton.color = CAColor.colors[m_ClearToColor];
         }
         #endregion

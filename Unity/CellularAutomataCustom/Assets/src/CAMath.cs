@@ -11,6 +11,7 @@ namespace ca
 
 
         //integer modulo that works with negative numbers
+        //TODO: implement range instead of just max
         public static int Mod(int a, int b)
         {
             //Debug.Log(a.ToString() + " % " + b.ToString() + " = " + (((a % b) + b) % b).ToString());

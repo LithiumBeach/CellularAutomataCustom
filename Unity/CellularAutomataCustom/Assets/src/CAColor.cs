@@ -16,5 +16,22 @@ namespace ca
             Color.blue
         };
 
+        public static int ChangeColorInt(int currentColor, int direction, bool b_includeClear=false)
+        {
+            Debug.Assert(direction == -1 || direction == 1);
+            currentColor += direction;
+
+            if (currentColor <= 0)
+            {
+                currentColor = CAColor.colors.Length - 1;
+            }
+            else if (currentColor >= CAColor.colors.Length)
+            {
+                //0 is transparent (ALL)
+                currentColor = b_includeClear ? 0 : 1;
+            }
+            return currentColor;
+        }
+
     }
 }
