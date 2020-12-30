@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -44,6 +45,28 @@ namespace ca
             PlayerPrefs.Save();
         }
 
+
+        public void AddNewRule(List<RuleData> defaultRules=null)
+        {
+            //convert from json to object
+            RulesetSO rset = JsonUtility.FromJson<RulesetSO>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+
+            if (defaultRules != null)
+            {
+                rset.m_Rules = defaultRules;
+            }
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rset)
+            );
+
+            PlayerPrefs.Save();
+        }
+
         #endregion
 
         #region public functions
@@ -71,8 +94,9 @@ namespace ca
             if (Rulesets == null || Rulesets.list.Count <= m_DefaultRulesets.Count)
             {
                 //initialize like new
-                ResetPlayerPrefs(); 
+                ResetPlayerPrefs();
             }
         }
+
     }
 }

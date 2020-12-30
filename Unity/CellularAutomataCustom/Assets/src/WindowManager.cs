@@ -1,4 +1,4 @@
-﻿//WindowManager.cs
+//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
 //Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
@@ -146,7 +146,8 @@ namespace ca
 
         public void OnAddRulesetButtonPressed()
         {
-
+            SaveLoadManager.Instance.AddNewRule();
+            SaveLoadManager.Instance.SetCurrentRuleset(SaveLoadManager.Instance.NumRulesets - 1);
         }
 
         #endregion
