@@ -588,6 +588,7 @@ MonoBehaviour:
     m_MaxNumNeighbors: 0
     m_IfColor: 0
     m_ThenColor: 0
+  txtRuleX: {fileID: 987629206836743066}
   txtThisColor: {fileID: 8564799117599333057}
   txtIfColor: {fileID: 8564799117842049975}
   txtThenColor: {fileID: 8564799117112234992}

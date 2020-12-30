@@ -69,7 +69,6 @@
     <Compile Include="Assets\src\IStart.cs" />
     <Compile Include="Assets\src\RuleBehavior.cs" />
     <Compile Include="Assets\src\RuleData.cs" />
-    <Compile Include="Assets\src\RulesetBehavior.cs" />
     <Compile Include="Assets\src\SaveLoadManager.cs" />
     <Compile Include="Assets\src\ScriptableObjects\RulesetSO.cs" />
     <Compile Include="Assets\src\SingletonBehavior.cs" />

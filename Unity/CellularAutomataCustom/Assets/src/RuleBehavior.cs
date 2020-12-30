@@ -9,9 +9,12 @@ namespace ca
         public RuleData m_Data;
 
         #region scene references
+        //"Rule {X}: concerning cells of color:"
+        public TextMeshProUGUI txtRuleX;
+        //color picker text labels: should be "ANY" when transparent
         public TextMeshProUGUI txtThisColor;
-        public TextMeshProUGUI txtIfColor; // should be "ANY" when transparent
-        public TextMeshProUGUI txtThenColor; // should be "ANY" when transparent
+        public TextMeshProUGUI txtIfColor;
+        public TextMeshProUGUI txtThenColor;
 
         #endregion
 

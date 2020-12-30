@@ -23,6 +23,11 @@ namespace ca
         [Required]
         public TextMeshProUGUI m_ZoomButtonText;
 
+        [Required]
+        public Transform m_RulesetParent;
+        [Required]
+        public RuleBehavior m_RuleBehaviorPrefab;
+
         private readonly float[] m_FPSOptions = new float[]
         {
             1f,
@@ -62,7 +67,6 @@ namespace ca
 
         private float m_FPSCount = 0.0f;
 
-        private RulesetSO m_ActiveRuleset;
 
         public void IStart()
         {
@@ -77,6 +81,7 @@ namespace ca
             //initialize UI
             ChangeFPS(0);
             SetZoom(0);
+
             LoadCurrentRulesetUI();
         }
 
@@ -129,7 +134,14 @@ namespace ca
 
         private void LoadCurrentRulesetUI()
         {
+            foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset.m_Rules)
+            {
+                RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
+                rb.transform.SetParent(m_RulesetParent);
 
+                //copy this RuleData into this RuleBehavior's data
+                rb.m_Data = rd;
+            }
         }
 
         public void OnAddRulesetButtonPressed()
@@ -159,10 +171,7 @@ namespace ca
 
         public void SimulateStep()
         {
-            if (m_ActiveRuleset != null)
-            {
-                m_CellGrid.EvaluateNextState(m_ActiveRuleset.m_Rules);
-            }
+            m_CellGrid.EvaluateNextState(SaveLoadManager.Instance.CurrentRuleset.m_Rules);
         }
 
         //-1 = slower, +1 = faster, 0 = no change
