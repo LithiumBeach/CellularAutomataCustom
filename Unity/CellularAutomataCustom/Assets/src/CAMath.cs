@@ -10,12 +10,12 @@ namespace ca
         public static int RIGHT = -1;
 
 
-        //integer modulo that works with negative numbers
-        //TODO: implement range instead of just max
-        public static int Mod(int a, int b)
+        //integer modulo between a range of values high and low
+        //low is inclusive, high is exclusive
+        public static int Mod(int a, int b) { return Mod(a, 0, b); }
+        public static int Mod(int a, int low, int high)
         {
-            //Debug.Log(a.ToString() + " % " + b.ToString() + " = " + (((a % b) + b) % b).ToString());
-            return ((a % b) + b) % b;
+            return (((a - low) % (high - low)) + low);
         }
 
         public static float SmoothStep(float t)
