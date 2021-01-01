@@ -1,3 +1,4 @@
+﻿using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace ca
         private const string c_CurrentRulesetKey = "current_ruleset";
 
         //lists should be contained in a class to serialize
+        [Serializable]
         private class RulesetSOList
         {
             public RulesetSOList() { list = new List<RulesetSO>(); }
@@ -35,8 +37,20 @@ namespace ca
 
         #region Public Accessors
 
+        public int NumRulesets
+        {
+            get { return Rulesets.list.Count; }
+        }
+
         //returns copy of current ruleset
         public RulesetSO CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)]; } }
+        //directly sets integer index of rulesets
+        public void SetCurrentRuleset(int i)
+        {
+            int newIndex = CAMath.Mod(i, Rulesets.list.Count - 1);
+            PlayerPrefs.SetInt(c_CurrentRulesetKey, newIndex);
+            PlayerPrefs.Save();
+        }
         //adds or subtracts one from direction
         public void ChangeCurrentRuleset(int direction)
         {
@@ -46,22 +60,123 @@ namespace ca
         }
 
 
-        public void AddNewRule(List<RuleData> defaultRules=null)
+        public void AddNewRuleset(List<RuleData> defaultRules=null)
         {
             //convert from json to object
-            RulesetSO rset = JsonUtility.FromJson<RulesetSO>(
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
 
+            //copy default rules if not null
             if (defaultRules != null)
             {
-                rset.m_Rules = defaultRules;
+                rsets.list[NumRulesets].m_Rules = new List<RuleData>(defaultRules);
             }
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
                 //convert from object to json
-                JsonUtility.ToJson(rset)
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
+        public void AddNewRule() { AddNewRule(new RuleData()); }
+        public void AddNewRule(RuleData rd)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules.Add(rd);
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
+        public void SetThisColor(int ruleIndex, int newValue)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_ThisColor = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
+        public void SetIfColor(int ruleIndex, int newValue)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_IfColor = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+        public void SetThenColor(int ruleIndex, int newValue)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_ThenColor = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+        public void SetMinNeighbors(int ruleIndex, int newValue)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_MinNumNeighbors = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+        public void SetMaxNeighbors(int ruleIndex, int newValue)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_MaxNumNeighbors = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
             );
 
             PlayerPrefs.Save();
@@ -80,7 +195,7 @@ namespace ca
             PlayerPrefs.SetInt(c_CurrentRulesetKey, 0);
 
             //initialize rulesets to the default (ie: conway's ruleset)
-            PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(m_DefaultRulesets));
+            PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(new RulesetSOList(m_DefaultRulesets)));
 
             PlayerPrefs.Save();
         }
@@ -97,6 +212,5 @@ namespace ca
                 ResetPlayerPrefs();
             }
         }
-
     }
 }

@@ -582,16 +582,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f6913a341007a488b74091642d3b36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Data:
-    m_ThisColor: 0
-    m_MinNumNeighbors: 0
-    m_MaxNumNeighbors: 0
-    m_IfColor: 0
-    m_ThenColor: 0
   txtRuleX: {fileID: 987629206836743066}
+  imgThisColor: {fileID: 3609181174925457525}
   txtThisColor: {fileID: 8564799117599333057}
+  imgIfColor: {fileID: 3609181175034071299}
   txtIfColor: {fileID: 8564799117842049975}
+  imgThenColor: {fileID: 3609181176451756356}
   txtThenColor: {fileID: 8564799117112234992}
+  txtMinNeighbors: {fileID: 987629205117999616}
+  txtMaxNeighbors: {fileID: 987629205380996048}
 --- !u!1 &987629206836743064
 GameObject:
   m_ObjectHideFlags: 0

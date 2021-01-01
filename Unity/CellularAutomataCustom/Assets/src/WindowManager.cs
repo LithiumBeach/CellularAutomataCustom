@@ -1,4 +1,4 @@
-//WindowManager.cs
+﻿//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
 //Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
@@ -134,22 +134,89 @@ namespace ca
 
         private void LoadCurrentRulesetUI()
         {
+            //destroy any leftover children from the previous ruleset
+            foreach (Transform t in m_RulesetParent)
+            {
+                Destroy(t.gameObject);
+            }
+
+            //instantiate all rules
             foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset.m_Rules)
             {
-                RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
-                rb.transform.SetParent(m_RulesetParent);
-
-                //copy this RuleData into this RuleBehavior's data
-                rb.m_Data = rd;
+                //do not add data, only add rule ui's.
+                AddRuleUI(rd);
             }
         }
 
         public void OnAddRulesetButtonPressed()
         {
-            SaveLoadManager.Instance.AddNewRule();
+            //update Data
+            SaveLoadManager.Instance.AddNewRuleset();
             SaveLoadManager.Instance.SetCurrentRuleset(SaveLoadManager.Instance.NumRulesets - 1);
+
+            //update UI
+            LoadCurrentRulesetUI();
         }
 
+        public void AddRule() { AddRule(new RuleData()); }
+        private void AddRule(RuleData rd)
+        {
+            //update data
+            SaveLoadManager.Instance.AddNewRule(rd);
+
+            AddRuleUI(rd);
+        }
+
+        private void AddRuleUI(RuleData rd)
+        {
+            //create new rule UI
+            RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
+            rb.transform.SetParent(m_RulesetParent);
+
+            //Initialize all ui elements in from ruledata
+            rb.UpdateAllUI(rd);
+        }
+
+        public void DeleteRule(RuleBehavior ruleBehavior)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Ruleset Button Press Callbacks
+        //returns new color index
+        public int OnThisColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            //GetSiblingIndex
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThisColor;
+        }
+        public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_IfColor;
+        }
+        public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThenColor;
+        }
+        public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors;
+        }
+        public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors;
+        }
         #endregion
 
         #region Zoom
