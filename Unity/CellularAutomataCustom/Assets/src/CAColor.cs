@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ca
 {
@@ -20,6 +20,12 @@ namespace ca
         {
             if(!b_includeClear && currentColor == 1 && direction < 0) { return CAColor.colors.Length-1; }
             return CAMath.Mod(currentColor + direction, b_includeClear ? 0 : 1, CAColor.colors.Length);
+        }
+
+        //if Color.Invisible, label color box "ANY"
+        public static string GetColorText(int colorIndex)
+        {
+            return colorIndex == 0 ? "ANY" : "";
         }
 
     }

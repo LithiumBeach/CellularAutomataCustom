@@ -32,11 +32,6 @@ namespace ca
         //TODO: color button refs to change their color on click
 
         #endregion
-        //if Color.Invisible, label color box "ANY"
-        private string GetColorText(int colorIndex)
-        {
-            return colorIndex == 0 ? "ANY" : "";
-        }
 
         #region event handlers
         //dir: left click = +1 : right click = -1
@@ -44,19 +39,19 @@ namespace ca
         {
             int newColor = WindowManager.Instance.OnThisColorChange(this, direction);
             imgThisColor.color = CAColor.colors[newColor];
-            txtThisColor.text = GetColorText(newColor);
+            txtThisColor.text = CAColor.GetColorText(newColor);
         }
         public void OnIfColorChange(int direction)
         {
             int newColor = WindowManager.Instance.OnIfColorChange(this, direction);
             imgIfColor.color = CAColor.colors[newColor];
-            txtIfColor.text = GetColorText(newColor);
+            txtIfColor.text = CAColor.GetColorText(newColor);
         }
         public void OnThenColorChange(int direction)
         {
             int newColor = WindowManager.Instance.OnThenColorChange(this, direction);
             imgThenColor.color = CAColor.colors[newColor];
-            txtThenColor.text = GetColorText(newColor);
+            txtThenColor.text = CAColor.GetColorText(newColor);
         }
         public void OnMinNeighborsChange(int direction)
         {
