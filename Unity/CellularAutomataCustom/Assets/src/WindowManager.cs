@@ -208,13 +208,13 @@ namespace ca
         public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors + direction, 8));
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors;
         }
         public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors + direction, 8));
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors;
         }
         #endregion

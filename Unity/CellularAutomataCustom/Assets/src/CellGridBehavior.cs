@@ -65,7 +65,7 @@ namespace ca
 
         public void SetZoom(int zoomLevel)
         {
-            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL);
+            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL+1);
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
             UpdateCellPixelSize();
 

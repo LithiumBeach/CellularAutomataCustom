@@ -47,14 +47,14 @@ namespace ca
         //directly sets integer index of rulesets
         public void SetCurrentRuleset(int i)
         {
-            int newIndex = CAMath.Mod(i, Rulesets.list.Count - 1);
+            int newIndex = CAMath.Mod(i, Rulesets.list.Count);
             PlayerPrefs.SetInt(c_CurrentRulesetKey, newIndex);
             PlayerPrefs.Save();
         }
         //adds or subtracts one from direction
         public void ChangeCurrentRuleset(int direction)
         {
-            int newIndex = CAMath.Mod(CurrentRulesetIndex + direction, Rulesets.list.Count - 1);
+            int newIndex = CAMath.Mod(CurrentRulesetIndex + direction, Rulesets.list.Count);
             PlayerPrefs.SetInt(c_CurrentRulesetKey, newIndex);
             PlayerPrefs.Save();
         }

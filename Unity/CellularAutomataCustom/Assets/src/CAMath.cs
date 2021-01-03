@@ -15,7 +15,12 @@ namespace ca
         public static int Mod(int a, int b) { return Mod(a, 0, b); }
         public static int Mod(int a, int low, int high)
         {
-            return (((a - low) % (high - low)) + low);
+            //quick fix for negative a values
+            if (a < 0)
+            {
+                while (a < 0) { a += high; }
+            }
+            return ((a - low) % (high - low)) + low;
         }
 
         public static float SmoothStep(float t)

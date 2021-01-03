@@ -2833,7 +2833,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8c8e3fcf6a6d447973c7421d2ee1bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DefaultRulesets: []
+  m_DefaultRulesets:
+  - {fileID: 11400000, guid: 9c68b79f04329b64b8ae0c0a845600d0, type: 2}
 --- !u!114 &1347583787
 MonoBehaviour:
   m_ObjectHideFlags: 0
