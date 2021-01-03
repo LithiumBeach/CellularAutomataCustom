@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace ca
 {
@@ -18,6 +18,7 @@ namespace ca
 
         public static int ChangeColorInt(int currentColor, int direction, bool b_includeClear=false)
         {
+            if(!b_includeClear && currentColor == 1 && direction < 0) { return CAColor.colors.Length-1; }
             return CAMath.Mod(currentColor + direction, b_includeClear ? 0 : 1, CAColor.colors.Length);
         }
 

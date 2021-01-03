@@ -16,10 +16,8 @@ namespace ca
         public static int Mod(int a, int low, int high)
         {
             //quick fix for negative a values
-            if (a < 0)
-            {
-                while (a < 0) { a += high; }
-            }
+            while (a < low) { a += high; }
+
             return ((a - low) % (high - low)) + low;
         }
 
