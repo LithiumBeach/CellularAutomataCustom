@@ -190,31 +190,31 @@ namespace ca
         {
             //GetSiblingIndex
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThisColor + direction, CAColor.colors.Length));
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThisColor;
         }
         public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_IfColor + direction, CAColor.colors.Length));
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_IfColor;
         }
         public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThenColor + direction, CAColor.colors.Length));
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThenColor;
         }
         public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors + direction, 8));
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors;
         }
         public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(rbIndex + direction, CAColor.colors.Length));
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors + direction, 8));
             return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors;
         }
         #endregion
