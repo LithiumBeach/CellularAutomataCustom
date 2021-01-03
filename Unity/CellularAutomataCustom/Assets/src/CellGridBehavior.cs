@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -92,8 +93,7 @@ namespace ca
         //the image whose color we will always set to cleartocolor
         [Required]
         public RawImage m_ClearToColorButton;
-        [Range(min: 1, max: 5)]
-        public int m_ClearToColor = 0;
+        private int m_ClearToColor = 1;
 
 
         #endregion
@@ -248,7 +248,7 @@ namespace ca
         }
 
         //1 = increase, -1 = decrease, 0 = unchanged
-        public void ChangeClearToColor(int direction = 1)
+        public void ChangeClearToColor(int direction)
         {
             m_ClearToColor = CAColor.ChangeColorInt(m_ClearToColor, direction, false);
             m_ClearToColorButton.color = CAColor.colors[m_ClearToColor];
