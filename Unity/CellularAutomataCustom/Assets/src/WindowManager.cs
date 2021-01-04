@@ -135,10 +135,7 @@ namespace ca
         private void LoadCurrentRulesetUI()
         {
             //destroy any leftover children from the previous ruleset
-            foreach (Transform t in m_RulesetParent)
-            {
-                Destroy(t.gameObject);
-            }
+            DestroyAllRuleUIs();
 
             //instantiate all rules
             foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset.m_Rules)
@@ -184,9 +181,24 @@ namespace ca
             Destroy(ruleBehavior.gameObject);
         }
 
+        public void ChangeRuleset(int dir)
+        {
+            SaveLoadManager.Instance.ChangeCurrentRuleset(dir);
+            DestroyAllRuleUIs();
+            LoadCurrentRulesetUI();
+        }
+
         #endregion
 
-        #region Ruleset Button Press Callbacks
+        private void DestroyAllRuleUIs()
+        {
+            foreach (Transform t in m_RulesetParent)
+            {
+                Destroy(t.gameObject);
+            }
+        }
+
+        #region Rule Button Press Callbacks
         //returns new color index
         public int OnThisColorChange(RuleBehavior ruleBehavior, int direction)
         {

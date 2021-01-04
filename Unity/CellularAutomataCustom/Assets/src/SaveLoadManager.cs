@@ -60,17 +60,23 @@ namespace ca
         }
 
 
-        public void AddNewRuleset(List<RuleData> defaultRules=null)
+        public void AddNewRuleset(List<RuleData> defaultRules = null)
         {
             //convert from json to object
             RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
 
+            rsets.list.Add(new RulesetSO());
+
             //copy default rules if not null
             if (defaultRules != null)
             {
-                rsets.list[NumRulesets].m_Rules = new List<RuleData>(defaultRules);
+                rsets.list[NumRulesets - 1].m_Rules = new List<RuleData>(defaultRules);
+            }
+            else
+            {
+                rsets.list[NumRulesets - 1].m_Rules = new List<RuleData>();
             }
 
             //save
