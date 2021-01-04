@@ -165,6 +165,24 @@ namespace ca
 
             PlayerPrefs.Save();
         }
+
+        internal void DeleteRule(int ruleIndex)
+        {
+            //convert from json to object
+            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+            rsets.list[CurrentRulesetIndex].m_Rules.RemoveAt(ruleIndex);
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
         public void SetMaxNeighbors(int ruleIndex, int newValue)
         {
             //convert from json to object

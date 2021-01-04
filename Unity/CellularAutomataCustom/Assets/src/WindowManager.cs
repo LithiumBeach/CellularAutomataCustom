@@ -179,7 +179,9 @@ namespace ca
 
         public void DeleteRule(RuleBehavior ruleBehavior)
         {
-            throw new NotImplementedException();
+            int ruleIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.DeleteRule(ruleIndex);
+            Destroy(ruleBehavior.gameObject);
         }
 
         #endregion
