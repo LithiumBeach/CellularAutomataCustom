@@ -141,11 +141,15 @@ namespace ca
 
         public void EvaluateNextState(List<RuleData> rules)
         {
-            foreach (RuleData rule in rules)
+            if (rules != null && rules.Count > 0)
             {
-                m_CellGrid.Evaluate(rule);
+                foreach (RuleData rule in rules)
+                {
+                    m_CellGrid.Evaluate(rule);
+                }
+
+                m_CellGrid.Apply();
             }
-            m_CellGrid.Apply();
 
             SyncZoomTexture();
         }
