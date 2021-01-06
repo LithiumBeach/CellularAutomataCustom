@@ -17,18 +17,9 @@ namespace ca
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
 
-        //lists should be contained in a class to serialize
-        [Serializable]
-        private class RulesetSOList
+        private RulesetList Rulesets
         {
-            public RulesetSOList() { list = new List<RulesetSO>(); }
-            public RulesetSOList(List<RulesetSO> l) { list = l; }
-            public List<RulesetSO> list;
-        }
-
-        private RulesetSOList Rulesets
-        {
-            get { return JsonUtility.FromJson<RulesetSOList>(PlayerPrefs.GetString(c_RulesetsKey)); }
+            get { return JsonUtility.FromJson<RulesetList>(PlayerPrefs.GetString(c_RulesetsKey)); }
         }
 
         private int CurrentRulesetIndex
@@ -43,7 +34,7 @@ namespace ca
         }
 
         //returns copy of current ruleset
-        public RulesetSO CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)]; } }
+        public List<RuleData> CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].list; } }
         //directly sets integer index of rulesets
         public void SetCurrentRuleset(int i)
         {
@@ -63,20 +54,20 @@ namespace ca
         public void AddNewRuleset(List<RuleData> defaultRules = null)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
 
-            rsets.list.Add(new RulesetSO());
+            rsets.list.Add(new RuleDataList());
 
             //copy default rules if not null
             if (defaultRules != null)
             {
-                rsets.list[NumRulesets - 1].m_Rules = new List<RuleData>(defaultRules);
+                rsets.list.Add(new RuleDataList(defaultRules));
             }
             else
             {
-                rsets.list[NumRulesets - 1].m_Rules = new List<RuleData>();
+                rsets.list.Add(new RuleDataList());
             }
 
             //save
@@ -92,10 +83,10 @@ namespace ca
         public void AddNewRule(RuleData rd)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules.Add(rd);
+            rsets.list[CurrentRulesetIndex].list.Add(rd);
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -109,10 +100,10 @@ namespace ca
         public void SetThisColor(int ruleIndex, int newValue)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_ThisColor = newValue;
+            rsets.list[CurrentRulesetIndex].list[ruleIndex].m_ThisColor = newValue;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -126,10 +117,10 @@ namespace ca
         public void SetIfColor(int ruleIndex, int newValue)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_IfColor = newValue;
+            rsets.list[CurrentRulesetIndex].list[ruleIndex].m_IfColor = newValue;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -142,10 +133,10 @@ namespace ca
         public void SetThenColor(int ruleIndex, int newValue)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_ThenColor = newValue;
+            rsets.list[CurrentRulesetIndex].list[ruleIndex].m_ThenColor = newValue;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -158,10 +149,10 @@ namespace ca
         public void SetMinNeighbors(int ruleIndex, int newValue)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_MinNumNeighbors = newValue;
+            rsets.list[CurrentRulesetIndex].list[ruleIndex].m_MinNumNeighbors = newValue;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -175,10 +166,10 @@ namespace ca
         internal void DeleteRule(int ruleIndex)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules.RemoveAt(ruleIndex);
+            rsets.list[CurrentRulesetIndex].list.RemoveAt(ruleIndex);
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -192,10 +183,10 @@ namespace ca
         public void SetMaxNeighbors(int ruleIndex, int newValue)
         {
             //convert from json to object
-            RulesetSOList rsets = JsonUtility.FromJson<RulesetSOList>(
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
-            rsets.list[CurrentRulesetIndex].m_Rules[ruleIndex].m_MaxNumNeighbors = newValue;
+            rsets.list[CurrentRulesetIndex].list[ruleIndex].m_MaxNumNeighbors = newValue;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,
@@ -219,7 +210,7 @@ namespace ca
             PlayerPrefs.SetInt(c_CurrentRulesetKey, 0);
 
             //initialize rulesets to the default (ie: conway's ruleset)
-            PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(new RulesetSOList(m_DefaultRulesets)));
+            PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(new RulesetList(m_DefaultRulesets)));
 
             PlayerPrefs.Save();
         }

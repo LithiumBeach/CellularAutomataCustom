@@ -1,4 +1,4 @@
-﻿//WindowManager.cs
+//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
 //Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
@@ -138,7 +138,7 @@ namespace ca
             DestroyAllRuleUIs();
 
             //instantiate all rules
-            foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset.m_Rules)
+            foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset)
             {
                 //do not add data, only add rule ui's.
                 AddRuleUI(rd);
@@ -204,32 +204,32 @@ namespace ca
         {
             //GetSiblingIndex
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThisColor + direction, CAColor.colors.Length));
-            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThisColor;
+            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor;
         }
         public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_IfColor + direction, CAColor.colors.Length));
-            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_IfColor;
+            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor;
         }
         public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThenColor + direction, CAColor.colors.Length));
-            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_ThenColor;
+            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor;
         }
         public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
-            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MinNumNeighbors;
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors;
         }
         public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
-            return SaveLoadManager.Instance.CurrentRuleset.m_Rules[rbIndex].m_MaxNumNeighbors;
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors;
         }
         #endregion
 
@@ -253,7 +253,7 @@ namespace ca
 
         public void SimulateStep()
         {
-            m_CellGrid.EvaluateNextState(SaveLoadManager.Instance.CurrentRuleset.m_Rules);
+            m_CellGrid.EvaluateNextState(SaveLoadManager.Instance.CurrentRuleset);
         }
 
         //-1 = slower, +1 = faster, 0 = no change
