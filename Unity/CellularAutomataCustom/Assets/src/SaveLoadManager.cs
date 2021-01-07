@@ -58,8 +58,6 @@ namespace ca
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
 
-            rsets.list.Add(new RuleDataList());
-
             //copy default rules if not null
             if (defaultRules != null)
             {

@@ -1,4 +1,4 @@
-//WindowManager.cs
+﻿//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
 //Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
@@ -134,15 +134,29 @@ namespace ca
 
         private void LoadCurrentRulesetUI()
         {
-            //destroy any leftover children from the previous ruleset
-            DestroyAllRuleUIs();
+            if (m_RulesetParent.childCount > 0)
+            {
+                //destroy any leftover children from the previous ruleset
+                DestroyAllRuleUIs(); 
+            }
 
+            // wait 1 frame before updating UI
+            // will otherwise cause issues using a transform's sibling index as an id
+            StartCoroutine(OnAfterLoadCurrentRulesetUI());
+        }
+
+        public System.Collections.IEnumerator OnAfterLoadCurrentRulesetUI()
+        {
+            yield return null;
+            Debug.Assert(m_RulesetParent.childCount == 0);
             //instantiate all rules
             foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset)
             {
                 //do not add data, only add rule ui's.
                 AddRuleUI(rd);
             }
+
+            StopCoroutine("OnAfterLoadCurrentRulesetUI");
         }
 
         public void OnAddRulesetButtonPressed()
@@ -184,17 +198,36 @@ namespace ca
         public void ChangeRuleset(int dir)
         {
             SaveLoadManager.Instance.ChangeCurrentRuleset(dir);
-            DestroyAllRuleUIs();
+            if (m_RulesetParent.childCount > 0)
+            {
+                DestroyAllRuleUIs();
+            }
+
+            // wait 1 frame before updating UI
+            // will otherwise cause issues using a transform's sibling index as an id
+            StartCoroutine(OnAfterChangeRuleset());
+
+        }
+
+        public System.Collections.IEnumerator OnAfterChangeRuleset()
+        {
+            yield return null;
+
             LoadCurrentRulesetUI();
+
+            StopCoroutine("OnAfterChangeRuleset");
         }
 
         #endregion
 
         private void DestroyAllRuleUIs()
         {
-            foreach (Transform t in m_RulesetParent)
+            if (m_RulesetParent.childCount > 0)
             {
-                Destroy(t.gameObject);
+                foreach (Transform t in m_RulesetParent)
+                {
+                    Destroy(t.gameObject);
+                }
             }
         }
 

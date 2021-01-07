@@ -66,11 +66,14 @@ namespace ca
 
         public void UpdateAllUI(RuleData rd)
         {
-            OnThisColorChange(0);
-            OnIfColorChange(0);
-            OnThenColorChange(0);
-            OnMinNeighborsChange(0);
-            OnMaxNeighborsChange(0);
+            if (rd != null)
+            {
+                OnThisColorChange(0);
+                OnIfColorChange(0);
+                OnThenColorChange(0);
+                OnMinNeighborsChange(0);
+                OnMaxNeighborsChange(0); 
+            }
         }
 
 
