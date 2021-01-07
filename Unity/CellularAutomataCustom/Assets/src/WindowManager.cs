@@ -183,6 +183,7 @@ namespace ca
             //create new rule UI
             RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
             rb.transform.SetParent(m_RulesetParent);
+            rb.txtRuleX.text = String.Format(RuleBehavior.c_RuleXString, (rb.transform.GetSiblingIndex()+1).ToString());
 
             //Initialize all ui elements in from ruledata
             rb.UpdateAllUI(rd);
@@ -193,6 +194,28 @@ namespace ca
             int ruleIndex = ruleBehavior.transform.GetSiblingIndex();
             SaveLoadManager.Instance.DeleteRule(ruleIndex);
             Destroy(ruleBehavior.gameObject);
+
+            StartCoroutine(OnAfterDeleteRule());
+        }
+
+        public System.Collections.IEnumerator OnAfterDeleteRule()
+        {
+            yield return null;
+
+            UpdateAllRuleUINames();
+
+            StopCoroutine("OnAfterDeleteRule");
+        }
+
+        private void UpdateAllRuleUINames()
+        {
+            foreach (Transform t in m_RulesetParent)
+            {
+                if (t.GetComponent<RuleBehavior>())
+                {
+                    t.GetComponent<RuleBehavior>().txtRuleX.text = String.Format(RuleBehavior.c_RuleXString, (t.GetSiblingIndex() + 1).ToString());
+                }
+            }
         }
 
         public void ChangeRuleset(int dir)

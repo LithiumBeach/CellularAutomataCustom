@@ -27,6 +27,7 @@ namespace ca
 
         public TextMeshProUGUI txtMinNeighbors;
         public TextMeshProUGUI txtMaxNeighbors;
+        public static string c_RuleXString = "Rule {0}: concerning cells of color:";
 
 
         //TODO: color button refs to change their color on click
