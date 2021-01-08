@@ -273,31 +273,40 @@ namespace ca
         {
             //GetSiblingIndex
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor + direction, CAColor.colors.Length));
+            //concerning cells of color 'any' is fine here
+            SaveLoadManager.Instance.SetThisColor(rbIndex, 
+                CAColor.ChangeColorInt(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor, direction, b_includeClear:true));
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor;
         }
         public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor + direction, CAColor.colors.Length));
+            //if color (if neighboring cells are) could be 'any' (besides clearto color?),
+            //but ranges of if/then/this colors would overcomplicate things
+            SaveLoadManager.Instance.SetIfColor(rbIndex, 
+                CAColor.ChangeColorInt(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor, direction));
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor;
         }
         public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor + direction, CAColor.colors.Length));
+            //then color cannot be transparent
+            SaveLoadManager.Instance.SetThenColor(rbIndex,
+                CAColor.ChangeColorInt(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor, direction));
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor;
         }
         public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex,
+                CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors;
         }
         public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, 
+               CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors;
         }
         #endregion

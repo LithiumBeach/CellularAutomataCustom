@@ -27,10 +27,10 @@ namespace ca
         //"If between <min> and <max> neighbors" are <color>
         public int m_MinNumNeighbors = 0; //inclusive
         public int m_MaxNumNeighbors = 8; //inclusive
-        public int m_IfColor = 0;
+        public int m_IfColor = 1;
 
         //"Then this Cell will change to <color>
-        public int m_ThenColor = 0;
+        public int m_ThenColor = 2;
     }
 
 }
