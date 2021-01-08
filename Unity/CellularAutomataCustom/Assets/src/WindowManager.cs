@@ -258,6 +258,13 @@ namespace ca
             SaveLoadManager.Instance.ChangeCurrentRulesetName(m_RulesetTitle.text);
         }
 
+        public void OnDeleteRulesetPressed()
+        {
+            SaveLoadManager.Instance.DeleteCurrentRuleset();
+
+            ChangeRuleset(0);
+        }
+
         #endregion
 
         #region Rule Button Press Callbacks

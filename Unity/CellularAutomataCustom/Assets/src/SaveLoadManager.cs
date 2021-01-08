@@ -216,6 +216,31 @@ namespace ca
             PlayerPrefs.Save();
         }
 
+        public void DeleteCurrentRuleset()
+        {
+            DeleteRuleset(CurrentRulesetIndex);
+        }
+        private void DeleteRuleset(int index)
+        {
+            Debug.Assert(index > 0 && index < NumRulesets);
+
+            //convert json to object
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+
+            //delete ruleset
+            rsets.list.RemoveAt(index);
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
         #endregion
 
         #region public functions
