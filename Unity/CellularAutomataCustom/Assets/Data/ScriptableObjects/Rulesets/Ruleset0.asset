@@ -28,3 +28,4 @@ MonoBehaviour:
     m_MaxNumNeighbors: 3
     m_IfColor: 2
     m_ThenColor: 2
+  m_Title: John Conway's Game of Life

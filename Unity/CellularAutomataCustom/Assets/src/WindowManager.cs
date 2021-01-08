@@ -1,17 +1,16 @@
 ﻿//WindowManager.cs
 //Keep this as lean as possible: manages all buttons, rulesets, and a cell grid
 //Buttons trigger functions here
+//Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
 
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 namespace ca
 {
-    public class WindowManager : patterns.SingletonBehavior<WindowManager>
+    public class WindowManager : patterns.SingletonBehavior<WindowManager>, patterns.IStart
     {
         [Required]
         public CellGridBehavior m_CellGrid;
@@ -21,6 +20,13 @@ namespace ca
         public TextMeshProUGUI m_SimulateButtonText;
         [Required]
         public TextMeshProUGUI m_ZoomButtonText;
+
+        [Required]
+        public Transform m_RulesetParent;
+        [Required]
+        public RuleBehavior m_RuleBehaviorPrefab;
+        [Required]
+        public TMP_InputField m_RulesetTitle;
 
         private readonly float[] m_FPSOptions = new float[]
         {
@@ -40,10 +46,6 @@ namespace ca
             256f,
         };
         private float[] m_OneDivFPSOptions;
-
-        [HideInInspector]
-        public List<RulesetSO> m_Rulesets;
-        public RulesetSO m_ActiveRuleset;
 
         //Left Mouse Button
         public Action<Vector2> OnLeftMouseDown;
@@ -65,7 +67,8 @@ namespace ca
 
         private float m_FPSCount = 0.0f;
 
-        private void Start()
+
+        public void IStart()
         {
             //unrestrict Unity framerate
             Application.targetFrameRate = -1;
@@ -78,6 +81,8 @@ namespace ca
             //initialize UI
             ChangeFPS(0);
             SetZoom(0);
+
+            LoadCurrentRulesetUI();
         }
 
         private void Update()
@@ -115,7 +120,7 @@ namespace ca
                 m_FPSCount += Time.deltaTime;
                 if (m_FPSCount > OneDivFPS)
                 {
-                    m_CellGrid.EvaluateNextState(m_ActiveRuleset.m_Rules);
+                    SimulateStep();
 
                     while (m_FPSCount > OneDivFPS)
                     {
@@ -127,28 +132,167 @@ namespace ca
 
         #region Rulesets
 
-        public void OnAddRulesetButtonPressed()
+        private void LoadCurrentRulesetUI()
         {
-            RulesetSO rsSO = RulesetSO.CreateInstance<RulesetSO>();
-            rsSO.m_Rules = new List<RuleData>();
-            rsSO.m_Rules.Add(new RuleData());
-            rsSO.m_Rules[0].m_IfColor = 1;
-            rsSO.m_Rules[0].m_ThenColor = 4;
+            if (m_RulesetParent.childCount > 0)
+            {
+                //destroy any leftover children from the previous ruleset
+                DestroyAllRuleUIs();
+            }
+            m_RulesetTitle.text = SaveLoadManager.Instance.CurrentRulesetName;
 
-            //TODO: this is the save function. write this to a file at Application.dataPath
-            byte[] serialized = SerializationUtility.SerializeValue<RulesetSO>(rsSO, DataFormat.JSON);
-
-            //TODO: this is the load function. read this from a file at Application.dataPath
-            rsSO = SerializationUtility.DeserializeValue<RulesetSO>(serialized, DataFormat.JSON);
-
-            //string _json = JsonUtility.ToJson(rsSO);
-            //rsSO = JsonUtility.FromJson<RulesetSO>(_json);
-
-
-            Debug.Log(rsSO.ToString());
-            //m_Rulesets.Add(rsSO);
+            // wait 1 frame before updating UI
+            // will otherwise cause issues using a transform's sibling index as an id
+            StartCoroutine(OnAfterLoadCurrentRulesetUI());
         }
 
+        public System.Collections.IEnumerator OnAfterLoadCurrentRulesetUI()
+        {
+            yield return null;
+            Debug.Assert(m_RulesetParent.childCount == 0);
+            //instantiate all rules
+            foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset)
+            {
+                //do not add data, only add rule ui's.
+                AddRuleUI(rd);
+            }
+
+            StopCoroutine("OnAfterLoadCurrentRulesetUI");
+        }
+
+        public void OnAddRulesetButtonPressed()
+        {
+            //update Data
+            SaveLoadManager.Instance.AddNewRuleset();
+            SaveLoadManager.Instance.SetCurrentRuleset(SaveLoadManager.Instance.NumRulesets - 1);
+
+            //update UI
+            LoadCurrentRulesetUI();
+        }
+
+        public void AddRule() { AddRule(new RuleData()); }
+        private void AddRule(RuleData rd)
+        {
+            //update data
+            SaveLoadManager.Instance.AddNewRule(rd);
+
+            AddRuleUI(rd);
+        }
+
+        private void AddRuleUI(RuleData rd)
+        {
+            //create new rule UI
+            RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
+            rb.transform.SetParent(m_RulesetParent);
+            rb.txtRuleX.text = String.Format(RuleBehavior.c_RuleXString, (rb.transform.GetSiblingIndex()+1).ToString());
+
+            //Initialize all ui elements in from ruledata
+            rb.UpdateAllUI(rd);
+        }
+
+        public void DeleteRule(RuleBehavior ruleBehavior)
+        {
+            int ruleIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.DeleteRule(ruleIndex);
+            Destroy(ruleBehavior.gameObject);
+
+            StartCoroutine(OnAfterDeleteRule());
+        }
+
+        public System.Collections.IEnumerator OnAfterDeleteRule()
+        {
+            yield return null;
+
+            UpdateAllRuleUINames();
+
+            StopCoroutine("OnAfterDeleteRule");
+        }
+
+        private void UpdateAllRuleUINames()
+        {
+            foreach (Transform t in m_RulesetParent)
+            {
+                if (t.GetComponent<RuleBehavior>())
+                {
+                    t.GetComponent<RuleBehavior>().txtRuleX.text = String.Format(RuleBehavior.c_RuleXString, (t.GetSiblingIndex() + 1).ToString());
+                }
+            }
+        }
+
+        public void ChangeRuleset(int dir)
+        {
+            SaveLoadManager.Instance.ChangeCurrentRuleset(dir);
+            if (m_RulesetParent.childCount > 0)
+            {
+                DestroyAllRuleUIs();
+            }
+
+            // wait 1 frame before updating UI
+            // will otherwise cause issues using a transform's sibling index as an id
+            StartCoroutine(OnAfterChangeRuleset());
+
+        }
+
+        public System.Collections.IEnumerator OnAfterChangeRuleset()
+        {
+            yield return null;
+
+            LoadCurrentRulesetUI();
+
+            StopCoroutine("OnAfterChangeRuleset");
+        }
+
+        private void DestroyAllRuleUIs()
+        {
+            if (m_RulesetParent.childCount > 0)
+            {
+                foreach (Transform t in m_RulesetParent)
+                {
+                    Destroy(t.gameObject);
+                }
+            }
+        }
+
+        public void OnEndEditRulesetName()
+        {
+            SaveLoadManager.Instance.ChangeCurrentRulesetName(m_RulesetTitle.text);
+        }
+
+        #endregion
+
+        #region Rule Button Press Callbacks
+        //returns new color index
+        public int OnThisColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            //GetSiblingIndex
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetThisColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor;
+        }
+        public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetIfColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor;
+        }
+        public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetThenColor(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor + direction, CAColor.colors.Length));
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThenColor;
+        }
+        public int OnMinNeighborsChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetMinNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors + direction, 9)); //9 directions
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MinNumNeighbors;
+        }
+        public int OnMaxNeighborsChange(RuleBehavior ruleBehavior, int direction)
+        {
+            int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+            SaveLoadManager.Instance.SetMaxNeighbors(rbIndex, CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
+            return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors;
+        }
         #endregion
 
         #region Zoom
@@ -171,10 +315,7 @@ namespace ca
 
         public void SimulateStep()
         {
-            if (m_ActiveRuleset != null)
-            {
-                m_CellGrid.EvaluateNextState(m_ActiveRuleset.m_Rules);
-            }
+            m_CellGrid.EvaluateNextState(SaveLoadManager.Instance.CurrentRuleset);
         }
 
         //-1 = slower, +1 = faster, 0 = no change

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -65,12 +66,19 @@ namespace ca
 
         public void SetZoom(int zoomLevel)
         {
-            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL);
+            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL+1);
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
             UpdateCellPixelSize();
 
-            //resize cellgrid, if it is expading, new cells will be the clear to color
-            m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor);
+            if (m_CellGrid != null)
+            {
+                //resize cellgrid, if it is expading, new cells will be the clear to color
+                m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor); 
+            }
+            else
+            {
+                ResetGrid();
+            }
 
             //copy cell grid to texture
             SyncZoomTexture();
@@ -85,8 +93,7 @@ namespace ca
         //the image whose color we will always set to cleartocolor
         [Required]
         public RawImage m_ClearToColorButton;
-        [Range(min: 1, max: 5)]
-        public int m_ClearToColor = 0;
+        private int m_ClearToColor = 1;
 
 
         #endregion
@@ -98,13 +105,13 @@ namespace ca
                 m_ZoomLevels[i].m_Tex = null;
             }
             m_CellGrid = new CellGrid(m_ZoomLevels[m_Zoom].m_Size, m_ZoomLevels[m_Zoom].m_Size, 1);
-            InitializeZoomLevels(1);
+            InitializeZoomLevels();
 
             SetZoom(m_Zoom);
             SyncZoomTexture();
         }
 
-        private void InitializeZoomLevels(int color)
+        private void InitializeZoomLevels()
         {
             //for each zoom level, construct a unique texture and store it in a collection
             for (int i = 0; i < MAX_ZOOM_LEVEL + 1; i++)
@@ -134,11 +141,15 @@ namespace ca
 
         public void EvaluateNextState(List<RuleData> rules)
         {
-            foreach (RuleData rule in rules)
+            if (rules != null && rules.Count > 0)
             {
-                m_CellGrid.Evaluate(rule);
+                foreach (RuleData rule in rules)
+                {
+                    m_CellGrid.Evaluate(rule);
+                }
+
+                m_CellGrid.Apply();
             }
-            m_CellGrid.Apply();
 
             SyncZoomTexture();
         }
@@ -241,20 +252,9 @@ namespace ca
         }
 
         //1 = increase, -1 = decrease, 0 = unchanged
-        public void ChangeClearToColor(int direction = 1)
+        public void ChangeClearToColor(int direction)
         {
-            m_ClearToColor += direction;
-
-            if (m_ClearToColor <= 0)
-            {
-                m_ClearToColor = CAColor.colors.Length - 1;
-            }
-            else if (m_ClearToColor >= CAColor.colors.Length)
-            {
-                //0 is transparent (ALL)
-                m_ClearToColor = 1;
-            }
-
+            m_ClearToColor = CAColor.ChangeColorInt(m_ClearToColor, direction, false);
             m_ClearToColorButton.color = CAColor.colors[m_ClearToColor];
         }
         #endregion
