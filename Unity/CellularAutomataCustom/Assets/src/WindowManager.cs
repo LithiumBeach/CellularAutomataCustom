@@ -4,9 +4,7 @@
 //Manages ONLY displayed portion of rulesets (current ruleset). Call into SaveLoadManager.
 
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -27,6 +25,8 @@ namespace ca
         public Transform m_RulesetParent;
         [Required]
         public RuleBehavior m_RuleBehaviorPrefab;
+        [Required]
+        public TMP_InputField m_RulesetTitle;
 
         private readonly float[] m_FPSOptions = new float[]
         {
@@ -137,8 +137,9 @@ namespace ca
             if (m_RulesetParent.childCount > 0)
             {
                 //destroy any leftover children from the previous ruleset
-                DestroyAllRuleUIs(); 
+                DestroyAllRuleUIs();
             }
+            m_RulesetTitle.text = SaveLoadManager.Instance.CurrentRulesetName;
 
             // wait 1 frame before updating UI
             // will otherwise cause issues using a transform's sibling index as an id
@@ -241,8 +242,6 @@ namespace ca
             StopCoroutine("OnAfterChangeRuleset");
         }
 
-        #endregion
-
         private void DestroyAllRuleUIs()
         {
             if (m_RulesetParent.childCount > 0)
@@ -253,6 +252,13 @@ namespace ca
                 }
             }
         }
+
+        public void OnEndEditRulesetName()
+        {
+            SaveLoadManager.Instance.ChangeCurrentRulesetName(m_RulesetTitle.text);
+        }
+
+        #endregion
 
         #region Rule Button Press Callbacks
         //returns new color index

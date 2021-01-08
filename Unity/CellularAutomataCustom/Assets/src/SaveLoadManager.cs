@@ -16,6 +16,7 @@ namespace ca
         //PlayerPrefs accessors
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
+        public const string c_NewRulesetName = "New Ruleset";
 
         private RulesetList Rulesets
         {
@@ -35,6 +36,9 @@ namespace ca
 
         //returns copy of current ruleset
         public List<RuleData> CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].list; } }
+
+        public string CurrentRulesetName { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].name; } }
+
         //directly sets integer index of rulesets
         public void SetCurrentRuleset(int i)
         {
@@ -61,11 +65,11 @@ namespace ca
             //copy default rules if not null
             if (defaultRules != null)
             {
-                rsets.list.Add(new RuleDataList(defaultRules));
+                rsets.list.Add(new RuleDataList(defaultRules, c_NewRulesetName));
             }
             else
             {
-                rsets.list.Add(new RuleDataList());
+                rsets.list.Add(new RuleDataList(c_NewRulesetName));
             }
 
             //save
@@ -185,6 +189,23 @@ namespace ca
                 PlayerPrefs.GetString(c_RulesetsKey)
             );
             rsets.list[CurrentRulesetIndex].list[ruleIndex].m_MaxNumNeighbors = newValue;
+
+            //save
+            PlayerPrefs.SetString(c_RulesetsKey,
+                //convert from object to json
+                JsonUtility.ToJson(rsets)
+            );
+
+            PlayerPrefs.Save();
+        }
+
+        public void ChangeCurrentRulesetName(string str)
+        {//convert from json to object
+            RulesetList rsets = JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            );
+
+            rsets.list[CurrentRulesetIndex].name = str;
 
             //save
             PlayerPrefs.SetString(c_RulesetsKey,

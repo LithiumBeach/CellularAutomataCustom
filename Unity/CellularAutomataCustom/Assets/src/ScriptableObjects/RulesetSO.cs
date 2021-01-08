@@ -10,6 +10,8 @@ namespace ca
         [Sirenix.Serialization.OdinSerialize]
         public List<RuleData> m_Rules;
 
+        public string m_Title = "";
+
         public override string ToString()
         {
             string _str = "";

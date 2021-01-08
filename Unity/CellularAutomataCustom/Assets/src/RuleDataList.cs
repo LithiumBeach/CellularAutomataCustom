@@ -1,5 +1,5 @@
 ﻿//RuleDataList.cs
-//Serializable List<RuleDatas>
+//Serializable List<RuleDatas> for single ruleset
 using System.Collections.Generic;
 
 namespace ca
@@ -7,9 +7,10 @@ namespace ca
     [System.Serializable]
     public class RuleDataList
     {
-        public RuleDataList() { list = new List<RuleData>(); }
-        public RuleDataList(List<RuleData> l) { list = new List<RuleData>(l); }
+        public RuleDataList(string n = "") { list = new List<RuleData>(); name = n; }
+        public RuleDataList(List<RuleData> l, string n = "") { list = new List<RuleData>(l); name = n; }
 
+        public string name;
         public List<RuleData> list;
     }
 }

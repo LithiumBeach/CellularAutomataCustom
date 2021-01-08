@@ -3393,6 +3393,7 @@ MonoBehaviour:
   m_RulesetParent: {fileID: 2073642543}
   m_RuleBehaviorPrefab: {fileID: 7583621166495844614, guid: dc42c646d2d7fc4468fb8fa3e85db302,
     type: 3}
+  m_RulesetTitle: {fileID: 2359704509158854350}
 --- !u!114 &1347583786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5181,7 +5182,7 @@ GameObject:
   - component: {fileID: 2359704509158854348}
   - component: {fileID: 2359704509158854346}
   m_Layer: 5
-  m_Name: txt_ruleset_title
+  m_Name: edittext_ruleset_title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5220,7 +5221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5411,7 +5412,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 2359704509158854346}
-  m_TextViewport: {fileID: 0}
+  m_TextViewport: {fileID: 2359704509158854345}
   m_TextComponent: {fileID: 2359704509158854346}
   m_Placeholder: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -5429,7 +5430,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1347583785}
+        m_MethodName: OnEndEditRulesetName
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: TMPro.TMP_InputField+SubmitEvent, Unity.TextMeshPro, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_OnSubmit:

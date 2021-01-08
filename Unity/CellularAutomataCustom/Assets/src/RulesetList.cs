@@ -1,5 +1,5 @@
 ﻿//RulesetList.cs
-//Serializable List<List<RuleData>
+//Serializable List<List<RuleData> for all rulesets
 using System.Collections.Generic;
 
 namespace ca
@@ -13,7 +13,7 @@ namespace ca
             list = new List<RuleDataList>();
             foreach (var ruleset in rso)
             {
-                list.Add(new RuleDataList(ruleset.m_Rules));
+                list.Add(new RuleDataList(ruleset.m_Rules, ruleset.m_Title));
             }
         }
         public List<RuleDataList> list;
