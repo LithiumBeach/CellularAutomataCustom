@@ -29,6 +29,10 @@ namespace ca
         public TextMeshProUGUI txtMaxNeighbors;
         public static string c_RuleXString = "Rule {0}: concerning cells of color:";
 
+        //references to CAButtons/GOs to lock/unlock
+        public List<GameObject> m_LockedGOs;
+        public List<Image> m_RaycastTargetImages;
+
 
         //TODO: color button refs to change their color on click
 
@@ -81,6 +85,20 @@ namespace ca
         public void OnDeleteRule()
         {
             WindowManager.Instance.DeleteRule(this);
+        }
+
+        //b_locked: false enables, true disables
+        internal void SetLocked(bool b_locked)
+        {
+            foreach(var go in m_LockedGOs)
+            {
+                go.SetActive(!b_locked);
+            }
+
+            foreach (var rt in m_RaycastTargetImages)
+            {
+                rt.raycastTarget = !b_locked;
+            }
         }
         #endregion
     }

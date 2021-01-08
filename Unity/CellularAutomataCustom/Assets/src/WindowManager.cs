@@ -5,8 +5,10 @@
 
 using Sirenix.OdinInspector;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ca
 {
@@ -27,6 +29,8 @@ namespace ca
         public RuleBehavior m_RuleBehaviorPrefab;
         [Required]
         public TMP_InputField m_RulesetTitle;
+
+        public List<GameObject> m_LockButtonGOs;
 
         private readonly float[] m_FPSOptions = new float[]
         {
@@ -154,10 +158,21 @@ namespace ca
             foreach (RuleData rd in SaveLoadManager.Instance.CurrentRuleset)
             {
                 //do not add data, only add rule ui's.
-                AddRuleUI(rd);
+                AddRuleUI(rd, (SaveLoadManager.Instance.IsCurrentRulesetLocked));
             }
+            SetLocked(SaveLoadManager.Instance.IsCurrentRulesetLocked);
 
             StopCoroutine("OnAfterLoadCurrentRulesetUI");
+        }
+
+        private void SetLocked(bool isCurrentRulesetLocked)
+        {
+            m_RulesetTitle.interactable = !isCurrentRulesetLocked;
+            foreach(GameObject go in m_LockButtonGOs)
+            {
+                //it is enabled if it is unlocked
+                go.SetActive(!isCurrentRulesetLocked);
+            }
         }
 
         public void OnAddRulesetButtonPressed()
@@ -179,12 +194,13 @@ namespace ca
             AddRuleUI(rd);
         }
 
-        private void AddRuleUI(RuleData rd)
+        private void AddRuleUI(RuleData rd, bool b_locked=false)
         {
             //create new rule UI
             RuleBehavior rb = Instantiate(m_RuleBehaviorPrefab);
             rb.transform.SetParent(m_RulesetParent);
             rb.txtRuleX.text = String.Format(RuleBehavior.c_RuleXString, (rb.transform.GetSiblingIndex()+1).ToString());
+            rb.SetLocked(b_locked);
 
             //Initialize all ui elements in from ruledata
             rb.UpdateAllUI(rd);
@@ -230,7 +246,6 @@ namespace ca
             // wait 1 frame before updating UI
             // will otherwise cause issues using a transform's sibling index as an id
             StartCoroutine(OnAfterChangeRuleset());
-
         }
 
         public System.Collections.IEnumerator OnAfterChangeRuleset()

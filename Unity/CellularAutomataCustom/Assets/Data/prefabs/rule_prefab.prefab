@@ -591,6 +591,16 @@ MonoBehaviour:
   txtThenColor: {fileID: 8564799117112234992}
   txtMinNeighbors: {fileID: 987629205117999616}
   txtMaxNeighbors: {fileID: 987629205380996048}
+  m_LockedGOs:
+  - {fileID: 8332682753024689008}
+  - {fileID: 8332682752931813784}
+  - {fileID: 8332682753633278716}
+  - {fileID: 8332682752254512727}
+  - {fileID: 8332682752717275948}
+  m_RaycastTargetImages:
+  - {fileID: 5476661367967742190}
+  - {fileID: 5476661368193665432}
+  - {fileID: 5476661366440456671}
 --- !u!1 &987629206836743064
 GameObject:
   m_ObjectHideFlags: 0

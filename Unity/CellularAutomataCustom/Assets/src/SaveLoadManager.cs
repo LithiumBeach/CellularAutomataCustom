@@ -39,6 +39,9 @@ namespace ca
 
         public string CurrentRulesetName { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].name; } }
 
+        //we want to lock all default rulesets.
+        public bool IsCurrentRulesetLocked { get { return CurrentRulesetIndex < m_DefaultRulesets.Count; } }
+
         //directly sets integer index of rulesets
         public void SetCurrentRuleset(int i)
         {
