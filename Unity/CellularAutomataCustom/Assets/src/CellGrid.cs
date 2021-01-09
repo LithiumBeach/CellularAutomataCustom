@@ -163,8 +163,9 @@ namespace ca
                     }
 
                     //if between <MIN (inclusive)> and <MAX (inclusive)> neighbors are <COLOR>
-                    if (rule.m_MinNumNeighbors <= relevantNeighborCount &&
-                        rule.m_MaxNumNeighbors >= relevantNeighborCount)
+                    if ((rule.m_MinNumNeighbors <= relevantNeighborCount &&
+                        rule.m_MaxNumNeighbors >= relevantNeighborCount) ||
+                        rule.m_IfColor == 0) //evaluate to true if if color is ANY
                     {
                         //Then this cell will change to <COLOR>
                         m_CellsCache[i] = rule.m_ThenColor;
