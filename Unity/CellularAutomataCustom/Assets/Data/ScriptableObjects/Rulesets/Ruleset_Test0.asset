@@ -12,10 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a3902a7aed25294980b7a6c884d9d78, type: 3}
   m_Name: Ruleset_Test0
   m_EditorClassIdentifier: 
-  m_Rules:
-  - m_ThisColor: 2
-    m_MinNumNeighbors: 1
-    m_MaxNumNeighbors: 1
-    m_IfColor: 2
-    m_ThenColor: 2
+  m_Rules: []
   m_Title: TEST
