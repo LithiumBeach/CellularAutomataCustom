@@ -3644,6 +3644,7 @@ MonoBehaviour:
   m_DefaultRulesets:
   - {fileID: 11400000, guid: 9c68b79f04329b64b8ae0c0a845600d0, type: 2}
   - {fileID: 11400000, guid: 76b0f390ac3bc894898db3cdfdce11f0, type: 2}
+  - {fileID: 11400000, guid: 7b45644795785c247964a5c9654b76de, type: 2}
 --- !u!114 &1347583787
 MonoBehaviour:
   m_ObjectHideFlags: 0
