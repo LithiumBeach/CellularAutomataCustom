@@ -3643,8 +3643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DefaultRulesets:
   - {fileID: 11400000, guid: 9c68b79f04329b64b8ae0c0a845600d0, type: 2}
-  - {fileID: 11400000, guid: a8da3654360cb4f4f8c97567c1bc6a84, type: 2}
-  - {fileID: 11400000, guid: 2f6c8a11511e57b4f8e9e847ba3d1c1a, type: 2}
+  - {fileID: 11400000, guid: 76b0f390ac3bc894898db3cdfdce11f0, type: 2}
 --- !u!114 &1347583787
 MonoBehaviour:
   m_ObjectHideFlags: 0
