@@ -43,13 +43,21 @@ namespace ca
         public void OnThisColorChange(int direction)
         {
             int newColor = WindowManager.Instance.OnThisColorChange(this, direction);
-            imgThisColor.color = CAColor.colors[newColor];
+
+            //update rule button background
+            imgThisColor.texture = newColor == 0 ? WindowManager.Instance.m_AnyColorBgTex : null;
+            imgThisColor.color = newColor == 0 ? Color.white : CAColor.colors[newColor];
+
             txtThisColor.text = CAColor.GetColorText(newColor);
         }
         public void OnIfColorChange(int direction)
         {
             int newColor = WindowManager.Instance.OnIfColorChange(this, direction);
-            imgIfColor.color = CAColor.colors[newColor];
+            
+            //update rule button background
+            imgIfColor.texture = newColor == 0 ? WindowManager.Instance.m_AnyColorBgTex : null;
+            imgIfColor.color = newColor == 0 ? Color.white : CAColor.colors[newColor];
+
             txtIfColor.text = CAColor.GetColorText(newColor);
         }
         public void OnThenColorChange(int direction)

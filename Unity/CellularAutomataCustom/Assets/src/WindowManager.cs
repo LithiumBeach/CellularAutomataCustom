@@ -30,6 +30,10 @@ namespace ca
         [Required]
         public TMP_InputField m_RulesetTitle;
 
+        //rainbow background for colorbuttons referencing ANY color
+        //not required: null will be a color bg
+        public Texture m_AnyColorBgTex;
+
         public List<GameObject> m_LockButtonGOs;
 
         private readonly float[] m_FPSOptions = new float[]
@@ -288,18 +292,21 @@ namespace ca
         {
             //GetSiblingIndex
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
+
             //concerning cells of color 'any' is fine here
             SaveLoadManager.Instance.SetThisColor(rbIndex, 
                 CAColor.ChangeColorInt(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor, direction, b_includeClear:true));
+
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_ThisColor;
         }
         public int OnIfColorChange(RuleBehavior ruleBehavior, int direction)
         {
             int rbIndex = ruleBehavior.transform.GetSiblingIndex();
-            //if color (if neighboring cells are) can be 'any', resulting in always a true evaluation
-            //but ranges of if/then/this colors would overcomplicate things
+
+            //concerning cells of color 'any' is fine here
             SaveLoadManager.Instance.SetIfColor(rbIndex, 
                 CAColor.ChangeColorInt(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor, direction, b_includeClear:true));
+
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_IfColor;
         }
         public int OnThenColorChange(RuleBehavior ruleBehavior, int direction)

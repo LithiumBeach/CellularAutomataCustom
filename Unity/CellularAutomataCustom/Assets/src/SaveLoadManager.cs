@@ -57,6 +57,58 @@ namespace ca
             PlayerPrefs.Save();
         }
 
+        //TODO: set{}
+        public int GetCurrentThisColor(int rIndex)
+        {
+            //convert from json to object
+            return
+                JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            )
+            .list[CurrentRulesetIndex]
+            .list[rIndex].m_ThisColor;
+        }
+        public int GetCurrentIfColor(int rIndex)
+        {
+            //convert from json to object
+            return
+                JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            )
+            .list[CurrentRulesetIndex]
+            .list[rIndex].m_IfColor;
+        }
+        public int GetCurrentThenColor(int rIndex)
+        {
+            //convert from json to object
+            return
+                JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            )
+            .list[CurrentRulesetIndex]
+            .list[rIndex].m_ThenColor;
+        }
+        public int GetCurrentMinNeighbors(int rIndex)
+        {
+            //convert from json to object
+            return
+                JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            )
+            .list[CurrentRulesetIndex]
+            .list[rIndex].m_MinNumNeighbors;
+        }
+        public int GetCurrentMaxNeighbors(int rIndex)
+        {
+            //convert from json to object
+            return
+                JsonUtility.FromJson<RulesetList>(
+                PlayerPrefs.GetString(c_RulesetsKey)
+            )
+            .list[CurrentRulesetIndex]
+            .list[rIndex].m_MaxNumNeighbors;
+        }
+
 
         public void AddNewRuleset(List<RuleData> defaultRules = null)
         {

@@ -3626,9 +3626,11 @@ MonoBehaviour:
   m_RuleBehaviorPrefab: {fileID: 7583621166495844614, guid: dc42c646d2d7fc4468fb8fa3e85db302,
     type: 3}
   m_RulesetTitle: {fileID: 2359704509158854350}
+  m_AnyColorBgTex: {fileID: 2800000, guid: 3e297eeb233805b4e8398c0587f7fac1, type: 3}
   m_LockButtonGOs:
   - {fileID: 1221962883}
   - {fileID: 307108459}
+  m_ButtonBgColor: {r: 0.078431375, g: 0.09019608, b: 0.078431375, a: 0}
 --- !u!114 &1347583786
 MonoBehaviour:
   m_ObjectHideFlags: 0
