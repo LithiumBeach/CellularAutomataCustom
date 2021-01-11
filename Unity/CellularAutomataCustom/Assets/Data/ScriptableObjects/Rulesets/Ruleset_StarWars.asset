@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3902a7aed25294980b7a6c884d9d78, type: 3}
+  m_Name: Ruleset_StarWars
+  m_EditorClassIdentifier: 
+  m_Rules:
+  - m_ThisColor: 1
+    m_MinNumNeighbors: 2
+    m_MaxNumNeighbors: 2
+    m_IfColor: 2
+    m_ThenColor: 2
+  - m_ThisColor: 2
+    m_MinNumNeighbors: 0
+    m_MaxNumNeighbors: 2
+    m_IfColor: 2
+    m_ThenColor: 3
+  - m_ThisColor: 2
+    m_MinNumNeighbors: 6
+    m_MaxNumNeighbors: 8
+    m_IfColor: 2
+    m_ThenColor: 3
+  - m_ThisColor: 3
+    m_MinNumNeighbors: 0
+    m_MaxNumNeighbors: 8
+    m_IfColor: 0
+    m_ThenColor: 4
+  - m_ThisColor: 4
+    m_MinNumNeighbors: 0
+    m_MaxNumNeighbors: 8
+    m_IfColor: 0
+    m_ThenColor: 1
+  m_Title: Star Wars / MirekGro
