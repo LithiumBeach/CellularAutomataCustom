@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 //CellGridBehavior.cs
 //The parent of this gameobject must have a Canvas component
@@ -66,14 +67,14 @@ namespace ca
 
         public void SetZoom(int zoomLevel)
         {
-            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL+1);
+            m_Zoom = CAMath.Mod(zoomLevel, MAX_ZOOM_LEVEL + 1);
             GetComponent<RawImage>().texture = m_ZoomLevels[m_Zoom].m_Tex;
             UpdateCellPixelSize();
 
             if (m_CellGrid != null)
             {
                 //resize cellgrid, if it is expading, new cells will be the clear to color
-                m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor); 
+                m_CellGrid.Resize(m_ZoomLevels[m_Zoom].m_Size, m_ClearToColor == 0 ? 1 : m_ClearToColor);
             }
             else
             {
@@ -93,7 +94,12 @@ namespace ca
         //the image whose color we will always set to cleartocolor
         [Required]
         public RawImage m_ClearToColorButton;
+        [Required]
+        public TextMeshProUGUI m_ClearToColorButtonText;
         private int m_ClearToColor = 1;
+
+        [Range(0.0f, 1.0f)]
+        public float m_ShuffleBgProbability;
 
 
         #endregion
@@ -236,26 +242,67 @@ namespace ca
         }
         public void ClearBoard(int caColor, int zoomLevel)
         {
-            //clear data board (and Apply)
-            m_CellGrid.ClearTo(caColor);
+            //if caColor = "ANY"
+            if (caColor == 0)
+            {
+                ShuffleBoard();
+            }
+            else
+            {
+                //clear data board (and Apply)
+                m_CellGrid.ClearTo(caColor);
+            }
 
             //clear texture
-            for (int y = 0; y < m_ZoomLevels[zoomLevel].m_Tex.height; y++)
+            for (int y = 0; y < CurZoomLevel.m_Tex.height; y++)
             {
-                for (int x = 0; x < m_ZoomLevels[zoomLevel].m_Tex.width; x++)
+                for (int x = 0; x < CurZoomLevel.m_Tex.width; x++)
                 {
-                    m_ZoomLevels[zoomLevel].m_Tex.SetPixel(x, y, CAColor.colors[caColor]);
+                    m_ZoomLevels[zoomLevel].m_Tex.SetPixel(x, -y - 1, CAColor.colors[m_CellGrid.At(x, y)]);
                 }
             }
+
             m_ZoomLevels[zoomLevel].m_Tex.Apply();
             m_ZoomLevels[zoomLevel].m_Tex.filterMode = FilterMode.Point;
+        }
+
+        private void ShuffleBoard()
+        {
+            List<int> allColorsInRuleset = SaveLoadManager.Instance.GetCurrentRulesetColors();
+
+            //ALL should not be in this list
+            Debug.Assert(!allColorsInRuleset.Contains(0));
+
+            //foreach cell in grid
+            for (int i = 0; i < m_CellGrid.GetArea(); i++)
+            {
+                //roll normalized dice (0-1)
+                float nDice = Random.Range(0.0f, 1.0f);
+
+                if (nDice < m_ShuffleBgProbability)
+                {
+                    //cell = bgColor = 1
+                    m_CellGrid.SetColor(i, 1);
+                }
+                //if not bg, pick random color
+                else
+                {
+                    //cell = roll integer dice range [2, CAColors.colors.Length]
+                    m_CellGrid.SetColor(i, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+                }
+            }
         }
 
         //1 = increase, -1 = decrease, 0 = unchanged
         public void ChangeClearToColor(int direction)
         {
-            m_ClearToColor = CAColor.ChangeColorInt(m_ClearToColor, direction, false);
-            m_ClearToColorButton.color = CAColor.colors[m_ClearToColor];
+            m_ClearToColor = CAColor.ChangeColorInt(m_ClearToColor, direction, true);
+
+            //update rule button background
+            m_ClearToColorButton.texture = m_ClearToColor == 0 ? WindowManager.Instance.m_AnyColorBgTex : null;
+            m_ClearToColorButton.color = m_ClearToColor == 0 ? Color.white : CAColor.colors[m_ClearToColor];
+
+            m_ClearToColorButtonText.text = CAColor.GetColorText(m_ClearToColor);
         }
         #endregion
     }

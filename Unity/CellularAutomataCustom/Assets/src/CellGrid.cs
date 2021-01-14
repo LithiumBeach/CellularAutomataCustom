@@ -127,6 +127,10 @@ namespace ca
         {
             m_Cells[Get1D(cellIndex, m_Width)] = color;
         }
+        internal void SetColor(int cellIndex1D, int color)
+        {
+            m_Cells[cellIndex1D] = color;
+        }
 
         //TODO: Evaluate can be generic, object param cast to RuleData ?
         internal virtual void Evaluate(RuleData rule)

@@ -53,7 +53,7 @@ namespace ca
         public void OnIfColorChange(int direction)
         {
             int newColor = WindowManager.Instance.OnIfColorChange(this, direction);
-            
+
             //update rule button background
             imgIfColor.texture = newColor == 0 ? WindowManager.Instance.m_AnyColorBgTex : null;
             imgIfColor.color = newColor == 0 ? Color.white : CAColor.colors[newColor];

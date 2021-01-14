@@ -109,6 +109,33 @@ namespace ca
             .list[rIndex].m_MaxNumNeighbors;
         }
 
+        //b_ignore0 to ignore ANY colors in returned list
+        public List<int> GetCurrentRulesetColors(bool b_ignore0=true)
+        {
+            //use the keys property of this dictionary to keep track of all used colors
+            Dictionary<int, bool> areColorsInRules = new Dictionary<int, bool>();
+            List<RuleData> rules = CurrentRuleset;
+
+            foreach (RuleData rule in rules)
+            {
+                //instead of looking for duplicates in a list, simply
+                //overwrite dictionary entries with true, so that
+                //any colors never used are never added to the dictionary
+                areColorsInRules[rule.m_ThisColor] =
+                    areColorsInRules[rule.m_IfColor] =
+                    areColorsInRules[rule.m_ThenColor] = true;
+            }
+
+            //delete dict[0] if we should ignore 0
+            if (b_ignore0)
+            {
+                areColorsInRules.Remove(0);
+            }
+
+            //return only created keys
+            return areColorsInRules.Keys.ToList();
+        }
+
 
         public void AddNewRuleset(List<RuleData> defaultRules = null)
         {
