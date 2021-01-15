@@ -16,6 +16,8 @@ namespace ca
         //PlayerPrefs accessors
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
+        private const string c_ShouldShowPhotosensitivityWarning = "should_show_photosens_warning";
+
         public const string c_NewRulesetName = "New Ruleset";
 
         private RulesetList Rulesets
@@ -322,6 +324,22 @@ namespace ca
 
             PlayerPrefs.Save();
         }
+        #endregion
+
+        #region PlayerPrefs getters & setters
+        //TODO: get/set in rest of stuff like this
+        public bool ShouldShowPhotosensitivityWarning
+        {//cannot serialize to bool, so int
+            get
+            {
+                return PlayerPrefs.GetInt(c_ShouldShowPhotosensitivityWarning) == 1;
+            }
+            set
+            {
+                PlayerPrefs.SetInt(c_ShouldShowPhotosensitivityWarning, value ? 1 : 0);
+                PlayerPrefs.Save();
+            }
+        }
 
         #endregion
 
@@ -338,6 +356,9 @@ namespace ca
             //initialize rulesets to the default (ie: conway's ruleset)
             PlayerPrefs.SetString(c_RulesetsKey, JsonUtility.ToJson(new RulesetList(m_DefaultRulesets)));
 
+            //show photosensitivity warning
+            ShouldShowPhotosensitivityWarning = true;
+
             PlayerPrefs.Save();
         }
 
@@ -347,7 +368,7 @@ namespace ca
         public void IStart()
         {
             //if the user has never saved data before into PlayerPrefs
-            if (Rulesets == null || Rulesets.list.Count <= m_DefaultRulesets.Count)
+            if (Rulesets == null)
             {
                 //initialize like new
                 ResetPlayerPrefs();
