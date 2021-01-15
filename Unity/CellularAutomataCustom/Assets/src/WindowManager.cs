@@ -22,6 +22,8 @@ namespace ca
         public TextMeshProUGUI m_SimulateButtonText;
         [Required]
         public TextMeshProUGUI m_ZoomButtonText;
+        [Required]
+        public Canvas m_PhotosensitivityWarningCanvas;
 
         [Required]
         public Transform m_RulesetParent;
@@ -91,6 +93,9 @@ namespace ca
             SetZoom(0);
 
             LoadCurrentRulesetUI();
+
+            //display photosensitivity warning if we should
+            DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
         }
 
         private void Update()
@@ -136,6 +141,27 @@ namespace ca
                     }
                 }
             }
+        }
+
+        //turn off & on the photosensitivity warning canvas
+        private void DisplayPhotosensitivityWarning(bool canvasActive)
+        {
+            m_PhotosensitivityWarningCanvas.gameObject.SetActive(canvasActive);
+        }
+        public void OnPhotosensitivityWarningConfirm(bool b_donotshowagain=false)
+        {
+            DisplayPhotosensitivityWarning(false);
+
+            if (b_donotshowagain)
+            {
+                SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning = false;
+            }
+        }
+        public void OnPhotosensitivityWarningExit()
+        {
+            //ensure warning will reappear if user returns after pressing exit
+            SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning = true;
+            Application.Quit();
         }
 
         #region Rulesets
