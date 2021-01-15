@@ -179,14 +179,14 @@ namespace ca
 
         private void HandleLeftMouseDown(Vector2 pos)
         {
-            if (!WindowManager.Instance.m_PhotosensitivityWarningCanvas.enabled)
+            if (!WindowManager.Instance.m_PhotosensitivityWarningCanvas.isActiveAndEnabled)
             {
                 HandleMouseDown(pos, CAMath.LEFT); 
             }
         }
         private void HandleRightMouseDown(Vector2 pos)
         {
-            if (!WindowManager.Instance.m_PhotosensitivityWarningCanvas.enabled)
+            if (!WindowManager.Instance.m_PhotosensitivityWarningCanvas.isActiveAndEnabled)
             {
                 HandleMouseDown(pos, CAMath.RIGHT);
             }
