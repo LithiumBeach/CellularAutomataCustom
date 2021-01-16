@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,7 @@ namespace ca
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
         private const string c_ShouldShowPhotosensitivityWarning = "should_show_photosens_warning";
+        private const string c_GlobalColors = "global_colors";//TODO
 
         public const string c_NewRulesetName = "New Ruleset";
 
