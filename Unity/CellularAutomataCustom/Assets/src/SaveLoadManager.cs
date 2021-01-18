@@ -342,6 +342,19 @@ namespace ca
             }
         }
 
+        public List<Color> Colors
+        {
+            get
+            {
+                return JsonUtility.FromJson<ColorList>(PlayerPrefs.GetString(c_GlobalColors)).list;
+            }
+            set
+            {
+                CAColor.colors = new List<Color>(value);
+                PlayerPrefs.SetString(c_GlobalColors, JsonUtility.ToJson(new ColorList(value)));
+            }
+        }
+
         #endregion
 
         #region public functions
@@ -359,6 +372,8 @@ namespace ca
 
             //show photosensitivity warning
             ShouldShowPhotosensitivityWarning = true;
+
+            Colors = CAColor.defaultColors;
 
             PlayerPrefs.Save();
         }
