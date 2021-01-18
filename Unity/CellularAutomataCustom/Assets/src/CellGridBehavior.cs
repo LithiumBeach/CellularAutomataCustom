@@ -226,14 +226,14 @@ namespace ca
 
             //add or subtract color int if left+ : right-
             newColor += ebutton;
-            if (ebutton == CAMath.LEFT && newColor >= CAColor.colors.Length)
+            if (ebutton == CAMath.LEFT && newColor >= CAColor.colors.Count)
             {
                 //0 is transparent.
                 newColor = 1;
             }
             else if (ebutton == CAMath.RIGHT && newColor <= 0)
             {
-                newColor = CAColor.colors.Length - 1;
+                newColor = CAColor.colors.Count - 1;
             }
             m_CellGrid.SetColor(cellIndex, newColor);
 
