@@ -389,6 +389,11 @@ namespace ca
                 //initialize like new
                 ResetPlayerPrefs();
             }
+            //load anything from PlayerPrefs that has an alias somehwere else in the code
+            else
+            {
+                CAColor.colors = Colors;
+            }
         }
     }
 }

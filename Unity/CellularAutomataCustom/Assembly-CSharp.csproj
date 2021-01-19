@@ -77,6 +77,7 @@
     <Compile Include="Assets\src\ScriptableObjects\RulesetSO.cs" />
     <Compile Include="Assets\src\SingletonBehavior.cs" />
     <Compile Include="Assets\src\ui\CAButton.cs" />
+    <Compile Include="Assets\src\ui\CAGlobalColorSelectorButton.cs" />
     <Compile Include="Assets\src\WindowManager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
