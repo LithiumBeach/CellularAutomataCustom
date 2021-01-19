@@ -354,6 +354,20 @@ namespace ca
                 PlayerPrefs.SetString(c_GlobalColors, JsonUtility.ToJson(new ColorList(value)));
             }
         }
+        public void AddColor(Color c)
+        {
+            List<Color> newColors = Colors;
+            newColors.Add(c);
+            CAColor.colors.Add(c);
+            Colors = newColors;
+        }
+        public void RemoveColor(int index)
+        {
+            List<Color> newColors = Colors;
+            newColors.RemoveAt(index);
+            CAColor.colors.RemoveAt(index);
+            Colors = newColors;
+        }
 
         #endregion
 
