@@ -104,6 +104,12 @@ namespace ca
 
         #endregion
 
+        //cache the cellindex the user clicks down on, to compare with the click up cellindex
+        private Vector2Int m_OnLeftMouseDownCellIndex;
+        private Vector2Int m_OnRightMouseDownCellIndex;
+        private static Vector2Int c_InvalidIndex = new Vector2Int(-1, -1);
+
+
         private void ResetGrid()
         {
             for (int i = 0; i < MAX_ZOOM_LEVEL + 1; i++)
@@ -186,55 +192,78 @@ namespace ca
         {
             if (WindowManager.Instance.IsMainCanvasActive())
             {
-                HandleMouseDown(pos, CAMath.LEFT); 
+                Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
+                if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
+                m_OnLeftMouseDownCellIndex = cellIndex;
             }
         }
         private void HandleRightMouseDown(Vector2 pos)
         {
             if (WindowManager.Instance.IsMainCanvasActive())
             {
-                HandleMouseDown(pos, CAMath.RIGHT);
+                Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
+                if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
+                m_OnRightMouseDownCellIndex = cellIndex;
             }
         }
 
-        private void HandleWhileLeftMouse(Vector2 obj)
+        private void HandleWhileLeftMouse(Vector2 pos)
         {
+            if (WindowManager.Instance.IsMainCanvasActive())
+            {
+                Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
+                if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
 
+                //if this cellindex is not the same as the down cellindex, draw
+                if (cellIndex != m_OnLeftMouseDownCellIndex)
+                {
+                    //get next/previous color int
+                    int newColor = CAColor.ChangeColorInt(m_CellGrid.At(m_OnLeftMouseDownCellIndex), 0, b_includeClear: false);
+
+                    //set int color id in data
+                    m_CellGrid.SetColor(cellIndex, newColor);
+
+                    SyncZoomTexture();
+                }
+            }
         }
-        private void HandleWhileRightMouse(Vector2 obj)
+        private void HandleWhileRightMouse(Vector2 pos)
         {
-
+            //stub -- do nothing -- no drawing with right clicks
         }
 
         private void HandleLeftMouseUp(Vector2 pos)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
-            {
-
-            }
+            HandleMouseUp(pos, CAMath.LEFT);
         }
         private void HandleRightMouseUp(Vector2 pos)
         {
+            HandleMouseUp(pos, CAMath.RIGHT);
+        }
+
+        private void HandleMouseUp(Vector2 pos, int dir)
+        {
             if (WindowManager.Instance.IsMainCanvasActive())
             {
+                Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
+                if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
 
+                //if the click down is in the same cell as the click up
+                if ((m_OnLeftMouseDownCellIndex == cellIndex && dir == CAMath.LEFT) ||
+                    (m_OnRightMouseDownCellIndex == cellIndex && dir == CAMath.RIGHT))
+                {
+                    //get next/previous color int
+                    int newColor = CAColor.ChangeColorInt(m_CellGrid.At(cellIndex), dir, b_includeClear: false);
+
+                    //set int color id in data
+                    m_CellGrid.SetColor(cellIndex, newColor);
+
+                    SyncZoomTexture();
+                }
+                //otherwise nothing needs to be done,
             }
         }
         #endregion
-
-        private void HandleMouseDown(Vector2 pos, int dir)
-        {
-            Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
-            if (cellIndex == new Vector2Int(-1, -1)) { return; } //exit if invalid position
-
-            //get next/previous color int
-            int newColor = CAColor.ChangeColorInt(m_CellGrid.At(cellIndex), dir, b_includeClear: false);
-
-            //set int color id in data
-            m_CellGrid.SetColor(cellIndex, newColor);
-
-            SyncZoomTexture();
-        }
 
         private Vector2Int GetCellIndexFromScreenPos(Vector2 pos)
         {
@@ -244,7 +273,7 @@ namespace ca
             //if mouse was not clicked inside cell grid, return
             if (!m_RectTransform.rect.Contains(localMousePos))
             {
-                return new Vector2Int(-1,-1);
+                return c_InvalidIndex;
             }
 
             //convert unity local coordinates into positive-valued y
@@ -262,7 +291,7 @@ namespace ca
             if (cellIndex.x < 0 || cellIndex.x >= CurZoomLevel.m_Size ||
                 cellIndex.y < 0 || cellIndex.y >= CurZoomLevel.m_Size)
             {
-                return new Vector2Int(-1,-1);
+                return c_InvalidIndex;
             }
             return cellIndex;
         }
