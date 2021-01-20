@@ -180,6 +180,11 @@ namespace ca
                 //re-initialize to what's in SaveLoadManager
                 m_GlobalColorBehavior.ResetTo(SaveLoadManager.Instance.Colors);
             }
+            else
+            {
+                //re-initialize main window in case any colors have changed
+                ChangeRuleset(0);
+            }
         }
 
         //call to turn on/off, opposite of current on/off

@@ -368,6 +368,13 @@ namespace ca
             CAColor.colors.RemoveAt(index);
             Colors = newColors;
         }
+        public void ChangeColor(int v, Color color)
+        {
+            List<Color> newColors = Colors;
+            newColors[v] = color;
+            CAColor.colors[v] = color;
+            Colors = newColors;
+        }
 
         #endregion
 

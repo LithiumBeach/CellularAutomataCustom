@@ -10,11 +10,11 @@ namespace ca
 
         public void HandleLeftClick()
         {
-            GlobalColorBehavior.Instance.OnLeftMouseClick(this);
+            GlobalColorBehavior.Instance.OnLeftMouseClickColorSquare(this);
         }
         public void HandleRightClick()
         {
-            GlobalColorBehavior.Instance.OnRightMouseClick(this);
+            GlobalColorBehavior.Instance.OnRightMouseClickColorSquare(this);
         }
     }
 }
