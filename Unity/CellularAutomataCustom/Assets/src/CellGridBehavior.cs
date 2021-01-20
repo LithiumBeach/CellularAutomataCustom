@@ -170,6 +170,10 @@ namespace ca
             //register input callbacks
             WindowManager.Instance.OnLeftMouseDown += HandleLeftMouseDown;
             WindowManager.Instance.OnRightMouseDown += HandleRightMouseDown;
+            WindowManager.Instance.OnLeftMouseUp += HandleLeftMouseUp;
+            WindowManager.Instance.OnRightMouseUp += HandleRightMouseUp;
+            WindowManager.Instance.WhileLeftMouseDown +=  HandleWhileLeftMouse;
+            WindowManager.Instance.WhileRightMouseDown += HandleWhileRightMouse;
 
             ResetGrid();
 
@@ -177,6 +181,7 @@ namespace ca
             ChangeClearToColor(0);
         }
 
+        #region mouse event handlers
         private void HandleLeftMouseDown(Vector2 pos)
         {
             if (WindowManager.Instance.IsMainCanvasActive())
@@ -192,7 +197,46 @@ namespace ca
             }
         }
 
-        private void HandleMouseDown(Vector2 pos, int ebutton)
+        private void HandleWhileLeftMouse(Vector2 obj)
+        {
+
+        }
+        private void HandleWhileRightMouse(Vector2 obj)
+        {
+
+        }
+
+        private void HandleLeftMouseUp(Vector2 pos)
+        {
+            if (WindowManager.Instance.IsMainCanvasActive())
+            {
+
+            }
+        }
+        private void HandleRightMouseUp(Vector2 pos)
+        {
+            if (WindowManager.Instance.IsMainCanvasActive())
+            {
+
+            }
+        }
+        #endregion
+
+        private void HandleMouseDown(Vector2 pos, int dir)
+        {
+            Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
+            if (cellIndex == new Vector2Int(-1, -1)) { return; } //exit if invalid position
+
+            //get next/previous color int
+            int newColor = CAColor.ChangeColorInt(m_CellGrid.At(cellIndex), dir, b_includeClear: false);
+
+            //set int color id in data
+            m_CellGrid.SetColor(cellIndex, newColor);
+
+            SyncZoomTexture();
+        }
+
+        private Vector2Int GetCellIndexFromScreenPos(Vector2 pos)
         {
             //get mouse pos in local CellGrid pixel space
             Vector2 localMousePos = m_RectTransform.InverseTransformPoint(pos);
@@ -200,7 +244,7 @@ namespace ca
             //if mouse was not clicked inside cell grid, return
             if (!m_RectTransform.rect.Contains(localMousePos))
             {
-                return;
+                return new Vector2Int(-1,-1);
             }
 
             //convert unity local coordinates into positive-valued y
@@ -218,26 +262,9 @@ namespace ca
             if (cellIndex.x < 0 || cellIndex.x >= CurZoomLevel.m_Size ||
                 cellIndex.y < 0 || cellIndex.y >= CurZoomLevel.m_Size)
             {
-                return;
+                return new Vector2Int(-1,-1);
             }
-
-            //set int color id in data
-            int newColor = m_CellGrid.At(cellIndex);
-
-            //add or subtract color int if left+ : right-
-            newColor += ebutton;
-            if (ebutton == CAMath.LEFT && newColor >= CAColor.colors.Count)
-            {
-                //0 is transparent.
-                newColor = 1;
-            }
-            else if (ebutton == CAMath.RIGHT && newColor <= 0)
-            {
-                newColor = CAColor.colors.Count - 1;
-            }
-            m_CellGrid.SetColor(cellIndex, newColor);
-
-            SyncZoomTexture();
+            return cellIndex;
         }
 
 
