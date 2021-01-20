@@ -28,14 +28,10 @@ namespace ca
         //called from UI buttons
         public void OnLeftMouseClickColorSquare(CAGlobalColorSelectorButton colorSquareRef)
         {
-            Debug.Log("left clicked child #" + colorSquareRef.transform.parent.GetSiblingIndex().ToString());
-
             HandleAnyMouseClickColorSquare(colorSquareRef);
         }
         public void OnRightMouseClickColorSquare(CAGlobalColorSelectorButton colorSquareRef)
         {
-            Debug.Log("right clicked child #" + colorSquareRef.transform.parent.GetSiblingIndex().ToString());
-
             HandleAnyMouseClickColorSquare(colorSquareRef);
         }
 
