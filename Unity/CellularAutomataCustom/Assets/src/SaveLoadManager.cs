@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,7 @@ namespace ca
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
         private const string c_ShouldShowPhotosensitivityWarning = "should_show_photosens_warning";
+        private const string c_GlobalColors = "global_colors";//TODO
 
         public const string c_NewRulesetName = "New Ruleset";
 
@@ -341,6 +342,40 @@ namespace ca
             }
         }
 
+        public List<Color> Colors
+        {
+            get
+            {
+                return JsonUtility.FromJson<ColorList>(PlayerPrefs.GetString(c_GlobalColors)).list;
+            }
+            set
+            {
+                CAColor.colors = new List<Color>(value);
+                PlayerPrefs.SetString(c_GlobalColors, JsonUtility.ToJson(new ColorList(value)));
+            }
+        }
+        public void AddColor(Color c)
+        {
+            List<Color> newColors = Colors;
+            newColors.Add(c);
+            CAColor.colors.Add(c);
+            Colors = newColors;
+        }
+        public void RemoveColor(int index)
+        {
+            List<Color> newColors = Colors;
+            newColors.RemoveAt(index);
+            CAColor.colors.RemoveAt(index);
+            Colors = newColors;
+        }
+        public void ChangeColor(int v, Color color)
+        {
+            List<Color> newColors = Colors;
+            newColors[v] = color;
+            CAColor.colors[v] = color;
+            Colors = newColors;
+        }
+
         #endregion
 
         #region public functions
@@ -359,6 +394,8 @@ namespace ca
             //show photosensitivity warning
             ShouldShowPhotosensitivityWarning = true;
 
+            Colors = CAColor.defaultColors;
+
             PlayerPrefs.Save();
         }
 
@@ -372,6 +409,11 @@ namespace ca
             {
                 //initialize like new
                 ResetPlayerPrefs();
+            }
+            //load anything from PlayerPrefs that has an alias somehwere else in the code
+            else
+            {
+                CAColor.colors = Colors;
             }
         }
     }

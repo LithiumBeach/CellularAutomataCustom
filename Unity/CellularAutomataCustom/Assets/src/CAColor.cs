@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ca
 {
@@ -6,7 +7,10 @@ namespace ca
     {
         //these colors will change according to user selection, but only the indices are stored in data,
         //so when a color changes, the board and rules can update to the new color.
-        public static Color[] colors = new Color[]
+        public static List<Color> colors = new List<Color>
+        {
+        };
+        public static List<Color> defaultColors = new List<Color>
         {
             Color.clear, //All Colors (ie. concerning cells of color "all")
             Color.white,
@@ -18,8 +22,8 @@ namespace ca
 
         public static int ChangeColorInt(int currentColor, int direction, bool b_includeClear=false)
         {
-            if(!b_includeClear && currentColor == 1 && direction < 0) { return CAColor.colors.Length-1; }
-            return CAMath.Mod(currentColor + direction, b_includeClear ? 0 : 1, CAColor.colors.Length);
+            if(!b_includeClear && currentColor == 1 && direction < 0) { return CAColor.colors.Count-1; }
+            return CAMath.Mod(currentColor + direction, b_includeClear ? 0 : 1, CAColor.colors.Count);
         }
 
         //if Color.Invisible, label color box "ANY"

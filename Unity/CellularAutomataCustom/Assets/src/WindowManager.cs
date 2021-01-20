@@ -17,6 +17,8 @@ namespace ca
         [Required]
         public CellGridBehavior m_CellGrid;
         [Required]
+        public GlobalColorBehavior m_GlobalColorBehavior;
+        [Required]
         public TextMeshProUGUI m_FPSText;
         [Required]
         public TextMeshProUGUI m_SimulateButtonText;
@@ -96,6 +98,9 @@ namespace ca
 
             //display photosensitivity warning if we should
             DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
+
+            //turn off global color canvas
+            DisplayGlobalColorCanvas(false);
         }
 
         private void Update()
@@ -164,6 +169,30 @@ namespace ca
             Application.Quit();
         }
 
+        //turn off & on the global color canvas
+        private void DisplayGlobalColorCanvas(bool canvasActive)
+        {
+            m_GlobalColorBehavior.gameObject.SetActive(canvasActive);
+
+            //if we are turning it on
+            if (canvasActive)
+            {
+                //re-initialize to what's in SaveLoadManager
+                m_GlobalColorBehavior.ResetTo(SaveLoadManager.Instance.Colors);
+            }
+            else
+            {
+                //re-initialize main window in case any colors have changed
+                ChangeRuleset(0);
+            }
+        }
+
+        //call to turn on/off, opposite of current on/off
+        public void OnDisplayGlobalColorCanvasButtonPressed(bool canvasActive)
+        {
+            DisplayGlobalColorCanvas(canvasActive);
+        }
+
         #region Rulesets
 
         private void LoadCurrentRulesetUI()
@@ -178,6 +207,13 @@ namespace ca
             // wait 1 frame before updating UI
             // will otherwise cause issues using a transform's sibling index as an id
             StartCoroutine(OnAfterLoadCurrentRulesetUI());
+        }
+
+        public bool IsMainCanvasActive()
+        {
+            return
+                !m_PhotosensitivityWarningCanvas.isActiveAndEnabled &&
+                !m_GlobalColorBehavior.isActiveAndEnabled;
         }
 
         public System.Collections.IEnumerator OnAfterLoadCurrentRulesetUI()
