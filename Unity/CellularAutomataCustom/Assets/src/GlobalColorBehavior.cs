@@ -52,6 +52,7 @@ namespace ca
         private int m_ChangeNextClickedColorSiblingIndex;
 
         private RenderTexture m_RT = null;
+        private Texture2D m_Capture = null;
 
         //called from UI buttons
         public void OnLeftMouseClickColorSquare(CAGlobalColorSelectorButton colorSquareRef)
@@ -98,6 +99,10 @@ namespace ca
                 }
                 Camera.main.targetTexture = m_RT;
                 RenderTexture.active = Camera.main.targetTexture;
+                if (m_Capture == null)
+                {
+                    m_Capture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+                }
 
                 if (!m_ColorPickerPreview.isActiveAndEnabled)
                 {
@@ -137,12 +142,11 @@ namespace ca
             yield return new WaitForEndOfFrame();
 
             //take screenshot to texture2D
-            Texture2D capture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            capture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            capture.Apply();
+            m_Capture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+            m_Capture.Apply();
 
             //get pixel color at mouse position
-            Color pixelColor = capture.GetPixel(
+            Color pixelColor = m_Capture.GetPixel(
                 Mathf.FloorToInt(Input.mousePosition.x),
                 Mathf.FloorToInt(Input.mousePosition.y)
             );
@@ -163,12 +167,11 @@ namespace ca
             yield return new WaitForEndOfFrame();
 
             //take screenshot to texture2D
-            Texture2D capture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            capture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            capture.Apply();
+            m_Capture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+            m_Capture.Apply();
 
             //get pixel color at mouse position
-            Color pixelColor = capture.GetPixel(
+            Color pixelColor = m_Capture.GetPixel(
                 Mathf.FloorToInt(Input.mousePosition.x),
                 Mathf.FloorToInt(Input.mousePosition.y)
             );
@@ -291,6 +294,10 @@ namespace ca
             if (m_RT != null)
             {
                 Destroy(m_RT);
+            }
+            if (m_Capture != null)
+            {
+                Destroy(m_Capture);
             }
         }
     }
