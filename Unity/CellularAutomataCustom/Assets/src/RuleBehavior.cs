@@ -33,9 +33,6 @@ namespace ca
         public List<GameObject> m_LockedGOs;
         public List<Image> m_RaycastTargetImages;
 
-
-        //TODO: color button refs to change their color on click
-
         #endregion
 
         #region event handlers
