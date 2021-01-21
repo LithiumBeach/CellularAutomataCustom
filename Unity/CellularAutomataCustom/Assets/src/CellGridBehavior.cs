@@ -135,7 +135,7 @@ namespace ca
             }
         }
 
-        private void SyncZoomTexture()
+        public void SyncZoomTexture()
         {
             for (int y = 0; y < CurZoomLevel.m_Tex.height; y++)
             {
