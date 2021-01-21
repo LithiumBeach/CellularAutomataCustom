@@ -415,6 +415,14 @@ namespace ca
 
         #region Simulating
 
+        public void OnNextFrameButtonPressed()
+        {
+            if(!m_IsSimulating)
+            {
+                SimulateStep();
+            }
+        }
+
         public void SimulateStep()
         {
             m_CellGrid.EvaluateNextState(SaveLoadManager.Instance.CurrentRuleset);
