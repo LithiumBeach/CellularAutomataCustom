@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -282,23 +282,6 @@ namespace ca
 
             //additionally, any time we reset (ie when we open the canvas), cancel any user states
             CurrentState = EState.DEFAULT;
-        }
-
-        //cleanup
-        private void OnDestroy()
-        {
-            if (Camera.main.targetTexture != null)
-            {
-                Destroy(Camera.main.targetTexture); 
-            }
-            if (m_RT != null)
-            {
-                Destroy(m_RT);
-            }
-            if (m_Capture != null)
-            {
-                Destroy(m_Capture);
-            }
         }
     }
 }
