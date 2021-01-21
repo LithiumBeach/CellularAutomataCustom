@@ -103,6 +103,9 @@ namespace ca
                     StartCoroutine("ChangeToNextClickedPixelColor");
 
                     CurrentState = EState.DEFAULT;
+
+                    //consume input -- fixes color picking another button, then changing that button.
+                    Input.ResetInputAxes();
                 }
                 else
                 {
