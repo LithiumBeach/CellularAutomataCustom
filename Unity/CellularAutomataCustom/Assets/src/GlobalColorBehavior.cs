@@ -15,6 +15,8 @@ namespace ca
         public Transform m_ColorSquareParent;
         [Required]
         public TextMeshProUGUI m_HintText;
+        [Required]
+        public Image m_ColorPickerPreview;
 
         public Dictionary<EState, string> m_HintStrings = new Dictionary<EState, string>
         {
@@ -85,16 +87,36 @@ namespace ca
         //it is needed only to listen for clicks at any position on the screen.
         private void Update()
         {
-            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) &&
-                CurrentState == EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR)
+            if (CurrentState == EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR)
             {
                 //create new rendertexture
                 Camera.main.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
                 RenderTexture.active = Camera.main.targetTexture;
 
-                StartCoroutine("ChangeToNextClickedPixelColor");
+                if (!m_ColorPickerPreview.isActiveAndEnabled)
+                {
+                    m_ColorPickerPreview.enabled = true;
+                }
 
-                CurrentState = EState.DEFAULT;
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                {
+                    StartCoroutine("ChangeToNextClickedPixelColor");
+
+                    CurrentState = EState.DEFAULT;
+                }
+                else
+                {
+                    StartCoroutine("UpdateColorPickerPreviewCursor");
+                    m_ColorPickerPreview.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y)
+                        + m_ColorPickerPreview.GetPixelAdjustedRect().size * .5f  + new Vector2(8, 8);
+                }
+            }
+            else
+            {
+                if (m_ColorPickerPreview.isActiveAndEnabled)
+                {
+                    m_ColorPickerPreview.enabled = false;
+                }
             }
         }
         private System.Collections.IEnumerator ChangeToNextClickedPixelColor()
@@ -121,6 +143,31 @@ namespace ca
             RenderTexture.active = null;
 
             StopCoroutine("ChangeToNextClickedPixelColor");
+        }
+
+        private System.Collections.IEnumerator UpdateColorPickerPreviewCursor()
+        {
+            yield return new WaitForEndOfFrame();
+
+            //take screenshot to texture2D
+            Texture2D capture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
+            capture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+            capture.Apply();
+
+            //get pixel color at mouse position
+            Color pixelColor = capture.GetPixel(
+                Mathf.FloorToInt(Input.mousePosition.x),
+                Mathf.FloorToInt(Input.mousePosition.y)
+            );
+
+            m_ColorPickerPreview.color = pixelColor;
+
+            //cleanup
+            Destroy(Camera.main.targetTexture);
+            Camera.main.targetTexture = null;
+            RenderTexture.active = null;
+
+            StopCoroutine("UpdateColorPickerPreviewCursor");
         }
 
         public void OnAddNewColorStatePressed()

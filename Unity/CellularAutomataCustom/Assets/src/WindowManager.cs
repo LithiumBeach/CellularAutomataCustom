@@ -185,6 +185,8 @@ namespace ca
                 //re-initialize main window in case any colors have changed
                 ChangeRuleset(0);
             }
+            m_CellGrid.ChangeClearToColor(0); //reset clearto color box, too
+            m_CellGrid.SyncZoomTexture(); //reset cellgrid, too
         }
 
         //call to turn on/off, opposite of current on/off
