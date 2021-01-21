@@ -186,6 +186,9 @@ namespace ca
 
             //update ui
             ChangeClearToColor(0);
+
+            //initialize to zoom level 2
+            WindowManager.Instance.SetZoom(2);
         }
 
         #region mouse event handlers
