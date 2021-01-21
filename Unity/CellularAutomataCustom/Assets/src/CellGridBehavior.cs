@@ -97,6 +97,7 @@ namespace ca
         [Required]
         public TextMeshProUGUI m_ClearToColorButtonText;
         private int m_ClearToColor = 1;
+        public int ClearToColor { get { return m_ClearToColor; } }
 
         [Range(0.0f, 1.0f)]
         public float m_ShuffleBgProbability;

@@ -376,6 +376,32 @@ namespace ca
             Colors = newColors;
         }
 
+        //search in all this, if, to colors in all rulesets and find the maximum state value
+        private int MaximumColorStateConsideredGlobally()
+        {
+            //aggregate all rules into one list
+            List<RuleDataList> rulesets = Rulesets.list;
+            List<RuleData> allrules = (from ruleset in rulesets
+                                       from item in ruleset.list
+                                       select item).ToList();
+
+            int maxColor = 0;
+            foreach(RuleData r in allrules)
+            {
+                maxColor = new List<int>() { maxColor, r.m_ThisColor, r.m_IfColor, r.m_ThenColor }.Max();
+            }
+
+            //finally, edge case, compare the user's selected clearto color, in case it's the max color
+            return Math.Max(maxColor, WindowManager.Instance.GetClearToColor());
+        }
+
+        //Given the current number of color states and the current max color state considered globally,
+        // can we afford to delete a single color state?
+        public bool CanDeleteOneColor()
+        {
+            return (Colors.Count-1) > MaximumColorStateConsideredGlobally();
+        }
+
         #endregion
 
         #region public functions
