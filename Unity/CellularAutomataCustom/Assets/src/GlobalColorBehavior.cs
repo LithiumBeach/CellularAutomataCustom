@@ -116,8 +116,11 @@ namespace ca
                 else
                 {
                     StartCoroutine("UpdateColorPickerPreviewCursor");
-                    m_ColorPickerPreview.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y)
-                        + m_ColorPickerPreview.GetPixelAdjustedRect().size * .5f  + new Vector2(8, 8);
+
+                    //position color picker preview next to cursor
+                    float posX = Input.mousePosition.x - m_ColorPickerPreview.GetPixelAdjustedRect().size.x * .5f - 16f;
+                    float posY = Input.mousePosition.y;
+                    m_ColorPickerPreview.transform.position = new Vector2(posX, posY);
                 }
             }
             else
