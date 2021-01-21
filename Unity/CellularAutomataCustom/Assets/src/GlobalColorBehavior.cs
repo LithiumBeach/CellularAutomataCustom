@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,10 +13,33 @@ namespace ca
         public GameObject m_ColorSquarePrefab;
         [Required]
         public Transform m_ColorSquareParent;
+        [Required]
+        public TextMeshProUGUI m_HintText;
+
+        public Dictionary<EState, string> m_HintStrings = new Dictionary<EState, string>
+        {
+            { EState.DEFAULT, "Each color below represents a state in our cellular automata. Click on a state to change the color it is represented by."},
+            { EState.DELETE_NEXT_CLICKED_COLOR, "The next state you click will be deleted."},
+            { EState.CHANGE_NEXT_CLICKED_COLOR, "The next state you click will be selected for color changing."},
+            { EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR, "The next place you click will set the color of your selected state."}
+        };
 
 
         private EState m_State = EState.DEFAULT;
-        private enum EState
+        public EState CurrentState
+        {
+            get
+            {
+                m_HintText.text = m_HintStrings[m_State];
+                return m_State;
+            }
+            set
+            {
+                m_State = value;
+                m_HintText.text = m_HintStrings[value];
+            }
+        }
+        public enum EState
         {
             DEFAULT,
             DELETE_NEXT_CLICKED_COLOR,
@@ -37,18 +61,18 @@ namespace ca
 
         private void HandleAnyMouseClickColorSquare(CAGlobalColorSelectorButton colorSquareRef)
         {
-            switch (m_State)
+            switch (CurrentState)
             {
                 case EState.DEFAULT:
                 m_ChangeNextClickedColorSiblingIndex = colorSquareRef.transform.parent.GetSiblingIndex();
-                m_State = EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR;
+                CurrentState = EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR;
                 break;
                 case EState.DELETE_NEXT_CLICKED_COLOR:
                 DeleteColorState(colorSquareRef.transform.parent.GetSiblingIndex());
                 break;
                 case EState.CHANGE_NEXT_CLICKED_COLOR:
                 m_ChangeNextClickedColorSiblingIndex = colorSquareRef.transform.parent.GetSiblingIndex();
-                m_State = EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR;
+                CurrentState = EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR;
                 break;
                 case EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR:
                 break;
@@ -62,7 +86,7 @@ namespace ca
         private void Update()
         {
             if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) &&
-                m_State == EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR)
+                CurrentState == EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR)
             {
                 //create new rendertexture
                 Camera.main.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
@@ -70,7 +94,7 @@ namespace ca
 
                 StartCoroutine("ChangeToNextClickedPixelColor");
 
-                m_State = EState.DEFAULT;
+                CurrentState = EState.DEFAULT;
             }
         }
         private System.Collections.IEnumerator ChangeToNextClickedPixelColor()
@@ -104,7 +128,7 @@ namespace ca
             //TODO: prompt color selector, use selected color instead of Color.white
             SaveLoadManager.Instance.AddColor(Color.white);
             AddNewColorState(Color.white);
-            m_State = EState.DEFAULT;
+            CurrentState = EState.DEFAULT;
         }
 
         private void AddNewColorState(Color c)
@@ -123,13 +147,13 @@ namespace ca
         //if we press again before pressing any colors, we cancel the delete
         public void OnDeleteColorStatePressed()
         {
-            if (m_State == EState.DELETE_NEXT_CLICKED_COLOR)
+            if (CurrentState == EState.DELETE_NEXT_CLICKED_COLOR)
             {
-                m_State = EState.DEFAULT;
+                CurrentState = EState.DEFAULT;
             }
             else
             {
-                m_State = EState.DELETE_NEXT_CLICKED_COLOR;
+                CurrentState = EState.DELETE_NEXT_CLICKED_COLOR;
             }
         }
         private void DeleteColorState(int childIndex)
@@ -140,12 +164,12 @@ namespace ca
             //add 1 to child index so we ignore transparent
             SaveLoadManager.Instance.RemoveColor(childIndex + 1);
 
-            m_State = EState.DEFAULT;
+            CurrentState = EState.DEFAULT;
         }
 
         public void OnChangeColorStatePressed()
         {
-            m_State = EState.CHANGE_NEXT_CLICKED_COLOR;
+            CurrentState = EState.CHANGE_NEXT_CLICKED_COLOR;
         }
         private void ChangeColorState(int childIndex, Color c)
         {
@@ -188,7 +212,7 @@ namespace ca
             }
 
             //additionally, any time we reset (ie when we open the canvas), cancel any user states
-            m_State = EState.DEFAULT;
+            CurrentState = EState.DEFAULT;
         }
     }
 }
