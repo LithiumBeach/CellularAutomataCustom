@@ -53,7 +53,7 @@ namespace ca
             32f,
             48f,
             64f,
-            96f,//TODO: something is wrong after about this rate.
+            96f,
             128f,
             256f,
         };

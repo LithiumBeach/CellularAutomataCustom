@@ -17,7 +17,7 @@ namespace ca
         private const string c_RulesetsKey = "rulesets";
         private const string c_CurrentRulesetKey = "current_ruleset";
         private const string c_ShouldShowPhotosensitivityWarning = "should_show_photosens_warning";
-        private const string c_GlobalColors = "global_colors";//TODO
+        private const string c_GlobalColors = "global_colors";
 
         public const string c_NewRulesetName = "New Ruleset";
 
@@ -60,7 +60,6 @@ namespace ca
             PlayerPrefs.Save();
         }
 
-        //TODO: set{}
         public int GetCurrentThisColor(int rIndex)
         {
             //convert from json to object
@@ -328,7 +327,7 @@ namespace ca
         #endregion
 
         #region PlayerPrefs getters & setters
-        //TODO: get/set in rest of stuff like this
+
         public bool ShouldShowPhotosensitivityWarning
         {//cannot serialize to bool, so int
             get

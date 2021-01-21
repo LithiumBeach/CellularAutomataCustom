@@ -14,7 +14,6 @@ namespace ca
     //TODO: IEvaluate(object)
     public class CellGrid
     {
-        //TODO: update this comment
         //grid of integers representing, ie: colors indexed at CAColor.colors[int]
         private int[] m_Cells;
         //all rule evaluations are saved to the cache
@@ -85,7 +84,6 @@ namespace ca
 
                 m_CellsCopy = null;
             }
-            //TODO: clear cache?
             m_CellsCache = null;
         }
 
