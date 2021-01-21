@@ -131,6 +131,12 @@ namespace ca
             {
                 OnRightMouseUp?.Invoke(mousePos2D);
             }
+
+            //exit application on escape
+            if (Input.GetKey("escape"))
+            {
+                Application.Quit();
+            }
             #endregion
 
             if (m_IsSimulating)
