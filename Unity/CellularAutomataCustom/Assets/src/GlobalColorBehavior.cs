@@ -51,6 +51,8 @@ namespace ca
 
         private int m_ChangeNextClickedColorSiblingIndex;
 
+        private RenderTexture m_RT = null;
+
         //called from UI buttons
         public void OnLeftMouseClickColorSquare(CAGlobalColorSelectorButton colorSquareRef)
         {
@@ -90,7 +92,11 @@ namespace ca
             if (CurrentState == EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR)
             {
                 //create new rendertexture
-                Camera.main.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+                if (m_RT == null)
+                {
+                    m_RT = new RenderTexture(Screen.width, Screen.height, 24);
+                }
+                Camera.main.targetTexture = m_RT;
                 RenderTexture.active = Camera.main.targetTexture;
 
                 if (!m_ColorPickerPreview.isActiveAndEnabled)
@@ -120,6 +126,7 @@ namespace ca
                 {
                     m_ColorPickerPreview.enabled = false;
                 }
+                Camera.main.targetTexture = null;
             }
         }
         private System.Collections.IEnumerator ChangeToNextClickedPixelColor()
@@ -141,7 +148,7 @@ namespace ca
             ChangeColorState(m_ChangeNextClickedColorSiblingIndex, pixelColor);
 
             //cleanup
-            Destroy(Camera.main.targetTexture);
+            //Destroy(Camera.main.targetTexture);
             Camera.main.targetTexture = null;
             RenderTexture.active = null;
 
@@ -166,7 +173,7 @@ namespace ca
             m_ColorPickerPreview.color = pixelColor;
 
             //cleanup
-            Destroy(Camera.main.targetTexture);
+            //Destroy(Camera.main.targetTexture);
             Camera.main.targetTexture = null;
             RenderTexture.active = null;
 
@@ -269,6 +276,19 @@ namespace ca
 
             //additionally, any time we reset (ie when we open the canvas), cancel any user states
             CurrentState = EState.DEFAULT;
+        }
+
+        //cleanup
+        private void OnDestroy()
+        {
+            if (Camera.main.targetTexture != null)
+            {
+                Destroy(Camera.main.targetTexture); 
+            }
+            if (m_RT != null)
+            {
+                Destroy(m_RT);
+            }
         }
     }
 }
