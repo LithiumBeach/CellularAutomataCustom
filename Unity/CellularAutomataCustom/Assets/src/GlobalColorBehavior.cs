@@ -194,24 +194,30 @@ namespace ca
         //if we press again before pressing any colors, we cancel the delete
         public void OnDeleteColorStatePressed()
         {
-            if (CurrentState == EState.DELETE_NEXT_CLICKED_COLOR)
+            if (SaveLoadManager.Instance.CanDeleteOneColor())
             {
-                CurrentState = EState.DEFAULT;
-            }
-            else
-            {
-                CurrentState = EState.DELETE_NEXT_CLICKED_COLOR;
+                if (CurrentState == EState.DELETE_NEXT_CLICKED_COLOR)
+                {
+                    CurrentState = EState.DEFAULT;
+                }
+                else
+                {
+                    CurrentState = EState.DELETE_NEXT_CLICKED_COLOR;
+                } 
             }
         }
         private void DeleteColorState(int childIndex)
         {
-            //destroy UI gameobject
-            Destroy(m_ColorSquareParent.GetChild(childIndex).gameObject);
+            if (SaveLoadManager.Instance.CanDeleteOneColor())
+            {
+                //destroy UI gameobject
+                Destroy(m_ColorSquareParent.GetChild(childIndex).gameObject);
 
-            //add 1 to child index so we ignore transparent
-            SaveLoadManager.Instance.RemoveColor(childIndex + 1);
+                //add 1 to child index so we ignore transparent
+                SaveLoadManager.Instance.RemoveColor(childIndex + 1);
 
-            CurrentState = EState.DEFAULT;
+                CurrentState = EState.DEFAULT; 
+            }
         }
 
         public void OnChangeColorStatePressed()

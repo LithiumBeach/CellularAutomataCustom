@@ -188,6 +188,7 @@ namespace ca
             m_CellGrid.ChangeClearToColor(0); //reset clearto color box, too
             m_CellGrid.SyncZoomTexture(); //reset cellgrid, too
         }
+        public int GetClearToColor() { return m_CellGrid.ClearToColor; }
 
         //call to turn on/off, opposite of current on/off
         public void OnDisplayGlobalColorCanvasButtonPressed(bool canvasActive)
