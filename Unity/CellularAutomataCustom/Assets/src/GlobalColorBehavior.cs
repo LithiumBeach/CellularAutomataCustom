@@ -188,10 +188,12 @@ namespace ca
 
         public void OnAddNewColorStatePressed()
         {
-            //TODO: prompt color selector, use selected color instead of Color.white
+            m_ChangeNextClickedColorSiblingIndex = m_ColorSquareParent.childCount;
+
             SaveLoadManager.Instance.AddColor(Color.white);
             AddNewColorState(Color.white);
-            CurrentState = EState.DEFAULT;
+
+            CurrentState = EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR;
         }
 
         private void AddNewColorState(Color c)
@@ -219,7 +221,7 @@ namespace ca
                 else
                 {
                     CurrentState = EState.DELETE_NEXT_CLICKED_COLOR;
-                } 
+                }
             }
         }
         private void DeleteColorState(int childIndex)
@@ -232,7 +234,7 @@ namespace ca
                 //add 1 to child index so we ignore transparent
                 SaveLoadManager.Instance.RemoveColor(childIndex + 1);
 
-                CurrentState = EState.DEFAULT; 
+                CurrentState = EState.DEFAULT;
             }
         }
 
