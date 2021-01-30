@@ -4,3 +4,4 @@ Library
 .vs/
 Temp/
 Unity/CellularAutomataCustom/ProjectSettings/EditorBuildSettings.asset
+Unity/CellularAutomataCustom/Assets/Plugins/Sirenix/Odin Inspector/Config/Editor/
