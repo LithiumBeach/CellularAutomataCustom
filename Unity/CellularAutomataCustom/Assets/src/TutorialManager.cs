@@ -24,7 +24,7 @@ namespace ca
         //this should reset every time the game is run. only completing the tutorial will set it to not repeat on startup
         public int m_CurrentStage = 0;
 
-
+        private GameObject m_CurrentTutorialObject = null;
 
         public const float MIN_ALPHA = 0.015f;
 
@@ -79,7 +79,7 @@ namespace ca
             UpdateTutorialRaycastTarget(false);
 
             //instance first tutorial stage
-            Instantiate(m_TutorialStagePrefabs[0], gameObject.transform);
+            m_CurrentTutorialObject = Instantiate(m_TutorialStagePrefabs[0], gameObject.transform);
         }
 
         public void AdvanceTutorialStage()
@@ -117,6 +117,13 @@ namespace ca
             //show photosensitivity warning ALWAYS after tutorial
             SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning = true;
             WindowManager.Instance.DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
+
+            //re-enable all main window elements
+            UpdateTutorialRaycastTarget(true);
+            UpdateTutorialAlpha(1.0f);
+
+            //always allow input when tutorial is over
+            WindowManager.Instance.m_CellGrid.b_IsInputActive = true;
         }
 
         //b_ToDefault: if true, revert to original setting, if false, turn off
@@ -136,6 +143,21 @@ namespace ca
             {
                 //only set to true if both are true
                 m_NonTutorialTexts[i].raycastTarget = m_NonTutorialTextsWereRaycast[i] && b_ToDefault;
+            }
+        }
+        private void UpdateTutorialAlpha(float a)
+        {
+            for (int i = 0; i < m_NonTutorialImages.Count; i++)
+            {
+                m_NonTutorialImages[i].color = new Color(m_NonTutorialImages[i].color.r, m_NonTutorialImages[i].color.g, m_NonTutorialImages[i].color.b, a);
+            }
+            for (int i = 0; i < m_NonTutorialRawImages.Count; i++)
+            {
+                m_NonTutorialRawImages[i].color = new Color(m_NonTutorialRawImages[i].color.r, m_NonTutorialRawImages[i].color.g, m_NonTutorialRawImages[i].color.b, a);
+            }
+            for (int i = 0; i < m_NonTutorialTexts.Count; i++)
+            {
+                m_NonTutorialTexts[i].color = new Color(m_NonTutorialTexts[i].color.r, m_NonTutorialTexts[i].color.g, m_NonTutorialTexts[i].color.b, a);
             }
         }
 

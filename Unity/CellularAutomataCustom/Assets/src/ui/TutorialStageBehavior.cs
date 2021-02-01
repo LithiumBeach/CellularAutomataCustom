@@ -8,15 +8,19 @@ namespace ca
     //attached to each tutorial cursor prefab: self-manages each tutorial stage
     public class TutorialStageBehavior : MonoBehaviour
     {
+        public bool b_FadeIn = false;
+        public bool b_FadeOut = false;
+        public bool b_IsCellGridInputAllowed = false;
+
         //informative text to be faded into the scene
         [Required]
-        public TextMeshProUGUI m_InfoText=null;
+        public TextMeshProUGUI m_InfoText = null;
         public float m_FadeTime = .6f;
         private float t = 0f;
 
         //used only if no button to press, not required
-        public TextMeshProUGUI m_ClickToContinueText=null;
-        public float m_ClickToContinueTime = 5f;
+        public TextMeshProUGUI m_ClickToContinueText = null;
+        public float m_ClickToContinueTime = 4f;
         private float readT = 0f;
 
 
@@ -34,25 +38,45 @@ namespace ca
         {
             if (readT >= m_ClickToContinueTime)
             {
-                BeginFadeOut(); 
+                BeginFadeOut();
             }
         }
 
         private void Start()
         {
-            BeginFadeIn();
+            if (b_FadeIn)
+            {
+                m_State = EState.FADING_IN;
+                BeginFadeIn(0f);
+            }
+            else
+            {
+                m_State = EState.WAITING;
+                BeginFadeIn(1f);
+            }
+
+            //allow cell grid input?
+            WindowManager.Instance.m_CellGrid.b_IsInputActive = b_IsCellGridInputAllowed;
         }
 
-        private void BeginFadeIn()
+        private void BeginFadeIn(float a)
         {
-            m_State = EState.FADING_IN;
             t = readT = 0f;
-            m_InfoText.alpha = m_ClickToContinueText.alpha = 0;
+            m_InfoText.alpha = a;
+            if (m_ClickToContinueText != null)
+            {
+                m_ClickToContinueText.alpha = a;
+            }
         }
         private void BeginFadeOut()
         {
             m_State = EState.FADING_OUT;
             t = readT = 0f;
+            m_InfoText.alpha = 1f;
+            if (m_ClickToContinueText != null)
+            {
+                m_ClickToContinueText.alpha = 1f;
+            }
         }
 
         private void Update()
@@ -82,12 +106,15 @@ namespace ca
                 if (readT > (m_ClickToContinueTime) && readT < (m_ClickToContinueTime + m_FadeTime)) //if timer still counting
                 {
                     //fade in click anywhere to continue text
-                    m_ClickToContinueText.alpha = Mathf.Lerp(0f, 1f, Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
+                    if (m_ClickToContinueText != null)
+                    {
+                        m_ClickToContinueText.alpha = Mathf.Lerp(0f, 1f, Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
+                    }
                 }
                 break;
                 case EState.FADING_OUT:
                 t += Time.deltaTime;
-                if (t >= m_FadeTime)
+                if (b_FadeOut || t >= m_FadeTime)
                 {
                     t = readT = 0f;
                     OnFadeOut();
@@ -95,13 +122,11 @@ namespace ca
                 else
                 {
                     //fade out focus objects
-                    m_ClickToContinueText.alpha = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
+                    if (m_ClickToContinueText != null)
+                    {
+                        m_ClickToContinueText.alpha = 0f;
+                    }
                     m_InfoText.alpha = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
-
-                    //fade in everything else
-                    //TutorialManager.Instance.SetNonTutorialAlpha(
-                    //    Mathf.Lerp(1f, TutorialManager.MIN_ALPHA, CAMath.SmoothStep(t / m_FadeTime))
-                    //);
                 }
                 break;
                 default:
@@ -111,6 +136,9 @@ namespace ca
 
         private void OnFadeOut()
         {
+            //allow cell grid input ? always at the end, even if it gets set back immediately
+            WindowManager.Instance.m_CellGrid.b_IsInputActive = true;
+
             TutorialManager.Instance.AdvanceTutorialStage();
 
             Destroy(this.gameObject);

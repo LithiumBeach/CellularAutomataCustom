@@ -110,6 +110,9 @@ namespace ca
         private Vector2Int m_OnRightMouseDownCellIndex;
         private static Vector2Int c_InvalidIndex = new Vector2Int(-1, -1);
 
+        //pause and unpause grid interaction
+        public bool b_IsInputActive = true;
+
 
         private void ResetGrid()
         {
@@ -203,7 +206,7 @@ namespace ca
         }
         private void HandleRightMouseDown(Vector2 pos)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
@@ -213,7 +216,7 @@ namespace ca
 
         private void HandleWhileLeftMouse(Vector2 pos)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
@@ -247,7 +250,7 @@ namespace ca
 
         private void HandleMouseUp(Vector2 pos, int dir)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
