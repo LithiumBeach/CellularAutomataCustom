@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -37,6 +37,9 @@ namespace ca
                 break;
                 case 1:
                 m_TSC = new TutorialSC1();
+                break;
+                case 2:
+                m_TSC = new TutorialSC2();
                 break;
                 default:
                 break;

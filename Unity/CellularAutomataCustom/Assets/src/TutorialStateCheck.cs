@@ -13,7 +13,14 @@ namespace ca
     {
         public override bool CanAdvanceStage()
         {
-            return WindowManager.Instance.m_CellGrid.m_CellGrid.GetAntiColorCount(WindowManager.Instance.GetClearToColor()) > 6;
+            return WindowManager.Instance.m_CellGrid.m_CellGrid.GetAntiColorCount(WindowManager.Instance.GetClearToColor()) > 8;
+        }
+    }
+    public class TutorialSC2 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage()
+        {
+            return WindowManager.Instance.m_CellGrid.m_CellGrid.GetAntiColorCount(WindowManager.Instance.GetClearToColor()) > 36;
         }
     }
 

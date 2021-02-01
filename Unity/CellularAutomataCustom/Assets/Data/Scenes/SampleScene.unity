@@ -6652,6 +6652,10 @@ MonoBehaviour:
   - prefab: {fileID: 409864957120300148, guid: d1ec29879775a8e47ab6ea40653fbff1, type: 3}
     m_SceneFocusObjects:
     - {fileID: 266499}
+  - prefab: {fileID: 4497171292360541915, guid: 4d7aeb0981b356645beadcbc1ee29214,
+      type: 3}
+    m_SceneFocusObjects:
+    - {fileID: 266499}
   m_CurrentStage: 0
 --- !u!1 &1359342772
 GameObject:
