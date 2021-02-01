@@ -8,6 +8,7 @@ namespace ca
     //attached to each tutorial cursor prefab: self-manages each tutorial stage
     public class TutorialStageBehavior : MonoBehaviour
     {
+        public int m_TutorialNum=0;
         public bool b_FadeIn = false;
         public bool b_FadeOut = false;
         public bool b_IsCellGridInputAllowed = false;
@@ -22,6 +23,25 @@ namespace ca
         public TextMeshProUGUI m_ClickToContinueText = null;
         public float m_ClickToContinueTime = 4f;
         private float readT = 0f;
+
+        #region Tutorial State Checking
+        //based on the level, call a function
+        private TutorialStateCheck m_TSC;
+        private void InitTutorialStateCheck()
+        {
+            switch (m_TutorialNum)
+            {
+                case 0:
+                m_TSC = new TutorialStateCheck();
+                break;
+                case 1:
+                m_TSC = new TutorialSC1();
+                break;
+                default:
+                break;
+            }
+        }
+        #endregion
 
 
         private enum EState
@@ -38,12 +58,17 @@ namespace ca
         {
             if (readT >= m_ClickToContinueTime)
             {
-                BeginFadeOut();
+                if (m_TSC.CanAdvanceStage())
+                {
+                    BeginFadeOut();
+                }
             }
         }
 
         private void Start()
         {
+            InitTutorialStateCheck();
+
             if (b_FadeIn)
             {
                 m_State = EState.FADING_IN;
@@ -67,6 +92,7 @@ namespace ca
             {
                 m_ClickToContinueText.alpha = a;
             }
+            TutorialManager.Instance.UpdateFocusObjectAlphas(a);
         }
         private void BeginFadeOut()
         {
@@ -77,6 +103,7 @@ namespace ca
             {
                 m_ClickToContinueText.alpha = 1f;
             }
+            TutorialManager.Instance.UpdateFocusObjectAlphas(1f);
         }
 
         private void Update()
@@ -93,7 +120,9 @@ namespace ca
                 else
                 {
                     //fade in m_InfoText
-                    m_InfoText.alpha = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
+                    float a = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
+                    m_InfoText.alpha = a;
+                    TutorialManager.Instance.UpdateFocusObjectAlphas(a);
 
                     //fade out everything else
                     TutorialManager.Instance.SetNonTutorialAlpha(
@@ -126,7 +155,9 @@ namespace ca
                     {
                         m_ClickToContinueText.alpha = 0f;
                     }
-                    m_InfoText.alpha = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
+                    float a = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
+                    m_InfoText.alpha = a;
+                    TutorialManager.Instance.UpdateFocusObjectAlphas(a);
                 }
                 break;
                 default:
@@ -141,7 +172,7 @@ namespace ca
 
             TutorialManager.Instance.AdvanceTutorialStage();
 
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); //should destroy m_TSC, etc
         }
     }
 }

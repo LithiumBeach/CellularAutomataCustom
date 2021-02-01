@@ -9,9 +9,15 @@ namespace ca
 {
     public class TutorialManager : patterns.SingletonBehavior<TutorialManager>, patterns.IStart
     {
+        [Serializable]
+        public class TutorialStageReferences
+        {
+            public GameObject prefab;
+            public List<GameObject> m_SceneFocusObjects;
+        }
+
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
-        public List<GameObject> m_TutorialStagePrefabs;
-        //private GameObject m_ActiveTutorialStage;
+        public List<TutorialStageReferences> m_TutorialStages;
 
         //cache all Images, RawImages, and TextMeshProUGUIS
         private List<Image> m_NonTutorialImages;
@@ -26,7 +32,7 @@ namespace ca
 
         private GameObject m_CurrentTutorialObject = null;
 
-        public const float MIN_ALPHA = 0.015f;
+        public const float MIN_ALPHA = 0.012f;
 
         public void IStart()
         {
@@ -79,7 +85,7 @@ namespace ca
             UpdateTutorialRaycastTarget(false);
 
             //instance first tutorial stage
-            m_CurrentTutorialObject = Instantiate(m_TutorialStagePrefabs[0], gameObject.transform);
+            m_CurrentTutorialObject = Instantiate(m_TutorialStages[0].prefab, gameObject.transform);
         }
 
         public void AdvanceTutorialStage()
@@ -93,10 +99,10 @@ namespace ca
 
             m_CurrentStage += 1;
 
-            if (m_CurrentStage < m_TutorialStagePrefabs.Count)
+            if (m_CurrentStage < m_TutorialStages.Count)
             {
                 //instance current tutorial stage
-                Instantiate(m_TutorialStagePrefabs[m_CurrentStage], gameObject.transform);
+                Instantiate(m_TutorialStages[m_CurrentStage].prefab, gameObject.transform);
             }
             else
             {
@@ -158,6 +164,25 @@ namespace ca
             for (int i = 0; i < m_NonTutorialTexts.Count; i++)
             {
                 m_NonTutorialTexts[i].color = new Color(m_NonTutorialTexts[i].color.r, m_NonTutorialTexts[i].color.g, m_NonTutorialTexts[i].color.b, a);
+            }
+        }
+        public void UpdateFocusObjectAlphas(float a)
+        {
+            foreach(GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
+            {
+                Image im = obj.GetComponent<Image>();
+                if(im != null)
+                {
+                    im.color = new Color(im.color.r, im.color.g, im.color.b, a);
+                }
+                else
+                {
+                    RawImage rim = obj.GetComponent<RawImage>();
+                    if (rim != null)
+                    {
+                        rim.color = new Color(rim.color.r, rim.color.g, rim.color.b, a);
+                    }
+                }
             }
         }
 

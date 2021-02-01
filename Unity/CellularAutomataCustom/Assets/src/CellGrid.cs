@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ca
@@ -128,6 +129,17 @@ namespace ca
         internal void SetColor(int cellIndex1D, int color)
         {
             m_Cells[cellIndex1D] = color;
+        }
+
+        //count occurrences of color
+        public int GetColorCount(int color)
+        {
+            return m_Cells.Where(num => num == color).ToList().Count;
+        }
+        //count occurrences of NOT color
+        public int GetAntiColorCount(int color)
+        {
+            return m_Cells.Where(num => num != color).ToList().Count;
         }
 
         //TODO: Evaluate can be generic, object param cast to RuleData ?

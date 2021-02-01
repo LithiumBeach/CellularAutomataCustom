@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   b_FadeIn: 1
   b_FadeOut: 0
+  b_IsCellGridInputAllowed: 0
   m_InfoText: {fileID: 6216058316175112719}
   m_FadeTime: 0.6
   m_ClickToContinueText: {fileID: 6216058316263273226}
