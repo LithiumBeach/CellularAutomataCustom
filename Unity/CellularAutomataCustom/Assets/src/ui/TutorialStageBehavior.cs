@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -12,6 +12,7 @@ namespace ca
         public bool b_FadeIn = false;
         public bool b_FadeOut = false;
         public bool b_IsCellGridInputAllowed = false;
+        public bool b_CanAdvanceWithoutEventTrigger = false;
 
         //informative text to be faded into the scene
         [Required]
@@ -139,6 +140,10 @@ namespace ca
                     {
                         m_ClickToContinueText.alpha = Mathf.Lerp(0f, 1f, Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
                     }
+                }
+                else if (b_CanAdvanceWithoutEventTrigger)
+                {
+                    AdvanceTutorialStage();
                 }
                 break;
                 case EState.FADING_OUT:
