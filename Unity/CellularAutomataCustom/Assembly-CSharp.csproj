@@ -67,6 +67,7 @@
     <Compile Include="Assets\src\CellGridBehavior.cs" />
     <Compile Include="Assets\src\ColorList.cs" />
     <Compile Include="Assets\src\EditorUtils.cs" />
+    <Compile Include="Assets\src\GameObjectUtility.cs" />
     <Compile Include="Assets\src\GlobalColorBehavior.cs" />
     <Compile Include="Assets\src\IStart.cs" />
     <Compile Include="Assets\src\RuleBehavior.cs" />
@@ -76,8 +77,10 @@
     <Compile Include="Assets\src\SaveLoadManager.cs" />
     <Compile Include="Assets\src\ScriptableObjects\RulesetSO.cs" />
     <Compile Include="Assets\src\SingletonBehavior.cs" />
+    <Compile Include="Assets\src\TutorialManager.cs" />
     <Compile Include="Assets\src\ui\CAButton.cs" />
     <Compile Include="Assets\src\ui\CAGlobalColorSelectorButton.cs" />
+    <Compile Include="Assets\src\ui\TutorialStageBehavior.cs" />
     <Compile Include="Assets\src\WindowManager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />

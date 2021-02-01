@@ -96,8 +96,9 @@ namespace ca
 
             LoadCurrentRulesetUI();
 
-            //display photosensitivity warning if we should
-            DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
+            //display photosensitivity warning if we should and shouldn't show the tutorial
+            DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning &&
+                !SaveLoadManager.Instance.ShouldShowTutorial); //we will show the photosensitivity warning after the tutorial automatically
 
             //turn off global color canvas
             DisplayGlobalColorCanvas(false);
@@ -155,7 +156,7 @@ namespace ca
         }
 
         //turn off & on the photosensitivity warning canvas
-        private void DisplayPhotosensitivityWarning(bool canvasActive)
+        public void DisplayPhotosensitivityWarning(bool canvasActive)
         {
             m_PhotosensitivityWarningCanvas.gameObject.SetActive(canvasActive);
         }
