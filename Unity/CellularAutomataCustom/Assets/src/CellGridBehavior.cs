@@ -315,6 +315,7 @@ namespace ca
             if (caColor == 0)
             {
                 ShuffleBoard();
+                TutorialManager.Instance.b_HasEverClearedToAny = true;
             }
             else
             {

@@ -14,6 +14,7 @@ namespace ca
         {
             public GameObject prefab;
             public List<GameObject> m_SceneFocusObjects;
+            public List<GameObject> m_SceneRaycastableObjects;
         }
 
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
@@ -28,9 +29,12 @@ namespace ca
         private List<bool> m_NonTutorialTextsWereRaycast;
 
         //this should reset every time the game is run. only completing the tutorial will set it to not repeat on startup
+        [HideInInspector]
         public int m_CurrentStage = 0;
+        [HideInInspector]
+        public bool b_HasEverClearedToAny = false;
 
-        private GameObject m_CurrentTutorialObject = null;
+        private TutorialStageBehavior m_CurrentTutorial = null;
 
         public const float MIN_ALPHA = 0.012f;
 
@@ -85,7 +89,16 @@ namespace ca
             UpdateTutorialRaycastTarget(false);
 
             //instance first tutorial stage
-            m_CurrentTutorialObject = Instantiate(m_TutorialStages[0].prefab, gameObject.transform);
+            m_CurrentTutorial = Instantiate(m_TutorialStages[0].prefab, gameObject.transform).GetComponent<TutorialStageBehavior>();
+        }
+
+        //call this from tutorial event buttons -- the ones in the main scene
+        public void OnAdvanceTutorialButtonPressed(int buttonNumber)
+        {
+            if (m_CurrentTutorial != null && SaveLoadManager.Instance.ShouldShowTutorial)
+            {
+                m_CurrentTutorial.HandleButtonPress(buttonNumber);
+            }
         }
 
         public void AdvanceTutorialStage()
@@ -102,7 +115,7 @@ namespace ca
             if (m_CurrentStage < m_TutorialStages.Count)
             {
                 //instance current tutorial stage
-                Instantiate(m_TutorialStages[m_CurrentStage].prefab, gameObject.transform);
+                m_CurrentTutorial = Instantiate(m_TutorialStages[m_CurrentStage].prefab, gameObject.transform).GetComponent<TutorialStageBehavior>();
             }
             else
             {
@@ -166,22 +179,43 @@ namespace ca
                 m_NonTutorialTexts[i].color = new Color(m_NonTutorialTexts[i].color.r, m_NonTutorialTexts[i].color.g, m_NonTutorialTexts[i].color.b, a);
             }
         }
-        public void UpdateFocusObjectAlphas(float a)
+        public void UpdateFocusObjects(float a, bool b_raycastable)
         {
-            foreach(GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
+            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
             {
                 Image im = obj.GetComponent<Image>();
-                if(im != null)
+                if (im != null)
                 {
                     im.color = new Color(im.color.r, im.color.g, im.color.b, a);
                 }
-                else
+                RawImage rim = obj.GetComponent<RawImage>();
+                if (rim != null)
                 {
-                    RawImage rim = obj.GetComponent<RawImage>();
-                    if (rim != null)
-                    {
-                        rim.color = new Color(rim.color.r, rim.color.g, rim.color.b, a);
-                    }
+                    rim.color = new Color(rim.color.r, rim.color.g, rim.color.b, a);
+                }
+                TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
+                if (txt != null)
+                {
+                    txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, a);
+                }
+            }
+
+            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects)
+            {
+                Image im = obj.GetComponent<Image>();
+                if (im != null)
+                {
+                    im.raycastTarget = b_raycastable;
+                }
+                RawImage rim = obj.GetComponent<RawImage>();
+                if (rim != null)
+                {
+                    rim.raycastTarget = b_raycastable;
+                }
+                TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
+                if (txt != null)
+                {
+                    txt.raycastTarget = b_raycastable;
                 }
             }
         }

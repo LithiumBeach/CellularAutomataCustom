@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -41,6 +42,9 @@ namespace ca
                 case 2:
                 m_TSC = new TutorialSC2();
                 break;
+                case 3:
+                m_TSC = new TutorialSC3();
+                break;
                 default:
                 break;
             }
@@ -62,7 +66,7 @@ namespace ca
         {
             if (readT >= m_ClickToContinueTime)
             {
-                if (m_TSC.CanAdvanceStage())
+                if (m_TSC.CanAdvanceStage(this))
                 {
                     BeginFadeOut();
                 }
@@ -96,7 +100,7 @@ namespace ca
             {
                 m_ClickToContinueText.alpha = a;
             }
-            TutorialManager.Instance.UpdateFocusObjectAlphas(a);
+            TutorialManager.Instance.UpdateFocusObjects(a, true);
         }
         private void BeginFadeOut()
         {
@@ -107,7 +111,7 @@ namespace ca
             {
                 m_ClickToContinueText.alpha = 1f;
             }
-            TutorialManager.Instance.UpdateFocusObjectAlphas(1f);
+            TutorialManager.Instance.UpdateFocusObjects(1f, false);
         }
 
         private void Update()
@@ -126,7 +130,7 @@ namespace ca
                     //fade in m_InfoText
                     float a = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
                     m_InfoText.alpha = a;
-                    TutorialManager.Instance.UpdateFocusObjectAlphas(a);
+                    TutorialManager.Instance.UpdateFocusObjects(a, true);
 
                     //fade out everything else
                     TutorialManager.Instance.SetNonTutorialAlpha(
@@ -165,12 +169,24 @@ namespace ca
                     }
                     float a = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
                     m_InfoText.alpha = a;
-                    TutorialManager.Instance.UpdateFocusObjectAlphas(a);
+                    TutorialManager.Instance.UpdateFocusObjects(a, false);
                 }
                 break;
                 default:
                 break;
             }
+        }
+
+        //<button ID , press count>
+        public Dictionary<int, int> m_ButtonPressCounts;
+        public void HandleButtonPress(int buttonNumber)
+        {
+            if(m_ButtonPressCounts == null) { m_ButtonPressCounts = new Dictionary<int, int>(); }
+            if (!m_ButtonPressCounts.ContainsKey(buttonNumber))
+            {
+                m_ButtonPressCounts[buttonNumber] = 0;
+            }
+            m_ButtonPressCounts[buttonNumber] += 1;
         }
 
         private void OnFadeOut()
