@@ -31,7 +31,20 @@ namespace ca
             //once clearto-any has been executed once
             if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(0) && tb.m_ButtonPressCounts.ContainsKey(1))
             {
-                return tb.m_ButtonPressCounts[0] >= 3 && tb.m_ButtonPressCounts[1] >= 1 && TutorialManager.Instance.b_HasEverClearedToAny; 
+                return tb.m_ButtonPressCounts[0] >= 1 && tb.m_ButtonPressCounts[1] >= 1 && TutorialManager.Instance.b_HasEverClearedToAny;
+            }
+            return false;
+        }
+    }
+    public class TutorialSC4 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //if clearto color has been changed AND
+            //once clearto-any has been executed once
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(0))
+            {
+                return tb.m_ButtonPressCounts[0] >= 7;
             }
             return false;
         }

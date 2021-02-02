@@ -45,6 +45,9 @@ namespace ca
                 case 3:
                 m_TSC = new TutorialSC3();
                 break;
+                case 4:
+                m_TSC = new TutorialSC4();
+                break;
                 default:
                 break;
             }

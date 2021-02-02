@@ -15,6 +15,7 @@ namespace ca
             public GameObject prefab;
             public List<GameObject> m_SceneFocusObjects;
             public List<GameObject> m_SceneRaycastableObjects;
+            //TODO: m_SceneFocusObjectParents; //set alpha of self and all children OR just do this for all scenefocusobjects!
         }
 
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
