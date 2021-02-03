@@ -32,8 +32,7 @@ namespace ca
         private List<bool> m_NonTutorialTextsWereRaycast;
 
         //this should reset every time the game is run. only completing the tutorial will set it to not repeat on startup
-        [HideInInspector]
-        public int m_CurrentStage = 0;
+        private int m_CurrentStage = 0;
         [HideInInspector]
         public bool b_HasEverClearedToAny = false;
 
@@ -43,6 +42,7 @@ namespace ca
 
         public void IStart()
         {
+            m_CurrentStage = 0;
             if (SaveLoadManager.Instance.ShouldShowTutorial)
             {
                 StartCoroutine("DelayedTutorialStart");
@@ -184,6 +184,9 @@ namespace ca
         }
         public void UpdateFocusObjects(float a, bool b_raycastable)
         {
+            if(m_AllSceneFocusObjectsSoFar == null) { m_AllSceneFocusObjectsSoFar = new List<GameObject>(); }
+            if (m_AllSceneRaycastableObjectsSoFar == null) { m_AllSceneRaycastableObjectsSoFar = new List<GameObject>(); }
+
             //we want all "unlocked" buttons to just stay unlocked. append this stage's
             m_AllSceneFocusObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneFocusObjects);
 
@@ -201,7 +204,7 @@ namespace ca
             }
 
             m_AllSceneRaycastableObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects);
-            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects)
+            foreach (GameObject obj in m_AllSceneRaycastableObjectsSoFar)
             {
                 Image im = obj.GetComponent<Image>();
                 if (im != null)
