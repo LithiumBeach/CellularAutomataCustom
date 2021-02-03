@@ -68,8 +68,8 @@ namespace ca
         public Action<Vector2> WhileRightMouseDown;
         public Action<Vector2> OnRightMouseUp;
 
-
         private bool m_IsSimulating = false;
+        public bool IsSimulating { get { return m_IsSimulating; } }
 
         private int m_FPSIndex = 0;
         public float FPS

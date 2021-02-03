@@ -1,4 +1,4 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -184,20 +184,13 @@ namespace ca
         {
             foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
             {
-                Image im = obj.GetComponent<Image>();
-                if (im != null)
+                ChangeAlphaOnCompatibleComponents(obj, a);
+
+                //for each child of this root obj
+                Transform[] ts = obj.GetComponentsInChildren<Transform>();
+                foreach (Transform childT in ts)
                 {
-                    im.color = new Color(im.color.r, im.color.g, im.color.b, a);
-                }
-                RawImage rim = obj.GetComponent<RawImage>();
-                if (rim != null)
-                {
-                    rim.color = new Color(rim.color.r, rim.color.g, rim.color.b, a);
-                }
-                TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
-                if (txt != null)
-                {
-                    txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, a);
+                    ChangeAlphaOnCompatibleComponents(childT.gameObject, a);
                 }
             }
 
@@ -218,6 +211,25 @@ namespace ca
                 {
                     txt.raycastTarget = b_raycastable;
                 }
+            }
+        }
+
+        private void ChangeAlphaOnCompatibleComponents(GameObject obj, float a)
+        {
+            Image im = obj.GetComponent<Image>();
+            if (im != null)
+            {
+                im.color = new Color(im.color.r, im.color.g, im.color.b, a);
+            }
+            RawImage rim = obj.GetComponent<RawImage>();
+            if (rim != null)
+            {
+                rim.color = new Color(rim.color.r, rim.color.g, rim.color.b, a);
+            }
+            TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
+            if (txt != null)
+            {
+                txt.color = new Color(txt.color.r, txt.color.g, txt.color.b, a);
             }
         }
 

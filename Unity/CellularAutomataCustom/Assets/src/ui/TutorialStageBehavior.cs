@@ -33,9 +33,6 @@ namespace ca
         {
             switch (m_TutorialNum)
             {
-                case 0:
-                m_TSC = new TutorialStateCheck();
-                break;
                 case 1:
                 m_TSC = new TutorialSC1();
                 break;
@@ -48,7 +45,12 @@ namespace ca
                 case 4:
                 m_TSC = new TutorialSC4();
                 break;
+                case 5:
+                m_TSC = new TutorialSC5();
+                break;
+                //no special checks
                 default:
+                m_TSC = new TutorialStateCheck();
                 break;
             }
         }

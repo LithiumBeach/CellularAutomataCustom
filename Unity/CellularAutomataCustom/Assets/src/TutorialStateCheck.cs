@@ -49,4 +49,19 @@ namespace ca
             return false;
         }
     }
+    public class TutorialSC5 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //if SIMULATE has been pressed and FPS+ has been changed and FPS- has been changed and issimulating
+            if (tb != null && tb.m_ButtonPressCounts != null &&
+                tb.m_ButtonPressCounts.ContainsKey(0) &&
+                tb.m_ButtonPressCounts.ContainsKey(1) &&
+                tb.m_ButtonPressCounts.ContainsKey(2))
+            {
+                return (tb.m_ButtonPressCounts[0] > 0) && (tb.m_ButtonPressCounts[1] + tb.m_ButtonPressCounts[2]) >= 6 && WindowManager.Instance.IsSimulating;
+            }
+            return false;
+        }
+    }
 }
