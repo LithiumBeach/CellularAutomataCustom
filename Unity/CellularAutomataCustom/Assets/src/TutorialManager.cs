@@ -17,6 +17,8 @@ namespace ca
             public List<GameObject> m_SceneRaycastableObjects;
             //TODO: m_SceneFocusObjectParents; //set alpha of self and all children OR just do this for all scenefocusobjects!
         }
+        private List<GameObject> m_AllSceneFocusObjectsSoFar;
+        private List<GameObject> m_AllSceneRaycastableObjectsSoFar;
 
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
         public List<TutorialStageReferences> m_TutorialStages;
@@ -182,7 +184,11 @@ namespace ca
         }
         public void UpdateFocusObjects(float a, bool b_raycastable)
         {
-            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
+            //we want all "unlocked" buttons to just stay unlocked. append this stage's
+            m_AllSceneFocusObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneFocusObjects);
+
+            //for all scene objects so far
+            foreach (GameObject obj in m_AllSceneFocusObjectsSoFar)
             {
                 ChangeAlphaOnCompatibleComponents(obj, a);
 
@@ -194,6 +200,7 @@ namespace ca
                 }
             }
 
+            m_AllSceneRaycastableObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects);
             foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects)
             {
                 Image im = obj.GetComponent<Image>();

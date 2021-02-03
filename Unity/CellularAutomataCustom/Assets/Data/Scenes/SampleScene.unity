@@ -6891,22 +6891,19 @@ MonoBehaviour:
     m_SceneRaycastableObjects: []
   - prefab: {fileID: 4497171292360541915, guid: 4d7aeb0981b356645beadcbc1ee29214,
       type: 3}
-    m_SceneFocusObjects:
-    - {fileID: 266499}
+    m_SceneFocusObjects: []
     m_SceneRaycastableObjects: []
   - prefab: {fileID: 6152482759302165676, guid: 50885d79df06f094e82089e519488ee2,
       type: 3}
     m_SceneFocusObjects:
     - {fileID: 970788453}
     - {fileID: 1152895767}
-    - {fileID: 266499}
     m_SceneRaycastableObjects:
     - {fileID: 623139809}
     - {fileID: 1920272041}
   - prefab: {fileID: 5094005905321830217, guid: c212a0656afd31041aa9b4289a00b973,
       type: 3}
     m_SceneFocusObjects:
-    - {fileID: 266499}
     - {fileID: 1215145690}
     m_SceneRaycastableObjects:
     - {fileID: 737762878}
@@ -6917,10 +6914,8 @@ MonoBehaviour:
     - {fileID: 197269370731336839}
     - {fileID: 857684652}
     - {fileID: 367564374}
-    - {fileID: 266499}
     m_SceneRaycastableObjects:
     - {fileID: 857684651}
-    - {fileID: 266499}
     - {fileID: 367564373}
     - {fileID: 1217003420}
   m_CurrentStage: 3
