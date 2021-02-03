@@ -18,7 +18,7 @@ namespace ca
         //informative text to be faded into the scene
         [Required]
         public TextMeshProUGUI m_InfoText = null;
-        public float m_FadeTime = .6f;
+        public float m_FadeTime = 1.2f;
         private float t = 0f;
 
         //used only if no button to press, not required
