@@ -48,6 +48,9 @@ namespace ca
                 case 5:
                 m_TSC = new TutorialSC5();
                 break;
+                case 6:
+                m_TSC = new TutorialSC6();
+                break;
                 //no special checks
                 default:
                 m_TSC = new TutorialStateCheck();

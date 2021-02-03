@@ -64,4 +64,21 @@ namespace ca
             return false;
         }
     }
+    public class TutorialSC6 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //if has zoomed in and out a few times
+            //and we're simulating
+            if (tb != null && tb.m_ButtonPressCounts != null &&
+                tb.m_ButtonPressCounts.ContainsKey(0) &&
+                tb.m_ButtonPressCounts.ContainsKey(1))
+            {
+                return tb.m_ButtonPressCounts[0] >= 3 &&
+                    tb.m_ButtonPressCounts[1] >= 3 &&
+                    WindowManager.Instance.IsSimulating;
+            }
+            return false;
+        }
+    }
 }
