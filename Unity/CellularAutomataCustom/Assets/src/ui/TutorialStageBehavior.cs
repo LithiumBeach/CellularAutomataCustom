@@ -135,15 +135,15 @@ namespace ca
                 }
                 else
                 {
-                    //fade in m_InfoText
-                    float a = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
-                    m_InfoText.alpha = a;
-                    TutorialManager.Instance.UpdateFocusObjects(a, true);
-
                     //fade out everything else
                     TutorialManager.Instance.SetNonTutorialAlpha(
                         Mathf.Lerp(1f, TutorialManager.MIN_ALPHA, CAMath.SmoothStep(t / m_FadeTime))
                     );
+
+                    //fade in focus objects
+                    float a = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
+                    m_InfoText.alpha = a;
+                    TutorialManager.Instance.UpdateFocusObjects(a, true);
                 }
                 break;
                 case EState.WAITING:
