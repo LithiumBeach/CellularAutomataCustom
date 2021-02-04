@@ -239,6 +239,11 @@ namespace ca
                 {
                     txt.raycastTarget = b_raycastable;
                 }
+                TMP_InputField tmpi = obj.GetComponent<TMP_InputField>();
+                if (tmpi != null)
+                {
+                    tmpi.interactable = b_raycastable;
+                }
             }
         }
 

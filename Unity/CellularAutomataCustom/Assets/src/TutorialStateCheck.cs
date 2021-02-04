@@ -95,4 +95,16 @@ namespace ca
             return false;
         }
     }
+    public class TutorialSC9 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //9 = customize color
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(9))
+            {
+                return tb.m_ButtonPressCounts[9] >= 1;
+            }
+            return false;
+        }
+    }
 }
