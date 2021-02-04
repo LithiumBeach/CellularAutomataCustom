@@ -60,7 +60,7 @@ namespace ca
                 tb.m_ButtonPressCounts.ContainsKey(4) &&
                 tb.m_ButtonPressCounts.ContainsKey(5))
             {
-                return (tb.m_ButtonPressCounts[3] > 0) && (tb.m_ButtonPressCounts[4] + tb.m_ButtonPressCounts[5]) >= 4 && WindowManager.Instance.IsSimulating;
+                return (tb.m_ButtonPressCounts[3] > 0) && (tb.m_ButtonPressCounts[4] + tb.m_ButtonPressCounts[5]) >= 2 && WindowManager.Instance.IsSimulating;
             }
             return false;
         }

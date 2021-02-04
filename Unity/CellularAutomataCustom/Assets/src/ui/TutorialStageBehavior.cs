@@ -20,13 +20,13 @@ namespace ca
         [Required]
         public TextMeshProUGUI m_InfoText = null;
         private const float m_FadeTime = 1.2f;
-        private float t = 0f;
+        private float t = 0f; //general-use timer
 
         //used only if no button to press, not required
         public TextMeshProUGUI m_ClickToContinueText = null;
         private const float c_ClickToContinueAlphaMax = 0.4f;
         public float m_ClickToContinueTime = 4f;
-        private float readT = 0f;
+        private const float MAX_ALLOWED_TIME_IN_ANY_STAGE = 180f;//something has gone wrong.
 
         #region Tutorial State Checking
         //based on the level, call a function
@@ -80,9 +80,10 @@ namespace ca
 
         public void AdvanceTutorialStage()
         {
-            if (readT >= m_ClickToContinueTime)
+            if (t >= m_ClickToContinueTime)
             {
-                if (m_TSC.CanAdvanceStage(this))
+                //this MAX_TIME case is for any failure of communication in the tutorial. worst case.
+                if (m_TSC.CanAdvanceStage(this) || t >= MAX_ALLOWED_TIME_IN_ANY_STAGE)
                 {
                     //if the board is clear and it should not be clear now
                     if (b_ShuffleBoardIfClear &&
@@ -118,7 +119,7 @@ namespace ca
 
         private void BeginFadeIn(float a)
         {
-            t = readT = 0f;
+            t = 0f;
             m_InfoText.alpha = a;
             if (m_ClickToContinueText != null)
             {
@@ -129,13 +130,13 @@ namespace ca
         private void BeginFadeOut()
         {
             m_State = EState.FADING_OUT;
-            t = readT = 0f;
+            t = 0f;
             m_InfoText.alpha = 1f;
             if (m_ClickToContinueText != null)
             {
                 m_ClickToContinueText.alpha = c_ClickToContinueAlphaMax;
             }
-            TutorialManager.Instance.UpdateFocusObjects(1f, false);
+            TutorialManager.Instance.UpdateFocusObjects(1f, true);
         }
 
         private void Update()
@@ -147,15 +148,11 @@ namespace ca
                 if (t >= m_FadeTime)
                 {
                     m_State = EState.WAITING;
-                    t = readT = 0f;
+                    t = 0f;
+                    TutorialManager.Instance.UpdateFocusObjects(1f, true);
                 }
                 else
                 {
-                    //fade out everything else
-                    TutorialManager.Instance.SetNonTutorialAlpha(
-                        Mathf.Lerp(1f, TutorialManager.MIN_ALPHA, CAMath.SmoothStep(t / m_FadeTime))
-                    );
-
                     //fade in focus objects
                     float a = Mathf.Lerp(TutorialManager.MIN_ALPHA, 1f, CAMath.SmoothStep(t / m_FadeTime));
                     m_InfoText.alpha = a;
@@ -163,14 +160,14 @@ namespace ca
                 }
                 break;
                 case EState.WAITING:
-                readT += Time.deltaTime;
-                if (readT > (m_ClickToContinueTime) && readT < (m_ClickToContinueTime + m_FadeTime)) //if timer still counting
+                t += Time.deltaTime;
+                if (t > (m_ClickToContinueTime) && t < (m_ClickToContinueTime + m_FadeTime)) //if timer still counting
                 {
                     //fade in click anywhere to continue text
                     if (m_ClickToContinueText != null)
                     {
                         m_ClickToContinueText.alpha = Mathf.Lerp(0f, c_ClickToContinueAlphaMax,
-                            Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
+                            Mathf.Min(1.0f, CAMath.SmoothStep((t - m_ClickToContinueTime) / m_FadeTime)));
                     }
                 }
                 else if (b_CanAdvanceWithoutEventTrigger)
@@ -182,7 +179,7 @@ namespace ca
                 t += Time.deltaTime;
                 if (b_FadeOut || t >= m_FadeTime)
                 {
-                    t = readT = 0f;
+                    t = 0f;
                     OnFadeOut();
                 }
                 else
@@ -194,7 +191,6 @@ namespace ca
                     }
                     float a = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
                     m_InfoText.alpha = a;
-                    TutorialManager.Instance.UpdateFocusObjects(a, false);
                 }
                 break;
                 default:

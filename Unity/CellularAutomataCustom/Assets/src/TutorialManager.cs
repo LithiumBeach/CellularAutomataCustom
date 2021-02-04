@@ -17,8 +17,6 @@ namespace ca
             public List<GameObject> m_SceneRaycastableObjects;
             //TODO: m_SceneFocusObjectParents; //set alpha of self and all children OR just do this for all scenefocusobjects!
         }
-        private List<GameObject> m_AllSceneFocusObjectsSoFar;
-        private List<GameObject> m_AllSceneRaycastableObjectsSoFar;
 
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
         public List<TutorialStageReferences> m_TutorialStages;
@@ -38,7 +36,7 @@ namespace ca
 
         private TutorialStageBehavior m_CurrentTutorial = null;
 
-        public const float MIN_ALPHA = 0.012f;
+        public const float MIN_ALPHA = 0.006f;
 
         public void IStart()
         {
@@ -48,6 +46,7 @@ namespace ca
                 StartCoroutine("DelayedTutorialStart");
             }
         }
+
         private System.Collections.IEnumerator DelayedTutorialStart()
         {
             //really make sure everything's been loaded by now
@@ -88,8 +87,9 @@ namespace ca
 
         public void BeginTutorial()
         {
-            //turn off all raycast detectors
-            UpdateTutorialRaycastTarget(false);
+            //turn everything off to start
+            UpdateAllNonTutorialRaycastTarget(false);
+            UpdateAllNonTutorialAlpha(MIN_ALPHA);
 
             //instance first tutorial stage
             m_CurrentTutorial = Instantiate(m_TutorialStages[0].prefab, gameObject.transform).GetComponent<TutorialStageBehavior>();
@@ -130,8 +130,9 @@ namespace ca
 
         public void EndTutorial()
         {
-            //turn everything back on
-            UpdateTutorialRaycastTarget(true);
+            //turn everything back on (anything that's still off?)
+            UpdateAllNonTutorialRaycastTarget(true);
+            UpdateAllNonTutorialAlpha(1.0f);
 
             //tutorial complete, do not show again
             SaveLoadManager.Instance.ShouldShowTutorial = false;
@@ -140,16 +141,12 @@ namespace ca
             SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning = true;
             WindowManager.Instance.DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
 
-            //re-enable all main window elements
-            UpdateTutorialRaycastTarget(true);
-            UpdateTutorialAlpha(1.0f);
-
             //always allow input when tutorial is over
             WindowManager.Instance.m_CellGrid.b_IsInputActive = true;
         }
 
         //b_ToDefault: if true, revert to original setting, if false, turn off
-        private void UpdateTutorialRaycastTarget(bool b_ToDefault)
+        private void UpdateAllNonTutorialRaycastTarget(bool b_ToDefault)
         {
             for (int i = 0; i < m_NonTutorialImages.Count; i++)
             {
@@ -176,7 +173,7 @@ namespace ca
                 }
             }
         }
-        private void UpdateTutorialAlpha(float a)
+        private void UpdateAllNonTutorialAlpha(float a)
         {
             for (int i = 0; i < m_NonTutorialImages.Count; i++)
             {
@@ -200,16 +197,11 @@ namespace ca
                 }
             }
         }
+
         public void UpdateFocusObjects(float a, bool b_raycastable)
         {
-            if(m_AllSceneFocusObjectsSoFar == null) { m_AllSceneFocusObjectsSoFar = new List<GameObject>(); }
-            if (m_AllSceneRaycastableObjectsSoFar == null) { m_AllSceneRaycastableObjectsSoFar = new List<GameObject>(); }
-
-            //we want all "unlocked" buttons to just stay unlocked. append this stage's
-            m_AllSceneFocusObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneFocusObjects);
-
             //for all scene objects so far
-            foreach (GameObject obj in m_AllSceneFocusObjectsSoFar)
+            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneFocusObjects)
             {
                 ChangeAlphaOnCompatibleComponents(obj, a);
 
@@ -221,23 +213,31 @@ namespace ca
                 }
             }
 
-            m_AllSceneRaycastableObjectsSoFar.AddRange(m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects);
-            foreach (GameObject obj in m_AllSceneRaycastableObjectsSoFar)
+            foreach (GameObject obj in m_TutorialStages[m_CurrentStage].m_SceneRaycastableObjects)
             {
                 Image im = obj.GetComponent<Image>();
                 if (im != null)
                 {
                     im.raycastTarget = b_raycastable;
+
+                    //this is now part of the tutorial
+                    if (b_raycastable) { m_NonTutorialImages.Remove(im); }
                 }
                 RawImage rim = obj.GetComponent<RawImage>();
                 if (rim != null)
                 {
                     rim.raycastTarget = b_raycastable;
+
+                    //this is now part of the tutorial
+                    if (b_raycastable) { m_NonTutorialRawImages.Remove(rim); }
                 }
                 TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
                 if (txt != null)
                 {
                     txt.raycastTarget = b_raycastable;
+
+                    //this is now part of the tutorial
+                    if (b_raycastable) { m_NonTutorialTexts.Remove(txt); }
                 }
                 TMP_InputField tmpi = obj.GetComponent<TMP_InputField>();
                 if (tmpi != null)
