@@ -51,11 +51,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8320d88f8e86004abcf67b53b75d200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TutorialNum: 0
   b_FadeIn: 1
   b_FadeOut: 0
   b_IsCellGridInputAllowed: 0
+  b_CanAdvanceWithoutEventTrigger: 0
+  b_ClearBoardToANYIfClear: 0
   m_InfoText: {fileID: 6216058316175112719}
-  m_FadeTime: 0.6
+  m_FadeTime: 1.2
   m_ClickToContinueText: {fileID: 6216058316263273226}
   m_ClickToContinueTime: 3
 --- !u!1 &6216058316175112713

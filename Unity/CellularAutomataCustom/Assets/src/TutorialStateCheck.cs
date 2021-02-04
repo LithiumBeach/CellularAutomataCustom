@@ -4,7 +4,7 @@ namespace ca
 {
     public class TutorialStateCheck
     {
-        public virtual bool CanAdvanceStage(TutorialStageBehavior tb=null)
+        public virtual bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
             return true;
         }
@@ -29,6 +29,7 @@ namespace ca
         {
             //if clearto color has been changed AND
             //once clearto-any has been executed once
+            // 0 = clearboardcolor button, 1 = clearboard button
             if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(0) && tb.m_ButtonPressCounts.ContainsKey(1))
             {
                 return tb.m_ButtonPressCounts[0] >= 1 && tb.m_ButtonPressCounts[1] >= 1 && TutorialManager.Instance.b_HasEverClearedToAny;
@@ -40,11 +41,10 @@ namespace ca
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
-            //if clearto color has been changed AND
-            //once clearto-any has been executed once
-            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(0))
+            //2 = nextframe button
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(2))
             {
-                return tb.m_ButtonPressCounts[0] >= 7;
+                return tb.m_ButtonPressCounts[2] >= 7;
             }
             return false;
         }
@@ -54,12 +54,13 @@ namespace ca
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
             //if SIMULATE has been pressed and FPS+ has been changed and FPS- has been changed and issimulating
+            // 3 = simulate, 4 = fps+, 5 = fps-
             if (tb != null && tb.m_ButtonPressCounts != null &&
-                tb.m_ButtonPressCounts.ContainsKey(0) &&
-                tb.m_ButtonPressCounts.ContainsKey(1) &&
-                tb.m_ButtonPressCounts.ContainsKey(2))
+                tb.m_ButtonPressCounts.ContainsKey(3) &&
+                tb.m_ButtonPressCounts.ContainsKey(4) &&
+                tb.m_ButtonPressCounts.ContainsKey(5))
             {
-                return (tb.m_ButtonPressCounts[0] > 0) && (tb.m_ButtonPressCounts[1] + tb.m_ButtonPressCounts[2]) >= 6 && WindowManager.Instance.IsSimulating;
+                return (tb.m_ButtonPressCounts[3] > 0) && (tb.m_ButtonPressCounts[4] + tb.m_ButtonPressCounts[5]) >= 4 && WindowManager.Instance.IsSimulating;
             }
             return false;
         }
@@ -70,13 +71,26 @@ namespace ca
         {
             //if has zoomed in and out a few times
             //and we're simulating
+            //6 = zoom in, 7 = zoom out
             if (tb != null && tb.m_ButtonPressCounts != null &&
-                tb.m_ButtonPressCounts.ContainsKey(0) &&
-                tb.m_ButtonPressCounts.ContainsKey(1))
+                tb.m_ButtonPressCounts.ContainsKey(6) &&
+                tb.m_ButtonPressCounts.ContainsKey(7))
             {
-                return tb.m_ButtonPressCounts[0] >= 3 &&
-                    tb.m_ButtonPressCounts[1] >= 3 &&
+                return tb.m_ButtonPressCounts[6] >= 3 &&
+                    tb.m_ButtonPressCounts[7] >= 3 &&
                     WindowManager.Instance.IsSimulating;
+            }
+            return false;
+        }
+    }
+    public class TutorialSC7 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //8 = new ruleset
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(8))
+            {
+                return tb.m_ButtonPressCounts[8] >= 1;
             }
             return false;
         }

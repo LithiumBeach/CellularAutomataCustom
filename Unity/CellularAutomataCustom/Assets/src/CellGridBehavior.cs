@@ -309,6 +309,10 @@ namespace ca
         {
             ClearBoard(m_ClearToColor, m_Zoom);
         }
+        public void ClearBoard(int caColor)
+        {
+            ClearBoard(caColor, m_Zoom);
+        }
         public void ClearBoard(int caColor, int zoomLevel)
         {
             //if caColor = "ANY"
@@ -339,6 +343,7 @@ namespace ca
         private void ShuffleBoard()
         {
             List<int> allColorsInRuleset = SaveLoadManager.Instance.GetCurrentRulesetColors();
+            if(allColorsInRuleset.Count < 2) { return; }
 
             //ALL should not be in this list
             Debug.Assert(!allColorsInRuleset.Contains(0));

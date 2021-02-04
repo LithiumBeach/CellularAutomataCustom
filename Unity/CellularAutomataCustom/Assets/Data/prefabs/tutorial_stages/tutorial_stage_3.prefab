@@ -54,8 +54,8 @@ MonoBehaviour:
   b_FadeOut: 0
   b_IsCellGridInputAllowed: 1
   b_CanAdvanceWithoutEventTrigger: 1
+  b_ShuffleBoardIfClear: 1
   m_InfoText: {fileID: 1183373930511942090}
-  m_FadeTime: 0.6
   m_ClickToContinueText: {fileID: 0}
   m_ClickToContinueTime: 1
 --- !u!1 &7519003276062838156

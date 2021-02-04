@@ -14,11 +14,12 @@ namespace ca
         public bool b_FadeOut = false;
         public bool b_IsCellGridInputAllowed = false;
         public bool b_CanAdvanceWithoutEventTrigger = false;
+        public bool b_ShuffleBoardIfClear = false;
 
         //informative text to be faded into the scene
         [Required]
         public TextMeshProUGUI m_InfoText = null;
-        public float m_FadeTime = 1.2f;
+        private const float m_FadeTime = 1.2f;
         private float t = 0f;
 
         //used only if no button to press, not required
@@ -51,6 +52,9 @@ namespace ca
                 case 6:
                 m_TSC = new TutorialSC6();
                 break;
+                case 7:
+                m_TSC = new TutorialSC7();
+                break;
                 //no special checks
                 default:
                 m_TSC = new TutorialStateCheck();
@@ -76,6 +80,14 @@ namespace ca
             {
                 if (m_TSC.CanAdvanceStage(this))
                 {
+                    //if the board is clear and it should not be clear now
+                    if (b_ShuffleBoardIfClear &&
+                        WindowManager.Instance.m_CellGrid.m_CellGrid.IsBoardOneColor())
+                    {
+                        //shuffle board
+                        WindowManager.Instance.m_CellGrid.ClearBoard(0);
+                    }
+
                     BeginFadeOut();
                 }
             }

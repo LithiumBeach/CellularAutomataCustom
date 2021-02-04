@@ -448,6 +448,8 @@ namespace ca
 
             Colors = CAColor.defaultColors;
 
+            SetCurrentRuleset(0);
+
             PlayerPrefs.Save();
         }
 
@@ -457,7 +459,8 @@ namespace ca
         public void IStart()
         {
             //if the user has never saved data before into PlayerPrefs
-            if (Rulesets == null)
+            //(or has only partially completed the tutorial)
+            if (Rulesets == null || ShouldShowTutorial)
             {
                 //initialize like new
                 ResetPlayerPrefs();

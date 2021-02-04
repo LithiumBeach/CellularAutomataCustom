@@ -141,6 +141,18 @@ namespace ca
         {
             return m_Cells.Where(num => num != color).ToList().Count;
         }
+        public bool IsBoardOneColor()
+        {
+            for (int i = 1; i < m_Area; i++)
+            {
+                //if previous cell != i
+                if (m_Cells[i] != m_Cells[i - 1])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         //TODO: Evaluate can be generic, object param cast to RuleData ?
         internal virtual void Evaluate(RuleData rule)

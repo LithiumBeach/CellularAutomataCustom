@@ -153,33 +153,51 @@ namespace ca
         {
             for (int i = 0; i < m_NonTutorialImages.Count; i++)
             {
-                //only set to true if both are true
-                m_NonTutorialImages[i].raycastTarget = m_NonTutorialImagesWereRaycast[i] && b_ToDefault;
+                if (m_NonTutorialImages[i] != null)
+                {
+                    //only set to true if both are true
+                    m_NonTutorialImages[i].raycastTarget = m_NonTutorialImagesWereRaycast[i] && b_ToDefault;
+                }
             }
             for (int i = 0; i < m_NonTutorialRawImages.Count; i++)
             {
-                //only set to true if both are true
-                m_NonTutorialRawImages[i].raycastTarget = m_NonTutorialRawImagesWereRaycast[i] && b_ToDefault;
+                if (m_NonTutorialRawImages[i] != null)
+                {
+                    //only set to true if both are true
+                    m_NonTutorialRawImages[i].raycastTarget = m_NonTutorialRawImagesWereRaycast[i] && b_ToDefault;
+                }
             }
             for (int i = 0; i < m_NonTutorialTexts.Count; i++)
             {
-                //only set to true if both are true
-                m_NonTutorialTexts[i].raycastTarget = m_NonTutorialTextsWereRaycast[i] && b_ToDefault;
+                if (m_NonTutorialTexts[i] != null)
+                {
+                    //only set to true if both are true
+                    m_NonTutorialTexts[i].raycastTarget = m_NonTutorialTextsWereRaycast[i] && b_ToDefault;
+                }
             }
         }
         private void UpdateTutorialAlpha(float a)
         {
             for (int i = 0; i < m_NonTutorialImages.Count; i++)
             {
-                m_NonTutorialImages[i].color = new Color(m_NonTutorialImages[i].color.r, m_NonTutorialImages[i].color.g, m_NonTutorialImages[i].color.b, a);
+                if (m_NonTutorialImages[i] != null)
+                {
+                    m_NonTutorialImages[i].color = new Color(m_NonTutorialImages[i].color.r, m_NonTutorialImages[i].color.g, m_NonTutorialImages[i].color.b, a); 
+                }
             }
             for (int i = 0; i < m_NonTutorialRawImages.Count; i++)
             {
-                m_NonTutorialRawImages[i].color = new Color(m_NonTutorialRawImages[i].color.r, m_NonTutorialRawImages[i].color.g, m_NonTutorialRawImages[i].color.b, a);
+                if (m_NonTutorialRawImages[i] != null)
+                {
+                    m_NonTutorialRawImages[i].color = new Color(m_NonTutorialRawImages[i].color.r, m_NonTutorialRawImages[i].color.g, m_NonTutorialRawImages[i].color.b, a);
+                }
             }
             for (int i = 0; i < m_NonTutorialTexts.Count; i++)
             {
-                m_NonTutorialTexts[i].color = new Color(m_NonTutorialTexts[i].color.r, m_NonTutorialTexts[i].color.g, m_NonTutorialTexts[i].color.b, a);
+                if (m_NonTutorialTexts[i] != null)
+                {
+                    m_NonTutorialTexts[i].color = new Color(m_NonTutorialTexts[i].color.r, m_NonTutorialTexts[i].color.g, m_NonTutorialTexts[i].color.b, a); 
+                }
             }
         }
         public void UpdateFocusObjects(float a, bool b_raycastable)
