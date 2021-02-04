@@ -24,6 +24,7 @@ namespace ca
 
         //used only if no button to press, not required
         public TextMeshProUGUI m_ClickToContinueText = null;
+        private const float c_ClickToContinueAlphaMax = 0.4f;
         public float m_ClickToContinueTime = 4f;
         private float readT = 0f;
 
@@ -121,7 +122,7 @@ namespace ca
             m_InfoText.alpha = a;
             if (m_ClickToContinueText != null)
             {
-                m_ClickToContinueText.alpha = a;
+                m_ClickToContinueText.alpha = a * c_ClickToContinueAlphaMax;
             }
             TutorialManager.Instance.UpdateFocusObjects(a, true);
         }
@@ -132,7 +133,7 @@ namespace ca
             m_InfoText.alpha = 1f;
             if (m_ClickToContinueText != null)
             {
-                m_ClickToContinueText.alpha = 1f;
+                m_ClickToContinueText.alpha = c_ClickToContinueAlphaMax;
             }
             TutorialManager.Instance.UpdateFocusObjects(1f, false);
         }
@@ -168,7 +169,8 @@ namespace ca
                     //fade in click anywhere to continue text
                     if (m_ClickToContinueText != null)
                     {
-                        m_ClickToContinueText.alpha = Mathf.Lerp(0f, 1f, Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
+                        m_ClickToContinueText.alpha = Mathf.Lerp(0f, c_ClickToContinueAlphaMax,
+                            Mathf.Min(1.0f, CAMath.SmoothStep((readT - m_ClickToContinueTime) / m_FadeTime)));
                     }
                 }
                 else if (b_CanAdvanceWithoutEventTrigger)
