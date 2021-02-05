@@ -56,9 +56,8 @@ MonoBehaviour:
   b_FadeOut: 0
   b_IsCellGridInputAllowed: 0
   b_CanAdvanceWithoutEventTrigger: 0
-  b_ClearBoardToANYIfClear: 0
+  b_ShuffleBoardIfClear: 0
   m_InfoText: {fileID: 6216058316175112719}
-  m_FadeTime: 1.2
   m_ClickToContinueText: {fileID: 6216058316263273226}
   m_ClickToContinueTime: 3
 --- !u!1 &6216058316175112713
@@ -474,7 +473,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8539703176951034093}
         m_MethodName: AdvanceTutorialStage
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

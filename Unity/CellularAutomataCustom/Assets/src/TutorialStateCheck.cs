@@ -13,7 +13,7 @@ namespace ca
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
-            return WindowManager.Instance.m_CellGrid.m_CellGrid.GetAntiColorCount(WindowManager.Instance.GetClearToColor()) > 8;
+            return WindowManager.Instance.m_CellGrid.m_CellGrid.GetAntiColorCount(WindowManager.Instance.GetClearToColor()) >= 6;
         }
     }
     public class TutorialSC2 : TutorialStateCheck
@@ -107,7 +107,19 @@ namespace ca
             return false;
         }
     }
-    public class TutorialSC10 : TutorialStateCheck
+    public class TutorialSC9 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //12 = add rule
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(12))
+            {
+                return tb.m_ButtonPressCounts[12] >= 1;
+            }
+            return false;
+        }
+    }
+    public class TutorialSC11 : TutorialStateCheck
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {

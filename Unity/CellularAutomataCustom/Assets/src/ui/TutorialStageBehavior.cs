@@ -9,7 +9,7 @@ namespace ca
     //attached to each tutorial cursor prefab: self-manages each tutorial stage
     public class TutorialStageBehavior : MonoBehaviour
     {
-        public int m_TutorialNum=0;
+        public int m_TutorialNum = 0;
         public bool b_FadeIn = false;
         public bool b_FadeOut = false;
         public bool b_IsCellGridInputAllowed = false;
@@ -26,7 +26,7 @@ namespace ca
         public TextMeshProUGUI m_ClickToContinueText = null;
         private const float c_ClickToContinueAlphaMax = 0.4f;
         public float m_ClickToContinueTime = 4f;
-        private const float MAX_ALLOWED_TIME_IN_ANY_STAGE = 180f;//something has gone wrong.
+        private const float MAX_ALLOWED_TIME_IN_ANY_STAGE = 600f;//something has gone horribly wrong.
 
         #region Tutorial State Checking
         //based on the level, call a function
@@ -59,8 +59,11 @@ namespace ca
                 case 8:
                 m_TSC = new TutorialSC8();
                 break;
-                case 10:
-                m_TSC = new TutorialSC10();
+                case 9:
+                m_TSC = new TutorialSC9();
+                break;
+                case 11:
+                m_TSC = new TutorialSC11();
                 break;
                 //no special checks
                 default:
@@ -80,13 +83,14 @@ namespace ca
         private EState m_State;
 
 
-
-        public void AdvanceTutorialStage()
+        private bool b_HasTriedToAdvanceStage = false;
+        public void AdvanceTutorialStage(bool fromCode = false)
         {
             if (t >= m_ClickToContinueTime)
             {
                 //this MAX_TIME case is for any failure of communication in the tutorial. worst case.
-                if (m_TSC.CanAdvanceStage(this) || t >= MAX_ALLOWED_TIME_IN_ANY_STAGE)
+                //or if player has tried already to advance, but was too quick for this tutorial stage (im sorry)
+                if (m_TSC.CanAdvanceStage(this) || t >= MAX_ALLOWED_TIME_IN_ANY_STAGE || b_HasTriedToAdvanceStage)
                 {
                     //if the board is clear and it should not be clear now
                     if (b_ShuffleBoardIfClear &&
@@ -98,6 +102,12 @@ namespace ca
 
                     BeginFadeOut();
                 }
+            }
+            else
+            {
+                //from code, this gets called every frame sometimes. otherwise it is called by buttons
+                //we want the calls from buttons only.
+                b_HasTriedToAdvanceStage = !fromCode;
             }
         }
 
@@ -118,6 +128,8 @@ namespace ca
 
             //allow cell grid input?
             WindowManager.Instance.m_CellGrid.b_IsInputActive = b_IsCellGridInputAllowed;
+
+            b_HasTriedToAdvanceStage = false;
         }
 
         private void BeginFadeIn(float a)
@@ -175,7 +187,7 @@ namespace ca
                 }
                 else if (b_CanAdvanceWithoutEventTrigger)
                 {
-                    AdvanceTutorialStage();
+                    AdvanceTutorialStage(true);
                 }
                 break;
                 case EState.FADING_OUT:
@@ -205,7 +217,7 @@ namespace ca
         public Dictionary<int, int> m_ButtonPressCounts;
         public void HandleButtonPress(int buttonNumber)
         {
-            if(m_ButtonPressCounts == null) { m_ButtonPressCounts = new Dictionary<int, int>(); }
+            if (m_ButtonPressCounts == null) { m_ButtonPressCounts = new Dictionary<int, int>(); }
             if (!m_ButtonPressCounts.ContainsKey(buttonNumber))
             {
                 m_ButtonPressCounts[buttonNumber] = 0;

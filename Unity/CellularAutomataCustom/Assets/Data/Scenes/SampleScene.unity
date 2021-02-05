@@ -2124,7 +2124,7 @@ PrefabInstance:
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
@@ -2150,6 +2150,36 @@ PrefabInstance:
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1347583788}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnAdvanceTutorialButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
+        type: 3}
+      propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1629283621, guid: 4de6202c8f2c7e849856c337a6226edc, type: 3}
       propertyPath: m_Enabled
@@ -7113,6 +7143,10 @@ MonoBehaviour:
     - {fileID: 295592545}
     - {fileID: 2359704509158854344}
   - prefab: {fileID: 2535644648777598925, guid: b9ceb32486bfa5449b328b63cadf54b5,
+      type: 3}
+    m_SceneFocusObjects: []
+    m_SceneRaycastableObjects: []
+  - prefab: {fileID: 3345409020706883650, guid: 621c72e857218ce4c8493c4c9b57e035,
       type: 3}
     m_SceneFocusObjects:
     - {fileID: 1890469987}
