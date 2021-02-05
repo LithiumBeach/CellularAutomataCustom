@@ -84,6 +84,23 @@ namespace ca
                 OnMinNeighborsChange(0);
                 OnMaxNeighborsChange(0); 
             }
+
+
+            //because we can "create rules" by changing rulesets, we need to ensure they line up
+            //with the tutorial. They should simply be transparent or not, no need to change raycast targets.
+            if (SaveLoadManager.Instance.ShouldShowTutorial)
+            {
+                if (TutorialManager.Instance.ShouldShowRules)
+                {
+                    //for each child of this root obj
+                    Transform[] ts = transform.GetComponentsInChildren<Transform>();
+                    foreach (Transform childT in ts)
+                    {
+                        TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(childT.gameObject,
+                            TutorialManager.Instance.ShouldShowRules ? 1f : TutorialManager.MIN_ALPHA);
+                    }
+                }
+            }
         }
 
 

@@ -38,6 +38,9 @@ namespace ca
 
         public const float MIN_ALPHA = 0.006f;
 
+        //stage 9 starts after we hit the add new ruleset button
+        public bool ShouldShowRules { get { return m_CurrentStage >= 9; } }
+
         public void IStart()
         {
             m_CurrentStage = 0;
@@ -247,7 +250,7 @@ namespace ca
             }
         }
 
-        private void ChangeAlphaOnCompatibleComponents(GameObject obj, float a)
+        public void ChangeAlphaOnCompatibleComponents(GameObject obj, float a)
         {
             Image im = obj.GetComponent<Image>();
             if (im != null)
