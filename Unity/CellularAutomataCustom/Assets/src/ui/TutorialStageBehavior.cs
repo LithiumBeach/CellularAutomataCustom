@@ -24,6 +24,7 @@ namespace ca
 
         //used only if no button to press, not required
         public TextMeshProUGUI m_ClickToContinueText = null;
+        public List<GameObject> m_ClickToContinueEtc = null;
         private const float c_ClickToContinueAlphaMax = 0.4f;
         public float m_ClickToContinueTime = 4f;
         private const float MAX_ALLOWED_TIME_IN_ANY_STAGE = 600f;//something has gone horribly wrong.
@@ -139,6 +140,7 @@ namespace ca
             if (m_ClickToContinueText != null)
             {
                 m_ClickToContinueText.alpha = a * c_ClickToContinueAlphaMax;
+                m_ClickToContinueEtc.ForEach(item => TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(item, a * c_ClickToContinueAlphaMax));
             }
             TutorialManager.Instance.UpdateFocusObjects(a, true);
         }
@@ -150,6 +152,7 @@ namespace ca
             if (m_ClickToContinueText != null)
             {
                 m_ClickToContinueText.alpha = c_ClickToContinueAlphaMax;
+                m_ClickToContinueEtc.ForEach(item => TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(item, c_ClickToContinueAlphaMax));
             }
             TutorialManager.Instance.UpdateFocusObjects(1f, true);
         }
@@ -181,8 +184,10 @@ namespace ca
                     //fade in click anywhere to continue text
                     if (m_ClickToContinueText != null)
                     {
-                        m_ClickToContinueText.alpha = Mathf.Lerp(0f, c_ClickToContinueAlphaMax,
+                        float a = Mathf.Lerp(0f, c_ClickToContinueAlphaMax,
                             Mathf.Min(1.0f, CAMath.SmoothStep((t - m_ClickToContinueTime) / m_FadeTime)));
+                        m_ClickToContinueText.alpha = a;
+                        m_ClickToContinueEtc.ForEach(item => TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(item, a));
                     }
                 }
                 else if (b_CanAdvanceWithoutEventTrigger)
@@ -203,6 +208,7 @@ namespace ca
                     if (m_ClickToContinueText != null)
                     {
                         m_ClickToContinueText.alpha = 0f;
+                        m_ClickToContinueEtc.ForEach(item => TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(item, 0f));
                     }
                     float a = Mathf.Lerp(1f, 0f, Mathf.Min(1.0f, CAMath.SmoothStep(t / m_FadeTime)));
                     m_InfoText.alpha = a;
