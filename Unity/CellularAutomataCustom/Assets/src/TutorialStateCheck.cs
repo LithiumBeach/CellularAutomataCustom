@@ -76,9 +76,7 @@ namespace ca
                 tb.m_ButtonPressCounts.ContainsKey(6) &&
                 tb.m_ButtonPressCounts.ContainsKey(7))
             {
-                return tb.m_ButtonPressCounts[6] >= 3 &&
-                    tb.m_ButtonPressCounts[7] >= 3 &&
-                    WindowManager.Instance.IsSimulating;
+                return (tb.m_ButtonPressCounts[6] + tb.m_ButtonPressCounts[7]) >= 4;
             }
             return false;
         }
@@ -87,22 +85,36 @@ namespace ca
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
-            //8 = new ruleset
-            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(8))
+            //8 = ruleset>, 9 = ruleset<
+            if (tb != null && tb.m_ButtonPressCounts != null &&
+                tb.m_ButtonPressCounts.ContainsKey(8) &&
+                tb.m_ButtonPressCounts.ContainsKey(9))
             {
-                return tb.m_ButtonPressCounts[8] >= 1;
+                return (tb.m_ButtonPressCounts[8] + tb.m_ButtonPressCounts[9]) >= 3;
             }
             return false;
         }
     }
-    public class TutorialSC9 : TutorialStateCheck
+    public class TutorialSC8 : TutorialStateCheck
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
-            //9 = customize color
-            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(9))
+            //10 = new ruleset
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(10))
             {
-                return tb.m_ButtonPressCounts[9] >= 1;
+                return tb.m_ButtonPressCounts[10] >= 1;
+            }
+            return false;
+        }
+    }
+    public class TutorialSC10 : TutorialStateCheck
+    {
+        public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
+        {
+            //11 = customize color
+            if (tb != null && tb.m_ButtonPressCounts != null && tb.m_ButtonPressCounts.ContainsKey(11))
+            {
+                return tb.m_ButtonPressCounts[11] >= 1;
             }
             return false;
         }

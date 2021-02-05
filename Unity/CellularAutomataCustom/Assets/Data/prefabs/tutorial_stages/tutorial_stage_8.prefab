@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2785597506749375932
+--- !u!1 &6799428825964100546
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1250817016526176989}
-  - component: {fileID: 7544185088653472689}
-  - component: {fileID: 5130270191234780127}
+  - component: {fileID: 7458077961455640516}
+  - component: {fileID: 1349173134064216687}
+  - component: {fileID: 5787817995055437244}
   m_Layer: 5
   m_Name: bg
   m_TagString: Untagged
@@ -18,18 +18,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1250817016526176989
+--- !u!224 &7458077961455640516
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2785597506749375932}
+  m_GameObject: {fileID: 6799428825964100546}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1324155216}
+  m_Father: {fileID: 1104445771}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -37,21 +37,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -360}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7544185088653472689
+--- !u!222 &1349173134064216687
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2785597506749375932}
+  m_GameObject: {fileID: 6799428825964100546}
   m_CullTransparentMesh: 0
---- !u!114 &5130270191234780127
+--- !u!114 &5787817995055437244
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2785597506749375932}
+  m_GameObject: {fileID: 6799428825964100546}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!1 &4952175012493163378
+--- !u!1 &8667273831396011092
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,9 +82,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8165659764562960460}
-  - component: {fileID: 6777517887923656644}
-  - component: {fileID: 6609261766869868660}
+  - component: {fileID: 2367224245078210874}
+  - component: {fileID: 2151470751252793244}
+  - component: {fileID: 2393057403914320370}
   m_Layer: 5
   m_Name: text
   m_TagString: Untagged
@@ -92,18 +92,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &8165659764562960460
+--- !u!224 &2367224245078210874
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4952175012493163378}
+  m_GameObject: {fileID: 8667273831396011092}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1324155216}
+  m_Father: {fileID: 1104445771}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -111,21 +111,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -40, y: -360}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6777517887923656644
+--- !u!222 &2151470751252793244
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4952175012493163378}
+  m_GameObject: {fileID: 8667273831396011092}
   m_CullTransparentMesh: 0
---- !u!114 &6609261766869868660
+--- !u!114 &2393057403914320370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4952175012493163378}
+  m_GameObject: {fileID: 8667273831396011092}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -139,14 +139,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Try adding some rules to your new ruleset. Then try adjusting them as you
-    like.
+  m_text: 'Add a new ruleset to design your own cellular automaton.
 
 
-    Each rule is written as a plain sentence, the subject of which is each cell.
-
-
-    You can rename your ruleset by clicking on the name.'
+    You will be able to customize a series of logical sentences (rules) to instruct
+    your cellular automaton.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -174,7 +171,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 62.75
+  m_fontSize: 76
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -214,13 +211,13 @@ MonoBehaviour:
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
-    textComponent: {fileID: 6609261766869868660}
-    characterCount: 211
+    textComponent: {fileID: 2393057403914320370}
+    characterCount: 162
     spriteCount: 0
-    spaceCount: 41
-    wordCount: 40
+    spaceCount: 27
+    wordCount: 27
     linkCount: 0
-    lineCount: 10
+    lineCount: 7
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
@@ -241,7 +238,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &5441206742137089651
+--- !u!1 &9069167453867425178
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -249,8 +246,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1324155216}
-  - component: {fileID: 4779670723299719815}
+  - component: {fileID: 1104445771}
+  - component: {fileID: 1526347916164287050}
   m_Layer: 5
   m_Name: tutorial_stage_8
   m_TagString: Untagged
@@ -258,19 +255,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1324155216
+--- !u!224 &1104445771
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5441206742137089651}
+  m_GameObject: {fileID: 9069167453867425178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1250817016526176989}
-  - {fileID: 8165659764562960460}
+  - {fileID: 7458077961455640516}
+  - {fileID: 2367224245078210874}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -279,13 +276,13 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4779670723299719815
+--- !u!114 &1526347916164287050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5441206742137089651}
+  m_GameObject: {fileID: 9069167453867425178}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8320d88f8e86004abcf67b53b75d200, type: 3}
@@ -297,6 +294,6 @@ MonoBehaviour:
   b_IsCellGridInputAllowed: 1
   b_CanAdvanceWithoutEventTrigger: 1
   b_ShuffleBoardIfClear: 1
-  m_InfoText: {fileID: 6609261766869868660}
+  m_InfoText: {fileID: 2393057403914320370}
   m_ClickToContinueText: {fileID: 0}
-  m_ClickToContinueTime: 20
+  m_ClickToContinueTime: 8

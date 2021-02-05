@@ -310,6 +310,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1347583788}
+        m_MethodName: OnAdvanceTutorialButtonPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 8
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   OnRightClick:
@@ -2693,6 +2704,17 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: -1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1347583788}
+        m_MethodName: OnAdvanceTutorialButtonPressed
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 9
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7067,23 +7089,28 @@ MonoBehaviour:
     m_SceneFocusObjects:
     - {fileID: 772879287}
     - {fileID: 1074633214}
-    - {fileID: 326194696}
     - {fileID: 2359704509158854344}
-    - {fileID: 130558400}
     m_SceneRaycastableObjects:
     - {fileID: 5951632}
     - {fileID: 625147007}
+  - prefab: {fileID: 9069167453867425178, guid: 3f062cbe008343e45a6f38d04ae6b3ce,
+      type: 3}
+    m_SceneFocusObjects:
+    - {fileID: 326194696}
+    m_SceneRaycastableObjects:
     - {fileID: 1919626482}
-    - {fileID: 295592545}
-    - {fileID: 936655255}
   - prefab: {fileID: 5441206742137089651, guid: 05bbe3585b6effd4e99bba8033b38144,
       type: 3}
     m_SceneFocusObjects:
     - {fileID: 307108459}
     - {fileID: 1221962883}
+    - {fileID: 130558400}
+    - {fileID: 2359704509158854344}
     m_SceneRaycastableObjects:
     - {fileID: 387636624}
     - {fileID: 675889282}
+    - {fileID: 936655255}
+    - {fileID: 295592545}
     - {fileID: 2359704509158854344}
   - prefab: {fileID: 2535644648777598925, guid: b9ceb32486bfa5449b328b63cadf54b5,
       type: 3}
@@ -8714,7 +8741,7 @@ PrefabInstance:
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4de6202c8f2c7e849856c337a6226edc, type: 3}
@@ -8976,7 +9003,7 @@ PrefabInstance:
     - target: {fileID: 8337365330615381925, guid: 4de6202c8f2c7e849856c337a6226edc,
         type: 3}
       propertyPath: OnLeftClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4de6202c8f2c7e849856c337a6226edc, type: 3}
