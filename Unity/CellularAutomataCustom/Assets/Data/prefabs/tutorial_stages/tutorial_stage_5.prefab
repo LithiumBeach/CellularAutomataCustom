@@ -221,4 +221,4 @@ MonoBehaviour:
   b_ShuffleBoardIfClear: 1
   m_InfoText: {fileID: 4275309921475098872}
   m_ClickToContinueText: {fileID: 0}
-  m_ClickToContinueTime: 8
+  m_ClickToContinueTime: 6

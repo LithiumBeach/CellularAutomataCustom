@@ -57,7 +57,7 @@ MonoBehaviour:
   b_ShuffleBoardIfClear: 0
   m_InfoText: {fileID: 860185191890050077}
   m_ClickToContinueText: {fileID: 0}
-  m_ClickToContinueTime: 8
+  m_ClickToContinueTime: 4
 --- !u!1 &8231660063016295837
 GameObject:
   m_ObjectHideFlags: 0
