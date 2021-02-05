@@ -295,4 +295,4 @@ MonoBehaviour:
   b_ShuffleBoardIfClear: 1
   m_InfoText: {fileID: 5359185683981287854}
   m_ClickToContinueText: {fileID: 0}
-  m_ClickToContinueTime: 16
+  m_ClickToContinueTime: 8

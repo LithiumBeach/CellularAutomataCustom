@@ -15,7 +15,6 @@ namespace ca
             public GameObject prefab;
             public List<GameObject> m_SceneFocusObjects;
             public List<GameObject> m_SceneRaycastableObjects;
-            //TODO: m_SceneFocusObjectParents; //set alpha of self and all children OR just do this for all scenefocusobjects!
         }
 
         [PropertyTooltip("in-order prefabs to spawn at each tutorial stage.")]
@@ -55,6 +54,12 @@ namespace ca
             //really make sure everything's been loaded by now
             yield return null;
             yield return null;
+
+            //special case: we MUST show photosensitivity warning BEFORE the tutorial.
+            if (WindowManager.Instance.m_PhotosensitivityWarningCanvas.gameObject.activeInHierarchy)
+            {
+                yield return new WaitUntil(() => !WindowManager.Instance.m_PhotosensitivityWarningCanvas.gameObject.activeInHierarchy); 
+            }
 
             PopulateAllNonTutorialReferences();
             BeginTutorial();
@@ -115,6 +120,7 @@ namespace ca
         private System.Collections.IEnumerator AdvanceTutorialStageAfterFrame()
         {
             yield return null;
+            yield return null;
 
             m_CurrentStage += 1;
 
@@ -135,14 +141,11 @@ namespace ca
         {
             //turn everything back on (anything that's still off?)
             UpdateAllNonTutorialRaycastTarget(true);
+
             UpdateAllNonTutorialAlpha(1.0f);
 
             //tutorial complete, do not show again
             SaveLoadManager.Instance.ShouldShowTutorial = false;
-
-            //show photosensitivity warning ALWAYS after tutorial
-            SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning = true;
-            WindowManager.Instance.DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
 
             //always allow input when tutorial is over
             WindowManager.Instance.m_CellGrid.b_IsInputActive = true;
@@ -224,7 +227,15 @@ namespace ca
                     im.raycastTarget = b_raycastable;
 
                     //this is now part of the tutorial
-                    if (b_raycastable) { m_NonTutorialImages.Remove(im); }
+                    if (b_raycastable)
+                    {
+                        int index = m_NonTutorialImages.IndexOf(im);
+                        if (index >= 0)
+                        {
+                            m_NonTutorialImages.RemoveAt(index);
+                            m_NonTutorialImagesWereRaycast.RemoveAt(index); 
+                        }
+                    }
                 }
                 RawImage rim = obj.GetComponent<RawImage>();
                 if (rim != null)
@@ -232,7 +243,15 @@ namespace ca
                     rim.raycastTarget = b_raycastable;
 
                     //this is now part of the tutorial
-                    if (b_raycastable) { m_NonTutorialRawImages.Remove(rim); }
+                    if (b_raycastable)
+                    {
+                        int index = m_NonTutorialRawImages.IndexOf(rim);
+                        if (index >= 0)
+                        {
+                            m_NonTutorialRawImages.RemoveAt(index);
+                            m_NonTutorialRawImagesWereRaycast.RemoveAt(index);
+                        }
+                    }
                 }
                 TextMeshProUGUI txt = obj.GetComponent<TextMeshProUGUI>();
                 if (txt != null)
@@ -240,7 +259,15 @@ namespace ca
                     txt.raycastTarget = b_raycastable;
 
                     //this is now part of the tutorial
-                    if (b_raycastable) { m_NonTutorialTexts.Remove(txt); }
+                    if (b_raycastable)
+                    {
+                        int index = m_NonTutorialTexts.IndexOf(txt);
+                        if (index >= 0)
+                        {
+                            m_NonTutorialTexts.RemoveAt(index);
+                            m_NonTutorialTextsWereRaycast.RemoveAt(index);
+                        }
+                    }
                 }
                 TMP_InputField tmpi = obj.GetComponent<TMP_InputField>();
                 if (tmpi != null)

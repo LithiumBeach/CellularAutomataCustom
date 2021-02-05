@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ca
 {
@@ -79,7 +78,6 @@ namespace ca
 
         private float m_FPSCount = 0.0f;
 
-
         public void IStart()
         {
             //unrestrict Unity framerate
@@ -97,8 +95,8 @@ namespace ca
             LoadCurrentRulesetUI();
 
             //display photosensitivity warning if we should and shouldn't show the tutorial
-            DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning &&
-                !SaveLoadManager.Instance.ShouldShowTutorial); //we will show the photosensitivity warning after the tutorial automatically
+            DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
+            //we will show the photosensitivity warning BEFORE the tutorial automatically
 
             //turn off global color canvas
             DisplayGlobalColorCanvas(false);

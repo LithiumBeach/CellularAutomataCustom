@@ -76,7 +76,7 @@ namespace ca
                 tb.m_ButtonPressCounts.ContainsKey(6) &&
                 tb.m_ButtonPressCounts.ContainsKey(7))
             {
-                return (tb.m_ButtonPressCounts[6] + tb.m_ButtonPressCounts[7]) >= 4;
+                return (tb.m_ButtonPressCounts[6] + tb.m_ButtonPressCounts[7]) >= 3;
             }
             return false;
         }

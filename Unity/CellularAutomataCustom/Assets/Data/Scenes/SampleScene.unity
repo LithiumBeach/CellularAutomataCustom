@@ -7135,7 +7135,6 @@ MonoBehaviour:
     - {fileID: 307108459}
     - {fileID: 1221962883}
     - {fileID: 130558400}
-    - {fileID: 2359704509158854344}
     m_SceneRaycastableObjects:
     - {fileID: 387636624}
     - {fileID: 675889282}
