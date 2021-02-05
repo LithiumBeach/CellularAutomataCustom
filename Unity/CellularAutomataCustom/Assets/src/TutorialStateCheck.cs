@@ -54,13 +54,12 @@ namespace ca
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
             //if SIMULATE has been pressed and FPS+ has been changed and FPS- has been changed and issimulating
-            // 3 = simulate, 4 = fps+, 5 = fps-
+            // 3 = simulate, 4 = {FPS+ & FPS-}
             if (tb != null && tb.m_ButtonPressCounts != null &&
                 tb.m_ButtonPressCounts.ContainsKey(3) &&
-                tb.m_ButtonPressCounts.ContainsKey(4) &&
-                tb.m_ButtonPressCounts.ContainsKey(5))
+                tb.m_ButtonPressCounts.ContainsKey(4))
             {
-                return (tb.m_ButtonPressCounts[3] > 0) && (tb.m_ButtonPressCounts[4] + tb.m_ButtonPressCounts[5]) >= 2 && WindowManager.Instance.IsSimulating;
+                return (tb.m_ButtonPressCounts[3] > 0) && tb.m_ButtonPressCounts[4] >= 2 && WindowManager.Instance.IsSimulating;
             }
             return false;
         }
@@ -71,12 +70,11 @@ namespace ca
         {
             //if has zoomed in and out a few times
             //and we're simulating
-            //6 = zoom in, 7 = zoom out
+            //6 = {zoom in & zoom out}
             if (tb != null && tb.m_ButtonPressCounts != null &&
-                tb.m_ButtonPressCounts.ContainsKey(6) &&
-                tb.m_ButtonPressCounts.ContainsKey(7))
+                tb.m_ButtonPressCounts.ContainsKey(6))
             {
-                return (tb.m_ButtonPressCounts[6] + tb.m_ButtonPressCounts[7]) >= 3;
+                return tb.m_ButtonPressCounts[6] >= 3;
             }
             return false;
         }
@@ -85,12 +83,11 @@ namespace ca
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
-            //8 = ruleset>, 9 = ruleset<
+            //8 = {ruleset> & ruleset<}
             if (tb != null && tb.m_ButtonPressCounts != null &&
-                tb.m_ButtonPressCounts.ContainsKey(8) &&
-                tb.m_ButtonPressCounts.ContainsKey(9))
+                tb.m_ButtonPressCounts.ContainsKey(8))
             {
-                return (tb.m_ButtonPressCounts[8] + tb.m_ButtonPressCounts[9]) >= 3;
+                return tb.m_ButtonPressCounts[8] >= 2;
             }
             return false;
         }
