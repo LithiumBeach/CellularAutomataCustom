@@ -21,5 +21,8 @@ namespace ca
             }
             return _str;
         }
+
+        //optional link, when clicked, will open browser at this url
+        public string m_Hyperlink = "";
     }
 }

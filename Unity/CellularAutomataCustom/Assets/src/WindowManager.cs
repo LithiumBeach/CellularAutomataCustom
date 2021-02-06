@@ -347,6 +347,20 @@ namespace ca
             SaveLoadManager.Instance.ChangeCurrentRulesetName(m_RulesetTitle.text);
         }
 
+        public void OnSelectRulesetName()
+        {
+            string urlString = SaveLoadManager.Instance.CurrentRulesetHyperlink;
+            if (urlString.Length > 2)
+            {
+                Application.OpenURL(urlString);
+            }
+            //otherwise we wanted to click on the title to edit
+            else if (!SaveLoadManager.Instance.IsCurrentRulesetLocked)
+            {
+                m_RulesetTitle.ActivateInputField();
+            }
+        }
+
         public void OnDeleteRulesetPressed()
         {
             SaveLoadManager.Instance.DeleteCurrentRuleset();

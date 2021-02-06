@@ -48,6 +48,17 @@ namespace ca
         public List<RuleData> CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].list; } }
 
         public string CurrentRulesetName { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].name; } }
+        
+        public string CurrentRulesetHyperlink {
+            get
+            {
+                if (CurrentRulesetIndex < m_DefaultRulesets.Count && CurrentRulesetIndex >= 0)
+                {
+                    return m_DefaultRulesets[CurrentRulesetIndex].m_Hyperlink;
+                }
+                return "";
+            }
+        }
 
         //we want to lock all default rulesets.
         public bool IsCurrentRulesetLocked { get { return CurrentRulesetIndex < m_DefaultRulesets.Count; } }
