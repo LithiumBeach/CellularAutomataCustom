@@ -132,9 +132,14 @@ namespace ca
             }
 
             //exit application on escape
-            if (Input.GetKey("escape"))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Application.Quit();
+            }
+            //start/stop simulating on spacebar
+            if (Input.GetKeyDown(KeyCode.Space) && !SaveLoadManager.Instance.ShouldShowTutorial)
+            {
+                ToggleSimulating();
             }
             #endregion
 
