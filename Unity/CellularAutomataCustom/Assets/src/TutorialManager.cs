@@ -37,6 +37,8 @@ namespace ca
 
         public const float MIN_ALPHA = 0.006f;
 
+        public List<Image> m_AlwaysAlpha0Images;
+
         //stage 9 starts after we hit the add new ruleset button
         public bool ShouldShowRules { get { return m_CurrentStage >= 9; } }
 
@@ -75,6 +77,13 @@ namespace ca
             m_NonTutorialRawImages = GameObjectUtility.FindObjectsOfTypeAll<RawImage>();
             m_NonTutorialTexts = GameObjectUtility.FindObjectsOfTypeAll<TextMeshProUGUI>();
 
+            //immediately remove anything we should ignore
+            foreach (Image img in m_AlwaysAlpha0Images)
+            {
+                m_NonTutorialImages.Remove(img);
+            }
+
+
             //cache which ones were raycast target and which weren't
             m_NonTutorialImagesWereRaycast = new List<bool>(m_NonTutorialImages.Count);
             for (int i = 0; i < m_NonTutorialImages.Count; i++)
@@ -90,6 +99,11 @@ namespace ca
             for (int i = 0; i < m_NonTutorialTexts.Count; i++)
             {
                 m_NonTutorialTextsWereRaycast.Add(m_NonTutorialTexts[i].raycastTarget);
+            }
+
+            foreach (Image img in m_AlwaysAlpha0Images)
+            {
+
             }
         }
 

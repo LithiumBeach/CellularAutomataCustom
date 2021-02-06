@@ -99,8 +99,9 @@ namespace ca
         private int m_ClearToColor = 1;
         public int ClearToColor { get { return m_ClearToColor; } }
 
-        [Range(0.0f, 1.0f)]
-        public float m_ShuffleBgProbability;
+        private float m_ShuffleBgProbabilityMin = .55f;
+        private float m_ShuffleBgProbabilityMax = .98f;
+        private float m_ShuffleToOneProbability = 0f; //disabled.
 
 
         #endregion
@@ -348,22 +349,38 @@ namespace ca
             //ALL should not be in this list
             Debug.Assert(!allColorsInRuleset.Contains(0));
 
-            //foreach cell in grid
-            for (int i = 0; i < m_CellGrid.GetArea(); i++)
-            {
-                //roll normalized dice (0-1)
-                float nDice = Random.Range(0.0f, 1.0f);
+            //roll a dice for how likely it is to spawn random cell colors (else bg color)
+            float shuffleBgProbability = Random.Range(m_ShuffleBgProbabilityMin, m_ShuffleBgProbabilityMax);
 
-                if (nDice < m_ShuffleBgProbability)
+            //roll normalized dice (0-1)
+            float nDice = Random.Range(0.0f, 1.0f);
+
+            //if nDice rolled below m_ShuffleToOneProbability, shuffle to one.
+            if (nDice < m_ShuffleToOneProbability)
+            {
+                //clear to bg
+                m_CellGrid.ClearTo(1);
+                //foreach cell in grid
+                m_CellGrid.SetColor(m_CellGrid.GetWidth() / 2, m_CellGrid.GetHeight() / 2, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+            }
+            else
+            {
+                //foreach cell in grid
+                for (int i = 0; i < m_CellGrid.GetArea(); i++)
                 {
-                    //cell = bgColor = 1
-                    m_CellGrid.SetColor(i, 1);
-                }
-                //if not bg, pick random color
-                else
-                {
-                    //cell = roll integer dice range [2, CAColors.colors.Length]
-                    m_CellGrid.SetColor(i, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+                    //roll normalized dice (0-1)
+                    nDice = Random.Range(0.0f, 1.0f);
+                    if (nDice < shuffleBgProbability)
+                    {
+                        //cell = bgColor = 0
+                        m_CellGrid.SetColor(i, 1);
+                    }
+                    //if not bg, pick random color
+                    else
+                    {
+                        //cell = roll integer dice range [2, CAColors.colors.Length]
+                        m_CellGrid.SetColor(i, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+                    }
                 }
             }
         }

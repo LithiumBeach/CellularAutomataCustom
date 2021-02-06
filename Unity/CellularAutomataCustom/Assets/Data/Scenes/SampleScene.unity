@@ -193,7 +193,6 @@ MonoBehaviour:
   m_RectTransform: {fileID: 266500}
   m_ClearToColorButton: {fileID: 1152895766}
   m_ClearToColorButtonText: {fileID: 1152895765}
-  m_ShuffleBgProbability: 0.8
   b_IsInputActive: 1
 --- !u!222 &266503
 CanvasRenderer:
@@ -7261,6 +7260,8 @@ MonoBehaviour:
     m_SceneRaycastableObjects:
     - {fileID: 1890469986}
   b_HasEverClearedToAny: 0
+  m_AlwaysAlpha0Images:
+  - {fileID: 1090135522}
 --- !u!1 &1359342772
 GameObject:
   m_ObjectHideFlags: 0
