@@ -116,7 +116,7 @@ namespace ca
             return false;
         }
     }
-    public class TutorialSC11 : TutorialStateCheck
+    public class TutorialSCCustomizeColor : TutorialStateCheck
     {
         public override bool CanAdvanceStage(TutorialStageBehavior tb = null)
         {
