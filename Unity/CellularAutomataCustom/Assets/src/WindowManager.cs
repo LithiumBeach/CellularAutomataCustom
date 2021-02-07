@@ -7,8 +7,10 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using TMPro;
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ca
 {
@@ -68,8 +70,8 @@ namespace ca
         public Action<Vector2> WhileRightMouseDown;
         public Action<Vector2> OnRightMouseUp;
 
-
         private bool m_IsSimulating = false;
+        public bool IsSimulating { get { return m_IsSimulating; } }
 
         private int m_FPSIndex = 0;
         public float FPS
@@ -78,7 +80,6 @@ namespace ca
         { get { return m_OneDivFPSOptions[m_FPSIndex]; } }
 
         private float m_FPSCount = 0.0f;
-
 
         public void IStart()
         {
@@ -96,8 +97,9 @@ namespace ca
 
             LoadCurrentRulesetUI();
 
-            //display photosensitivity warning if we should
+            //display photosensitivity warning if we should and shouldn't show the tutorial
             DisplayPhotosensitivityWarning(SaveLoadManager.Instance.ShouldShowPhotosensitivityWarning);
+            //we will show the photosensitivity warning BEFORE the tutorial automatically
 
             //turn off global color canvas
             DisplayGlobalColorCanvas(false);
@@ -105,7 +107,7 @@ namespace ca
 
         private void Update()
         {
-            #region Event System: Invoke events
+#region Event System: Invoke events
             Vector2 mousePos2D = Input.mousePosition;
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
@@ -133,11 +135,16 @@ namespace ca
             }
 
             //exit application on escape
-            if (Input.GetKey("escape"))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Application.Quit();
             }
-            #endregion
+            //start/stop simulating on spacebar
+            if (Input.GetKeyDown(KeyCode.Space) && !SaveLoadManager.Instance.ShouldShowTutorial)
+            {
+                ToggleSimulating();
+            }
+#endregion
 
             if (m_IsSimulating)
             {
@@ -155,7 +162,7 @@ namespace ca
         }
 
         //turn off & on the photosensitivity warning canvas
-        private void DisplayPhotosensitivityWarning(bool canvasActive)
+        public void DisplayPhotosensitivityWarning(bool canvasActive)
         {
             m_PhotosensitivityWarningCanvas.gameObject.SetActive(canvasActive);
         }
@@ -202,7 +209,7 @@ namespace ca
             DisplayGlobalColorCanvas(canvasActive);
         }
 
-        #region Rulesets
+#region Rulesets
 
         private void LoadCurrentRulesetUI()
         {
@@ -348,6 +355,20 @@ namespace ca
             SaveLoadManager.Instance.ChangeCurrentRulesetName(m_RulesetTitle.text);
         }
 
+        public void OnSelectRulesetName()
+        {
+            string urlString = SaveLoadManager.Instance.CurrentRulesetHyperlink;
+            if (urlString.Length > 2)
+            {
+                Application.OpenURL(urlString);
+            }
+            //otherwise we wanted to click on the title to edit
+            else if (!SaveLoadManager.Instance.IsCurrentRulesetLocked)
+            {
+                m_RulesetTitle.ActivateInputField();
+            }
+        }
+
         public void OnDeleteRulesetPressed()
         {
             SaveLoadManager.Instance.DeleteCurrentRuleset();
@@ -355,9 +376,9 @@ namespace ca
             ChangeRuleset(0);
         }
 
-        #endregion
+#endregion
 
-        #region Rule Button Press Callbacks
+#region Rule Button Press Callbacks
         //returns new color index
         public int OnThisColorChange(RuleBehavior ruleBehavior, int direction)
         {
@@ -402,9 +423,9 @@ namespace ca
                CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors;
         }
-        #endregion
+#endregion
 
-        #region Zoom
+#region Zoom
 
 
         [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
@@ -418,9 +439,9 @@ namespace ca
             m_ZoomButtonText.text = m_CellGrid.Zoom.ToString();
         }
 
-        #endregion
+#endregion
 
-        #region Simulating
+#region Simulating
 
         public void OnNextFrameButtonPressed()
         {
@@ -452,7 +473,29 @@ namespace ca
             m_SimulateButtonText.text = m_IsSimulating ? "STOP" : "SIMULATE";
         }
 
-        #endregion
+#endregion
+
+#if UNITY_EDITOR
+        [Button(Name ="Save Current CA")]
+        public void Editor_SaveCurrentCA()
+        {
+            if(SaveLoadManager.Instance == null || SaveLoadManager.Instance.CurrentRuleset == null) { return; }
+
+            RulesetSO so = ScriptableObject.CreateInstance<RulesetSO>();
+            so.m_Title = SaveLoadManager.Instance.CurrentRulesetName;
+            so.m_Rules = SaveLoadManager.Instance.CurrentRuleset;
+            so.name = "Ruleset_" + SaveLoadManager.Instance.CurrentRulesetName;
+
+
+
+            AssetDatabase.CreateAsset(so, "Assets/Data/ScriptableObjects/Rulesets/Ruleset_" + SaveLoadManager.Instance.CurrentRulesetName + ".asset");
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = so;
+        }
+#endif
 
         //cleanup
         private void OnDestroy()

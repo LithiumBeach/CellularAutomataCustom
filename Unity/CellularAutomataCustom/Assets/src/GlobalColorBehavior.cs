@@ -23,7 +23,7 @@ namespace ca
             { EState.DEFAULT, "Each color below represents a state in our cellular automata. Click on a state to change the color it is represented by."},
             { EState.DELETE_NEXT_CLICKED_COLOR, "The next state you click will be deleted."},
             { EState.CHANGE_NEXT_CLICKED_COLOR, "The next state you click will be selected for color changing."},
-            { EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR, "The next place you click will set the color of your selected state."}
+            { EState.CHANGE_TO_NEXT_CLICKED_PIXEL_COLOR, "The next place you click on your screen will set the color of your selected state."}
         };
 
 

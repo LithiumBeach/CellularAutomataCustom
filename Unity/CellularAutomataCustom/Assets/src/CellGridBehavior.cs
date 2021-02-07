@@ -99,8 +99,9 @@ namespace ca
         private int m_ClearToColor = 1;
         public int ClearToColor { get { return m_ClearToColor; } }
 
-        [Range(0.0f, 1.0f)]
-        public float m_ShuffleBgProbability;
+        private float m_ShuffleBgProbabilityMin = .55f;
+        private float m_ShuffleBgProbabilityMax = .98f;
+        private float m_ShuffleToOneProbability = 0f; //disabled.
 
 
         #endregion
@@ -109,6 +110,9 @@ namespace ca
         private Vector2Int m_OnLeftMouseDownCellIndex;
         private Vector2Int m_OnRightMouseDownCellIndex;
         private static Vector2Int c_InvalidIndex = new Vector2Int(-1, -1);
+
+        //pause and unpause grid interaction
+        public bool b_IsInputActive = true;
 
 
         private void ResetGrid()
@@ -203,7 +207,7 @@ namespace ca
         }
         private void HandleRightMouseDown(Vector2 pos)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
@@ -213,7 +217,7 @@ namespace ca
 
         private void HandleWhileLeftMouse(Vector2 pos)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
@@ -247,7 +251,7 @@ namespace ca
 
         private void HandleMouseUp(Vector2 pos, int dir)
         {
-            if (WindowManager.Instance.IsMainCanvasActive())
+            if (b_IsInputActive && WindowManager.Instance.IsMainCanvasActive())
             {
                 Vector2Int cellIndex = GetCellIndexFromScreenPos(pos);
                 if (cellIndex == c_InvalidIndex) { return; } //exit if invalid position
@@ -306,12 +310,17 @@ namespace ca
         {
             ClearBoard(m_ClearToColor, m_Zoom);
         }
+        public void ClearBoard(int caColor)
+        {
+            ClearBoard(caColor, m_Zoom);
+        }
         public void ClearBoard(int caColor, int zoomLevel)
         {
             //if caColor = "ANY"
             if (caColor == 0)
             {
                 ShuffleBoard();
+                TutorialManager.Instance.b_HasEverClearedToAny = true;
             }
             else
             {
@@ -335,26 +344,43 @@ namespace ca
         private void ShuffleBoard()
         {
             List<int> allColorsInRuleset = SaveLoadManager.Instance.GetCurrentRulesetColors();
+            if(allColorsInRuleset.Count < 2) { return; }
 
             //ALL should not be in this list
             Debug.Assert(!allColorsInRuleset.Contains(0));
 
-            //foreach cell in grid
-            for (int i = 0; i < m_CellGrid.GetArea(); i++)
-            {
-                //roll normalized dice (0-1)
-                float nDice = Random.Range(0.0f, 1.0f);
+            //roll a dice for how likely it is to spawn random cell colors (else bg color)
+            float shuffleBgProbability = Random.Range(m_ShuffleBgProbabilityMin, m_ShuffleBgProbabilityMax);
 
-                if (nDice < m_ShuffleBgProbability)
+            //roll normalized dice (0-1)
+            float nDice = Random.Range(0.0f, 1.0f);
+
+            //if nDice rolled below m_ShuffleToOneProbability, shuffle to one.
+            if (nDice < m_ShuffleToOneProbability)
+            {
+                //clear to bg
+                m_CellGrid.ClearTo(1);
+                //foreach cell in grid
+                m_CellGrid.SetColor(m_CellGrid.GetWidth() / 2, m_CellGrid.GetHeight() / 2, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+            }
+            else
+            {
+                //foreach cell in grid
+                for (int i = 0; i < m_CellGrid.GetArea(); i++)
                 {
-                    //cell = bgColor = 1
-                    m_CellGrid.SetColor(i, 1);
-                }
-                //if not bg, pick random color
-                else
-                {
-                    //cell = roll integer dice range [2, CAColors.colors.Length]
-                    m_CellGrid.SetColor(i, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+                    //roll normalized dice (0-1)
+                    nDice = Random.Range(0.0f, 1.0f);
+                    if (nDice < shuffleBgProbability)
+                    {
+                        //cell = bgColor = 0
+                        m_CellGrid.SetColor(i, 1);
+                    }
+                    //if not bg, pick random color
+                    else
+                    {
+                        //cell = roll integer dice range [2, CAColors.colors.Length]
+                        m_CellGrid.SetColor(i, allColorsInRuleset[Random.Range(0, allColorsInRuleset.Count)]);
+                    }
                 }
             }
         }

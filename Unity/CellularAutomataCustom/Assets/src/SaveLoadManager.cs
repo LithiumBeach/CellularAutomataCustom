@@ -19,6 +19,13 @@ namespace ca
         private const string c_ShouldShowPhotosensitivityWarning = "should_show_photosens_warning";
         private const string c_GlobalColors = "global_colors";
 
+        private const string c_ShouldShowTutorial = "should_show_tutorial";
+        //TODO:
+        private const string c_TutorialStage = "tutorial_stage";
+        //TODO:
+        private const string c_TutorialBoards = "tutorial_boards";
+
+        //TODO: pull from a fun list of string pairings or something, 1hr max
         public const string c_NewRulesetName = "New Ruleset";
 
         private RulesetList Rulesets
@@ -41,6 +48,17 @@ namespace ca
         public List<RuleData> CurrentRuleset { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].list; } }
 
         public string CurrentRulesetName { get { return Rulesets.list[PlayerPrefs.GetInt(c_CurrentRulesetKey)].name; } }
+        
+        public string CurrentRulesetHyperlink {
+            get
+            {
+                if (CurrentRulesetIndex < m_DefaultRulesets.Count && CurrentRulesetIndex >= 0)
+                {
+                    return m_DefaultRulesets[CurrentRulesetIndex].m_Hyperlink;
+                }
+                return "";
+            }
+        }
 
         //we want to lock all default rulesets.
         public bool IsCurrentRulesetLocked { get { return CurrentRulesetIndex < m_DefaultRulesets.Count; } }
@@ -375,6 +393,26 @@ namespace ca
             Colors = newColors;
         }
 
+        //0 dont show, else show tutorial
+        public bool ShouldShowTutorial
+        {
+            get
+            {
+                return PlayerPrefs.GetInt(c_ShouldShowTutorial) != 0;
+            }
+            set
+            {
+                PlayerPrefs.SetInt(c_ShouldShowTutorial, value ? 1 : 0);
+            }
+        }
+
+
+        #endregion
+
+
+
+
+
         //search in all this, if, to colors in all rulesets and find the maximum state value
         private int MaximumColorStateConsideredGlobally()
         {
@@ -401,8 +439,6 @@ namespace ca
             return (Colors.Count-1) > MaximumColorStateConsideredGlobally();
         }
 
-        #endregion
-
         #region public functions
         public List<RulesetSO> m_DefaultRulesets;
         [Sirenix.OdinInspector.Button(Name = "Reset PlayerPrefs")]
@@ -419,7 +455,11 @@ namespace ca
             //show photosensitivity warning
             ShouldShowPhotosensitivityWarning = true;
 
+            ShouldShowTutorial = true;
+
             Colors = CAColor.defaultColors;
+
+            SetCurrentRuleset(0);
 
             PlayerPrefs.Save();
         }
@@ -430,7 +470,8 @@ namespace ca
         public void IStart()
         {
             //if the user has never saved data before into PlayerPrefs
-            if (Rulesets == null)
+            //(or has only partially completed the tutorial)
+            if (Rulesets == null || ShouldShowTutorial)
             {
                 //initialize like new
                 ResetPlayerPrefs();

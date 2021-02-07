@@ -82,7 +82,21 @@ namespace ca
                 OnIfColorChange(0);
                 OnThenColorChange(0);
                 OnMinNeighborsChange(0);
-                OnMaxNeighborsChange(0); 
+                OnMaxNeighborsChange(0);
+            }
+
+
+            //because we can "create rules" by changing rulesets, we need to ensure they line up
+            //with the tutorial. They should simply be transparent or not, no need to change raycast targets.
+            if (SaveLoadManager.Instance.ShouldShowTutorial)
+            {
+                //for each child of this root obj
+                Transform[] ts = transform.GetComponentsInChildren<Transform>();
+                foreach (Transform childT in ts)
+                {
+                    TutorialManager.Instance.ChangeAlphaOnCompatibleComponents(childT.gameObject,
+                        TutorialManager.Instance.ShouldShowRules ? 1f : TutorialManager.MIN_ALPHA);
+                }
             }
         }
 
@@ -95,7 +109,7 @@ namespace ca
         //b_locked: false enables, true disables
         internal void SetLocked(bool b_locked)
         {
-            foreach(var go in m_LockedGOs)
+            foreach (var go in m_LockedGOs)
             {
                 go.SetActive(!b_locked);
             }

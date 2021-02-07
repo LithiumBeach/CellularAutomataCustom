@@ -12,6 +12,7 @@ namespace ca
         {
             SaveLoadManager.Instance.IStart();
             WindowManager.Instance.IStart();
+            TutorialManager.Instance.IStart();
         }
     }
 }

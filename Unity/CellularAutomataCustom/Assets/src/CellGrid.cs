@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ca
@@ -128,6 +129,29 @@ namespace ca
         internal void SetColor(int cellIndex1D, int color)
         {
             m_Cells[cellIndex1D] = color;
+        }
+
+        //count occurrences of color
+        public int GetColorCount(int color)
+        {
+            return m_Cells.Where(num => num == color).ToList().Count;
+        }
+        //count occurrences of NOT color
+        public int GetAntiColorCount(int color)
+        {
+            return m_Cells.Where(num => num != color).ToList().Count;
+        }
+        public bool IsBoardOneColor()
+        {
+            for (int i = 1; i < m_Area; i++)
+            {
+                //if previous cell != i
+                if (m_Cells[i] != m_Cells[i - 1])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         //TODO: Evaluate can be generic, object param cast to RuleData ?
