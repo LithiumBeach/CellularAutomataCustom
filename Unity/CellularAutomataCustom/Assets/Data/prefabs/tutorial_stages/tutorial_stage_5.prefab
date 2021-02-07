@@ -65,7 +65,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Simulating will advance the cell grid at the desired Frames Per Second
+  m_text: 'Simulating will advance the automaton at the desired Frames Per Second
     (FPS)
 
 
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 42.5
+  m_fontSize: 40.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -140,10 +140,10 @@ MonoBehaviour:
     textComponent: {fileID: 4275309921475098872}
     characterCount: 120
     spriteCount: 0
-    spaceCount: 20
-    wordCount: 20
+    spaceCount: 19
+    wordCount: 19
     linkCount: 0
-    lineCount: 5
+    lineCount: 6
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
@@ -221,4 +221,5 @@ MonoBehaviour:
   b_ShuffleBoardIfClear: 1
   m_InfoText: {fileID: 4275309921475098872}
   m_ClickToContinueText: {fileID: 0}
+  m_ClickToContinueEtc: []
   m_ClickToContinueTime: 6

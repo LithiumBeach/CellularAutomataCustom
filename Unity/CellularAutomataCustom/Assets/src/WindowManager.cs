@@ -7,6 +7,9 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using TMPro;
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace ca
@@ -104,7 +107,7 @@ namespace ca
 
         private void Update()
         {
-            #region Event System: Invoke events
+#region Event System: Invoke events
             Vector2 mousePos2D = Input.mousePosition;
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
@@ -141,7 +144,7 @@ namespace ca
             {
                 ToggleSimulating();
             }
-            #endregion
+#endregion
 
             if (m_IsSimulating)
             {
@@ -206,7 +209,7 @@ namespace ca
             DisplayGlobalColorCanvas(canvasActive);
         }
 
-        #region Rulesets
+#region Rulesets
 
         private void LoadCurrentRulesetUI()
         {
@@ -373,9 +376,9 @@ namespace ca
             ChangeRuleset(0);
         }
 
-        #endregion
+#endregion
 
-        #region Rule Button Press Callbacks
+#region Rule Button Press Callbacks
         //returns new color index
         public int OnThisColorChange(RuleBehavior ruleBehavior, int direction)
         {
@@ -420,9 +423,9 @@ namespace ca
                CAMath.Mod(SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors + direction, 9)); //9 directions
             return SaveLoadManager.Instance.CurrentRuleset[rbIndex].m_MaxNumNeighbors;
         }
-        #endregion
+#endregion
 
-        #region Zoom
+#region Zoom
 
 
         [Sirenix.OdinInspector.Button(Sirenix.OdinInspector.ButtonSizes.Medium, Name = "Zoom In")]
@@ -436,9 +439,9 @@ namespace ca
             m_ZoomButtonText.text = m_CellGrid.Zoom.ToString();
         }
 
-        #endregion
+#endregion
 
-        #region Simulating
+#region Simulating
 
         public void OnNextFrameButtonPressed()
         {
@@ -470,7 +473,29 @@ namespace ca
             m_SimulateButtonText.text = m_IsSimulating ? "STOP" : "SIMULATE";
         }
 
-        #endregion
+#endregion
+
+#if UNITY_EDITOR
+        [Button(Name ="Save Current CA")]
+        public void Editor_SaveCurrentCA()
+        {
+            if(SaveLoadManager.Instance == null || SaveLoadManager.Instance.CurrentRuleset == null) { return; }
+
+            RulesetSO so = ScriptableObject.CreateInstance<RulesetSO>();
+            so.m_Title = SaveLoadManager.Instance.CurrentRulesetName;
+            so.m_Rules = SaveLoadManager.Instance.CurrentRuleset;
+            so.name = "Ruleset_" + SaveLoadManager.Instance.CurrentRulesetName;
+
+
+
+            AssetDatabase.CreateAsset(so, "Assets/Data/ScriptableObjects/Rulesets/Ruleset_" + SaveLoadManager.Instance.CurrentRulesetName + ".asset");
+            AssetDatabase.SaveAssets();
+
+            EditorUtility.FocusProjectWindow();
+
+            Selection.activeObject = so;
+        }
+#endif
 
         //cleanup
         private void OnDestroy()

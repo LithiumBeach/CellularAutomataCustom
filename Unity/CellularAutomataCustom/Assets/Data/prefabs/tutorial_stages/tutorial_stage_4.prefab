@@ -57,6 +57,7 @@ MonoBehaviour:
   b_ShuffleBoardIfClear: 1
   m_InfoText: {fileID: 8799290448196325651}
   m_ClickToContinueText: {fileID: 0}
+  m_ClickToContinueEtc: []
   m_ClickToContinueTime: 1
 --- !u!1 &7128999756021985786
 GameObject:
@@ -126,11 +127,9 @@ MonoBehaviour:
   m_text: 'Each frame, every cell in the grid is evaluated.
 
 
-    Each cell checks its own 8 neighbors, and decides which state it should change
-    to, from the active ruleset.
 
 
-    Try advancing the cell grid a few frames.'
+    <i>Advance the cellular automaton</i> a few frames.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -158,7 +157,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 34.9
+  m_fontSize: 35.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -199,12 +198,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 8799290448196325651}
-    characterCount: 200
+    characterCount: 96
     spriteCount: 0
-    spaceCount: 37
-    wordCount: 36
+    spaceCount: 18
+    wordCount: 16
     linkCount: 0
-    lineCount: 7
+    lineCount: 6
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
